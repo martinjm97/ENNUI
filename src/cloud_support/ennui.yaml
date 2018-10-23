@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ennui
+spec:
+  containers:
+    - name: ennui
+      image: martinjm97/ennui:final
+      # command: "/srv/keras_script.py"
+      ports:
+        - containerPort: 80
+      imagePullPolicy: Always
+      # command: ["bash"]
+
+  # containers: # - volume:
+  #   - name: ennui
+  #     image: gw000/keras:2.1.4-py3-tf-gpu
+  #     command: "/srv/keras_script.py"
+  #     ports:
+  #       - containerPort: 80
+      # volumeMounts:
+      #   - mountPath: /srv
+      #   name: test-volume
+  
+# docker run -it --rm $(ls /dev/nvidia* | xargs -I{} echo '--device={}') $(ls /usr/lib/*-linux-gnu/{libcuda,libnvidia}* | xargs -I{} echo '-v {}:{}:ro') -v $(pwd):/srv gw000/keras:2.1.4-py3-tf-gpu /srv/keras_script.py
