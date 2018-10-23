@@ -13,6 +13,7 @@ import {IMAGE_H, IMAGE_W, MnistData} from './data';
  */
 function createModel() {
   // Creating a DAG neural network architecture
+  // TODO: eval("generated script")
   const inputs = tf.input({shape: [10]});
   const dense2 = tf.layers.dense({units: 8}).apply(inputs);
   const concat = tf.layers.concatenate().apply([dense1, dense2]);
