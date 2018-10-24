@@ -1,0 +1,29 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+InputNode	../from_json.py	/^class InputNode(Node):$/;"	kind:class	line:19
+LayerNode	../from_json.py	/^class LayerNode(Node):$/;"	kind:class	line:39
+Node	../from_json.py	/^class Node:$/;"	kind:class	line:4
+Output	../from_json.py	/^class Output(Node):$/;"	kind:class	line:25
+Write_Output_Callback	../keras_script.py	/^class Write_Output_Callback(keras.callbacks.Callback):$/;"	kind:class	line:11
+__init__	../from_json.py	/^    def __init__(self, id, layer_name, children_ids, parent_ids, params):$/;"	kind:member	line:5
+convert_to_keras.py	../convert_to_keras.py	1;"	kind:file	line:1
+from_json.py	../from_json.py	1;"	kind:file	line:1
+get_graph	../from_json.py	/^def get_graph(filename):$/;"	kind:function	line:64
+identify_input_node	../from_json.py	/^def identify_input_node(graph):$/;"	kind:function	line:57
+keras_script.py	../keras_script.py	1;"	kind:file	line:1
+label_precedences	../from_json.py	/^    def label_precedences(self, id_to_node, precedence=0):$/;"	kind:member	line:13
+main.py	../main.py	1;"	kind:file	line:1
+mainloop	../convert_to_keras.py	/^def mainloop():$/;"	kind:function	line:12
+mainloop	../main.py	/^def mainloop():$/;"	kind:function	line:12
+on_epoch_end	../keras_script.py	/^    def on_epoch_end(self, epoch, logs={}):$/;"	kind:member	line:12
+on_train_end	../keras_script.py	/^    def on_train_end(self, epoch, logs={}):$/;"	kind:member	line:18
+run	../keras_script.py	/^def run():$/;"	kind:function	line:25
+skeleton.py	../skeleton.py	1;"	kind:file	line:1
+stringify	../from_json.py	/^    def stringify(self, id_to_node):$/;"	kind:member	line:20
+stringify	../from_json.py	/^    def stringify(self, id_to_node):$/;"	kind:member	line:26
+stringify	../from_json.py	/^    def stringify(self, id_to_node):$/;"	kind:member	line:41
+write_script	../skeleton.py	/^def write_script(layers):$/;"	kind:function	line:1
