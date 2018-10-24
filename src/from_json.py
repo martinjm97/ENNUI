@@ -8,12 +8,12 @@ class Node:
         self.params = params
         self.children_ids = children_ids
         self.parent_ids = parent_ids
-        self.precidence = 0
+        self.precedence = 0
 
-    def label_precidences(self, id_to_node, precidence=0):
-        self.precidence = max(precidence, self.precidence)
+    def label_precedences(self, id_to_node, precedence=0):
+        self.precedence = max(precedence, self.precedence)
         for child_id in self.children_ids:
-            id_to_node[child_id].label_precidences(id_to_node, precidence + 1)
+            id_to_node[child_id].label_precedences(id_to_node, precedence + 1)
 
 
 class InputNode(Node):
