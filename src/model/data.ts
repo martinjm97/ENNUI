@@ -20,6 +20,12 @@ const MNIST_LABELS_PATH =
  * tf.Tensors.
  */
 export class MnistData {
+  datasetImages: Float32Array;
+  datasetLabels: Uint8Array;
+  trainImages: Float32Array;
+  trainLabels: Uint8Array;
+  testImages: Float32Array;
+  testLabels: Uint8Array;
   constructor() {}
 
   async load() {

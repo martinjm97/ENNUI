@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
         "outDir": "./built",
-        "allowJs": true,
+        "allowJs": false,
+        "target": "es6",
+        "module": "es2015",
+	"moduleResolution": "node",
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*",
+        "package.json",
     ]
 }
