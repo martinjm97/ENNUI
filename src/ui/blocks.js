@@ -39,12 +39,6 @@ var layerRectData = {
 	},
 }
 
-// var layerPolygonData = {
-// 	dense : {
-		
-// 	}
-// }
-
 var layerPortData = {
 	activation : [0,0]
 }
@@ -60,8 +54,6 @@ activationDefaults = {
 }
 
 var activationRectData = {
-	// main : [0,0,25,25],
-	// middleTooth : [7,25,25-14,10],
 	relu: {
 		middleTooth : [0,0,10,10,colors.activation.relu],
 		main : [-8,10,26,10,colors.activation.relu],

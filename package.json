@@ -1,0 +1,19 @@
+{
+  "name": "ennui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@tensorflow/tfjs": "^0.13.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.mit.edu/jmmichel/ClientENNUI.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
