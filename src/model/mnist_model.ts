@@ -16,8 +16,8 @@ function createModel() {
   // TODO: eval("generated script")
   const inputs = tf.input({shape: [10]});
   const dense1 = tf.layers.dense({units: 8}).apply(inputs);
-  const dense2 = tf.layers.dense({units: 8}).apply(inputs);
-  const concat = tf.layers.concatenate().apply([dense1, dense2]);
+  // const dense2 = tf.layers.dense({units: 8}).apply(inputs);
+  const concat = tf.layers.concatenate().apply(dense1);
   const predictions = tf.layers.dense({units: 3, activation: 'softmax'}).apply(concat);
   const model = tf.model({inputs: inputs, outputs: predictions});
   return model;
