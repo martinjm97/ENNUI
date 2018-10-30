@@ -1,4 +1,4 @@
-function titleCase(s){
+function titleCase(s: String){
 	if(s === ''){return ''}
 	if(s.length === 1){return s.toUpperCase();}
 	{return s.charAt(0).toUpperCase()+s.substring(1);}
