@@ -1,4 +1,4 @@
-colors = {
+let colors = {
 	layer : {
 		dense : {main:'#b00202'},
 		conv2D : {main:'#027002',page1:'#028002',page2:'#029002',page3:'#02a002'},

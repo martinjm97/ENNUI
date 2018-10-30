@@ -10,17 +10,17 @@ function minus(p1,p2){
 	return [p1[0]-p2[0],p1[1]-p2[1]];
 }
 
-var snapRadius = 400;
+let snapRadius = 400;
 
-layerDefaults = {
+let layerDefaults = {
 	x:50,
 	y:100,
 }
 
-qwertx = 10
-qwerty = 20
+let qwertx = 10
+let qwerty = 20
 
-var layerRectData = {
+let layerRectData = {
 	conv2D : {
 		page1 : [-54,-80,50,50,colors.layer.conv2D.page1],
 		page2 : [-37,-60,50,50,colors.layer.conv2D.page2],
@@ -39,21 +39,21 @@ var layerRectData = {
 	},
 }
 
-var layerPortData = {
+let layerPortData = {
 	activation : [0,0]
 }
 
-wireDefaults = {
+let wireDefaults = {
 	x:200,
 	y:200
 }
 
-activationDefaults = {
+let activationDefaults = {
 	x:25,
 	y:25,
 }
 
-var activationRectData = {
+let activationRectData = {
 	relu: {
 		middleTooth : [0,0,10,10,colors.activation.relu],
 		main : [-8,10,26,10,colors.activation.relu],
@@ -68,12 +68,12 @@ var activationRectData = {
 	},
 }
 
-var activationPortData = {
+let activationPortData = {
 	//male : [{type : activation, position: [-5,-40]}]
 	activation : [0,0]
 }
 
-var wireRectData = {
+let wireRectData = {
 	'splitter' : {
 			inData : [0, -10, 30, 20],
 			splitData : [30, -100, 20, 200],

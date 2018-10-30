@@ -1,7 +1,7 @@
-var svg;
-var height;
-var width;
-var svgData = {
+let svg;
+let height;
+let width;
+let svgData = {
 	layer : [],
 	activation : [],
 	wire : [],
@@ -10,7 +10,7 @@ var svgData = {
 }
 
 // maybe deprecated?
-function generatePythonCode(){
+function generatePythonCode(): string{
 	return [
 		'from keras.layers import *',
 		'from keras.models import Model',
@@ -24,7 +24,7 @@ function generatePythonCode(){
 	]).join('\n');
 }
 
-function makeJSON(){
+function makeJSON(): string{
 	return '['+svgData.layer.concat([svgData.input]).concat([svgData.output]).map(layer => JSON.stringify(layer.getJSON()))+']';
 }
 
@@ -75,10 +75,10 @@ function dispatchCreationOnClick(elmt){
 
 function appendItem(options){
 	switch(options.detail.itemType){
-		case 'layer': var item = new Layer(options.detail); break;
-		case 'activation': var item = new Activation(options.detail); break;
-		case 'wire': var item = new Wire(options.detail); break;
-		case 'input': var item = new Input(options.detail); break;
+		case 'layer': let item = new Layer(options.detail); break;
+		case 'activation': let item = new Activation(options.detail); break;
+		case 'wire': let item = new Wire(options.detail); break;
+		case 'input': let item = new Input(options.detail); break;
 	}
 	// console.log('ops',options);
 	svgData[options.detail.itemType].push(item);

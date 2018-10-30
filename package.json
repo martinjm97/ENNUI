@@ -2,7 +2,7 @@
   "name": "ennui",
   "version": "0.0.1",
   "description": "Neural nework visualizer.",
-  "main": "app.js",
+  "main": "app.ts",
   "dependencies": {
     "@tensorflow/tfjs": "^0.13.1"
   },
