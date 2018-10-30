@@ -209,6 +209,18 @@ function makeDraggable(item){
 **/
 
 class Layer {
+	layerType: any;
+	svgComponent: any;
+	ports: any;
+	rectangles: any;
+	connectors: any;
+	inputs: any;
+	outputs: any;
+	htmlComponent: any;
+	activation: any;
+	index: any;
+	id: any;
+	
 	constructor(options) {
 		options = {...layerDefaults, ...options}
 		this.layerType = options.layerType;
