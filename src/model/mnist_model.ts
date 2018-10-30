@@ -2,6 +2,7 @@
 import * as tf from '@tensorflow/tfjs';
 
 import {IMAGE_H, IMAGE_W, MnistData} from './data';
+import { SymbolicTensor } from '@tensorflow/tfjs';
 
 // Not using their ui now.
 // import * as ui from './ui';
@@ -19,7 +20,7 @@ function createModel() {
   // const dense2 = tf.layers.dense({units: 8}).apply(inputs);
   const concat = tf.layers.concatenate().apply(dense1);
   const predictions = tf.layers.dense({units: 3, activation: 'softmax'}).apply(concat);
-  const model = tf.model({inputs: inputs, outputs: predictions});
+  const model = tf.model({inputs: inputs, outputs: <SymbolicTensor> predictions});
   return model;
 }
 
