@@ -220,6 +220,8 @@ class Layer {
 	activation: any;
 	index: any;
 	id: any;
+	activationType: any;
+	input: any;
 	
 	constructor(options) {
 		options = {...layerDefaults, ...options}
@@ -269,10 +271,13 @@ class Layer {
 			layer_name : titleCase(this.layerType),
 			children_ids : this.outputs.map(layer => layer.id),
 			parent_ids : this.inputs.map(layer => layer.id),
+			params: {
+				activation: null
+			},
 			// parent_flattenQ : this.inputs.map((layer => (this.layerType === 'dense' && layer.layerType !== 'dense')).bind(this))
 		};
 
-		output.params = {};
+		// output.params = {};
 		if(this.activation){
 			output.params.activation = this.activation.activationType;
 		}
