@@ -1,21 +1,10 @@
-// function dist2(p1,p2){
-// 	return (p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]);
-// }
 
-// function add(p1,p2){
-// 	return [p1[0]+p2[0],p1[1]+p2[1]];
-// }
 
-// function minus(p1,p2){
-// 	return [p1[0]-p2[0],p1[1]-p2[1]];
-// }
 
-// let snapRadius = 400;
 
-// let layerDefaults = {
-// 	x:50,
-// 	y:100,
-// }
+
+
+
 
 // let qwertx = 10
 // let qwerty = 20
