@@ -17,15 +17,15 @@ export class Point {
         this.y = y;
     }
 
-    dist2(p1,p2){
-	    return (p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]);
+    distance(p1: Point,p2: Point): number {
+	    return (p1.x - p2.x)**2 + (p1.y - p2.y)**2;
     }
 
-    add(p1,p2){
-	    return [p1[0]+p2[0],p1[1]+p2[1]];
+    add(p1: Point,p2: Point): Point {
+	    return new Point(p1.x + p2.x, p1.y + p2.y);
     }
 
-    minus(p1,p2){
-        return [p1[0]-p2[0],p1[1]-p2[1]];
+    minus(p1: Point,p2: Point): Point {
+        return new Point(p1.x - p2.x, p1.y - p2.y);
     }
 }
