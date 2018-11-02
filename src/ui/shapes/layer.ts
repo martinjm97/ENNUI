@@ -1,6 +1,9 @@
 import { Draggable } from "./draggable";
+import { Rectangle } from "./shape";
 
-export class Layer extends Draggable {
+export abstract class Layer extends Draggable {
+    pages: Array<Rectangle>;
+    hole: Rectangle;
 
 }
 

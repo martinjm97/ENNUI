@@ -1,5 +1,11 @@
-export class Shape {
+export abstract class Shape {
+    color: string;
+}
 
+export class Rectangle extends Shape {
+    location: Point;
+    width: number;
+    height: number;
 }
 
 export class Point {
