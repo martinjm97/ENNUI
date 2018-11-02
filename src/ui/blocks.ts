@@ -222,6 +222,7 @@ class Layer {
 	id: any;
 	activationType: any;
 	input: any;
+	svgData: any;
 	
 	constructor(options) {
 		options = {...layerDefaults, ...options}
@@ -298,14 +299,14 @@ class Layer {
 			connector.remove();
 		}
 		let i = svgData.layer.indexOf(this);
-		svgData.layer.pop(i);
+		delete svgData.layer[i];
 		for(let output of this.outputs){
 			let i = output.inputs.indexOf(this);
-			output.inputs.pop(i);
+			delete output.inputs[i];
 		}
 		for(let input of this.inputs){
 			let i = input.outputs.indexOf(this);
-			input.outputs.pop(i);
+			delete input.outputs[i];
 		}
 
 	}
