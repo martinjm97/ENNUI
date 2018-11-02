@@ -154,6 +154,15 @@ class Input{
 }
 
 class Output{
+	svgComponent: any
+	inputs: Array<string>
+	connectors: Array<string>
+	layerType: string
+	id: string
+	units: number
+	htmlComponent: any
+
+
 	constructor(){
 		this.svgComponent = svg.append('g');
 		this.svgComponent.append('circle').attr('cx',0).attr('cy',-60).attr('r',10).style('fill','#010180');
