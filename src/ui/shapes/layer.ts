@@ -8,7 +8,13 @@ export class Conv2D extends Layer {
 
 }
 
-export 
+export class Dense extends Layer {
+
+} 
+
+export class MaxPooling2D extends Layer {
+
+}
 
 
 // let layerRectData = {
