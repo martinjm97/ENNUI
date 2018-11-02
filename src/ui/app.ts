@@ -244,7 +244,6 @@
 // 	ti.val_loss = document.getElementById('ti_vloss');
 // 	tims = document.getElementById('ti_status');
 // 	defaultparambox = document.getElementById('defaultparambox');
-// 	// thecoolestfilter = d3.select('thecoolestfilter');
 
 // 	allowDragging();
 // 	window.addEventListener('create', function( e ) {

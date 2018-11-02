@@ -4,7 +4,8 @@
   "description": "Neural nework visualizer.",
   "main": "app.ts",
   "dependencies": {
-    "@tensorflow/tfjs": "^0.13.1"
+    "@tensorflow/tfjs": "^0.13.1",
+    "d3": "^5.7.0"
   },
   "devDependencies": {
     "prettier": "^1.14.3",
