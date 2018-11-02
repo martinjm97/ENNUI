@@ -1,0 +1,83 @@
+<html>
+<head>
+	<link rel='stylesheet' href='src/ui/style.css'>
+	<script src='built/ui/app.js'></script>
+</head>
+
+<body>
+<!-- The left panel -->
+<div id = 'main'>
+
+	<div id = 'menu'>
+
+		<div id = 'layers' class = 'category' data-itemType = 'layer'>
+			<div class = 'categoryTitle'>Layers</div>
+			<div class = 'option' data-layerType = 'dense'> Dense </div>
+
+			<div class = 'option' data-layerType = 'conv2D'> Convolution </div>
+
+			<div class = 'option' data-layerType = 'maxPooling2D'> Max Pooling </div>
+		</div>
+
+		<div id = 'activations' class = 'category' data-itemType = 'activation'>
+			<div class = 'categoryTitle'>Activations</div>
+			<div class = 'option' data-activationType = 'relu'> ReLu </div>
+
+			<div class = 'option' data-activationType = 'sigmoid'> Sigmoid </div>
+		</div>
+
+		<div id = 'settings' class = 'category'>
+			<div class = 'categoryTitle'>Modes</div>
+			<div class = 'toggle'>
+				<div class = 'toggleOption' data-makemode='add' onclick='toggleSelect(this)' style='background-color:rgb(204,204,204)'>Add / Move</div>
+				<div class = 'toggleOption' data-makemode='connect' onclick='toggleSelect(this)'>Connect</div>
+			</div>
+		</div>
+		<div id = 'generate' class = 'category'>
+			<div class = 'categoryTitle'>Train</div>
+			<div class = 'optionNC' data-actionType = 'python' onclick = 'console.log(generatePythonCode())'> On cloud </div>
+
+			<div class = 'optionNC' data-actionType = 'json' onclick = 'download("model_info.json",makeJSON())'> Locally </div>
+		</div>
+
+	</div>
+
+	<svg id = 'svg'> </svg>
+
+	<!-- The right panel -->
+	<div id = 'paramshell'>
+		<div class = 'category' id = 'kerasinfo'>
+			<div class = 'categoryTitle'>Training Information</div>
+			<div class = 'parambox'>
+				<div id = 'ti_status' class = 'paramline'>
+					<div class = 'paramname'>Model status:</div>
+					<textarea class = 'paramvalue'>Inactive</textarea>
+				</div>
+				<div id = 'ti_acc' class = 'paramline'>
+					<div class = 'paramname'>Accuracy:</div>
+					<textarea class = 'paramvalue'>N/A</textarea>
+				</div>
+				<div id = 'ti_loss' class = 'paramline'>
+					<div class = 'paramname'>Loss:</div>
+					<textarea class = 'paramvalue'>N/A</textarea>
+				</div>
+				<div id = 'ti_vacc' class = 'paramline'>
+					<div class = 'paramname'>Validation Acc:</div>
+					<textarea class = 'paramvalue'>N/A</textarea>
+				</div>
+				<div id = 'ti_vloss' class = 'paramline'>
+					<div class = 'paramname'>Validation Loss:</div>
+					<textarea class = 'paramvalue'>N/A</textarea>
+				</div>
+			</div>
+		</div>
+
+		<div class = 'category' id='paramtruck'>
+			<div class = 'categoryTitle'>Parameters</div>
+			<div id='defaultparambox' class = 'parambox'>Click on a layer to view and change its parameters.</div>
+		</div>
+	</div>
+
+</div>
+</body>
+</html>
