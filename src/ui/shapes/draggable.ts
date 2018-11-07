@@ -1,19 +1,34 @@
 import {Shape, Point} from "./shape";
+import {window} from "../window";
+import { Layer } from "./layer";
 
 // TODO: A TON
 export abstract class Draggable extends Shape {
     static readonly snapRadius: number = 400;
     static readonly defaultLocation: Point = new Point(50,100);
+    htmlComponent: any;
+    svgComponent: any;
     
     // TODO: figure out how to set: window.selectState = 'default';
 
-    
-    select(item: any): void {
+    abstract has
+    public static moveToFront(item: Layer){
+		item.svgComponent.moveToFront();
+		try{
+			item.activation.svgComponent.moveToFront();
+		}
+		catch(e){}
+		for(let connector of this.connectors){
+			connector.moveToFront();
+		}
+	}
+
+    private static select(item: Draggable): void {
         if(item.htmlComponent){
             item.htmlComponent.style.visibility = 'visible';
             item.htmlComponent.style.position = 'relative';
-            defaultparambox.style.visibility = 'hidden';
-            defaultparambox.style.position = 'absolute';
+            window.defaultparambox.style.visibility = 'hidden';
+            window.defaultparambox.style.position = 'absolute';
         }
 
         window.selectedElement = item;
@@ -21,12 +36,12 @@ export abstract class Draggable extends Shape {
         item.svgComponent.style('stroke','yellow')
     }
 
-    unselect(item: any): void {
+    private static unselect(item: Draggable): void {
         if(item.htmlComponent){
             item.htmlComponent.style.visibility = 'hidden';
             item.htmlComponent.style.position = 'absolute';
-            defaultparambox.style.visibility = 'visible';
-            defaultparambox.style.position = 'relative';
+            window.defaultparambox.style.visibility = 'visible';
+            window.defaultparambox.style.position = 'relative';
         }
 
         window.selectedElement = false;
@@ -35,20 +50,20 @@ export abstract class Draggable extends Shape {
         item.svgComponent.style('stroke','none');
     }
 
-    bindToMouse(item: any): void{
+    private static bindToMouse(item: Draggable): void{
         window.draggedElement = item;
     }
 
-    unbindFromMouse(item:any): void{
+    private static unbindFromMouse(item: Draggable): void{
         window.draggedElement = false;
     }
 
-    startWiring(){
+    private static startWiring(){
         window.selectState = 'wiring+break';
         console.log(window.selectState);
     }
 
-    startAdding(){
+    private static startAdding(){
         window.selectState = 'default';
         console.log(window.selectState);
     }
@@ -65,7 +80,7 @@ export abstract class Draggable extends Shape {
                 window.selectState = 'selected+tracking';
                 console.log(window.selectState);
 
-                select(item);
+                Draggable.select(item);
                 bindToMouse(item);
                 break;
                 case 'selected+nontracking' :
