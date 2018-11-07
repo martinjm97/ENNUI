@@ -5,7 +5,7 @@ import { Layer } from "./layer";
 // TODO: A TON
 export abstract class Draggable extends Shape {
     static readonly snapRadius: number = 400;
-    static readonly defaultLocation: Point = new Point(50,100);
+    static readonly deDraggable.faultLocation: Point = new Point(50,100);
     htmlComponent: any;
     svgComponent: any;
     
@@ -79,16 +79,16 @@ export abstract class Draggable extends Shape {
                 console.log(window.selectState);
 
                 Draggable.select(item);
-                bindToMouse(item);
+                Draggable.bindToMouse(item);
                 break;
                 case 'selected+nontracking' :
                 window.selectState = 'abouttounselect+tracking';
                 console.log(window.selectState);
-                bindToMouse(item);
+                Draggable.bindToMouse(item);
                 break;
             }
 
-            let mouse = mousePosition();
+            let mouse = Draggable.mousePosition();
             let position = item.getPosition();
 
             window.xClickOffset = parseInt(position[0] - mouse[0]);
@@ -106,19 +106,19 @@ export abstract class Draggable extends Shape {
                 window.selectState = 'selected+nontracking';
                 console.log(window.selectState);
 
-                unbindFromMouse(item);
+                Draggable.unbindFromMouse(item);
                 break;
                 case 'abouttounselect+tracking':
                 window.selectState = 'default';
                 console.log(window.selectState);
-                unselect(item);
-                unbindFromMouse(item);
+                Draggable.unselect(item);
+                Draggable.unbindFromMouse(item);
                 item.snap();
                 break;
                 case 'wiring+wiring':
                 window.selectState = 'wiring+break'
                 console.log(window.selectState);
-                connect(window.wireInputElement,item);
+                Draggable.connect(window.wireInputElement,item);
                 window.wireInputElement = false;
                 break;
                 case 'wiring+break':
