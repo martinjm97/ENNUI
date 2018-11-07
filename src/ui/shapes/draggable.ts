@@ -11,7 +11,6 @@ export abstract class Draggable extends Shape {
     
     // TODO: figure out how to set: window.selectState = 'default';
 
-    abstract has
     public static moveToFront(item: Layer){
 		item.svgComponent.moveToFront();
 		try{
