@@ -2,66 +2,6 @@
 
 
 
-
-
-
-
-// let qwertx = 10
-// let qwerty = 20
-
-// let layerRectData = {
-// 	conv2D : {
-// 		page1 : [-54,-80,50,50,colors.layer.conv2D.page1],
-// 		page2 : [-37,-60,50,50,colors.layer.conv2D.page2],
-// 		page3 : [-20,-40,50,50,colors.layer.conv2D.page3],
-// 		hole: [0,0,10,10,'#eee'],
-// 	},
-// 	dense : {
-// 		main : [-8,-90,26,100,colors.layer.dense.main],
-// 		hole: [0,0,10,10,'#eee'],
-// 	},
-// 	maxPooling2D : {
-// 		page1 : [qwertx-54,qwerty-80,30,30,colors.layer.maxPooling2D.page1],
-// 		page2 : [qwertx-37,qwerty-60,30,30,colors.layer.maxPooling2D.page2],
-// 		page3 : [qwertx-20,qwerty-40,30,30,colors.layer.maxPooling2D.page3],
-// 		hole: [0,0,10,10,'#eee'],
-// 	},
-// }
-
-// let layerPortData = {
-// 	activation : [0,0]
-// }
-
-// let wireDefaults = {
-// 	x:200,
-// 	y:200
-// }
-
-// let activationDefaults = {
-// 	x:25,
-// 	y:25,
-// }
-
-// let activationRectData = {
-// 	relu: {
-// 		middleTooth : [0,0,10,10,colors.activation.relu],
-// 		main : [-8,10,26,10,colors.activation.relu],
-// 	},
-// 	softmax: {
-// 		middleTooth : [0,0,10,10,colors.activation.softmax],
-// 		main : [-8,10,26,10,colors.activation.softmax],
-// 	},
-// 	sigmoid: {
-// 		middleTooth : [0,0,10,10,colors.activation.sigmoid],
-// 		main : [-8,10,26,10,colors.activation.sigmoid],
-// 	},
-// }
-
-// let activationPortData = {
-// 	//male : [{type : activation, position: [-5,-40]}]
-// 	activation : [0,0]
-// }
-
 // let wireRectData = {
 // 	'splitter' : {
 // 			inData : [0, -10, 30, 20],
@@ -71,123 +11,28 @@
 // 		},
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // /**
 // *
 // * LOGIC COMMON TO ALL BLOCKS
 // *
 // **/
 
-// function select(item){
-// 	// console.log(item.htmlComponent)
-// 	if(item.htmlComponent){
-// 		// console.log(item.htmlComponent)
-// 		item.htmlComponent.style.visibility = 'visible';
-// 		item.htmlComponent.style.position = 'relative';
-// 		defaultparambox.style.visibility = 'hidden';
-// 		defaultparambox.style.position = 'absolute';
-// 	}
 
-// 	window.selectedElement = item;
-// 	item.moveToFront();
-// 	item.svgComponent.style('stroke','yellow')
-// }
-
-// function unselect(item){
-// 	if(item.htmlComponent){
-// 		item.htmlComponent.style.visibility = 'hidden';
-// 		item.htmlComponent.style.position = 'absolute';
-// 		defaultparambox.style.visibility = 'visible';
-// 		defaultparambox.style.position = 'relative';
-// 	}
-
-// 	window.selectedElement = false;
-// 	window.draggedElement = false;
-
-// 	item.svgComponent.style('stroke','none');
-// }
-
-// function bindToMouse(item){
-// 	window.draggedElement = item;
-// }
-
-// function unbindFromMouse(item){
-// 	window.draggedElement = false;
-// }
-
-// window.selectState = 'default'
-
-// function startWiring(){
-// 	window.selectState = 'wiring+break';
-// 	console.log(window.selectState);
-// }
-// function startAdding(){
-// 	window.selectState = 'default';
-// 	console.log(window.selectState);
-// }
-
-// function makeDraggable(item){
-// 	console.log('mkd',item)
-
-// 	item.svgComponent.on('mousedown', function(){
-
-// 		//if a different element is selected, return
-// 		if(window.selectedElement && item !== window.selectedElement){return;}
-
-// 		switch(window.selectState){
-// 			case 'default' :
-// 			window.selectState = 'selected+tracking';
-// 			console.log(window.selectState);
-
-// 			select(item);
-// 			bindToMouse(item);
-// 			break;
-// 			case 'selected+nontracking' :
-// 			window.selectState = 'abouttounselect+tracking';
-// 			console.log(window.selectState);
-// 			bindToMouse(item);
-// 			break;
-// 		}
-
-// 		let mouse = mousePosition();
-// 		let position = item.getPosition();
-
-// 		window.xClickOffset = parseInt(position[0] - mouse[0]);
-// 		window.yClickOffset = parseInt(position[1] - mouse[1]);
-
-// 	});
-
-// 	item.svgComponent.on('mouseup', function(){
-
-// 		//if a different element is selected, return
-// 		if(window.selectedElement && item !== window.selectedElement){return;}
-// 		console.log('mu',window.selectState)
-// 		switch(window.selectState){
-// 			case 'selected+tracking' :
-// 			window.selectState = 'selected+nontracking';
-// 			console.log(window.selectState);
-
-// 			unbindFromMouse(item);
-// 			break;
-// 			case 'abouttounselect+tracking':
-// 			window.selectState = 'default';
-// 			console.log(window.selectState);
-// 			unselect(item);
-// 			unbindFromMouse(item);
-// 			item.snap();
-// 			break;
-// 			case 'wiring+wiring':
-// 			window.selectState = 'wiring+break'
-// 			console.log(window.selectState);
-// 			connect(window.wireInputElement,item);
-// 			window.wireInputElement = false;
-// 			break;
-// 			case 'wiring+break':
-// 			window.selectState = 'wiring+wiring'
-// 			console.log(window.selectState);
-// 			window.wireInputElement = item;
-// 			break;
-// 		}
-// 	});
 
 // }
 
@@ -198,18 +43,6 @@
 // **/
 
 // class Layer {
-// 	layerType: any;
-// 	svgComponent: any;
-// 	ports: any;
-// 	rectangles: any;
-// 	connectors: any;
-// 	inputs: any;
-// 	outputs: any;
-// 	htmlComponent: any;
-// 	activation: any;
-// 	index: any;
-// 	id: any;
-// 	activationType: any;
 // 	input: any;
 // 	svgData: any;
 	
@@ -251,9 +84,6 @@
 // 		return this.svgComponent.attr('transform','translate('+x+', '+y+')')
 // 	}
 
-// 	getPython(){
-// 		return 'x' + this.index + ' = '+this.layerType[0].toUpperCase()+this.layerType.substring(1)+'(activation = '+(this.activationType||"default")+')(x'+ (this.input || {index : '_in'}).index +')'
-// 	}
 
 // 	getJSON(){
 // 		let output = {
