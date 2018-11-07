@@ -5,7 +5,7 @@ import { Layer } from "./layer";
 // TODO: A TON
 export abstract class Draggable extends Shape {
     static readonly snapRadius: number = 400;
-    static readonly deDraggable.faultLocation: Point = new Point(50,100);
+    static readonly defaultLocation: Point = new Point(50,100);
     htmlComponent: any;
     svgComponent: any;
     
