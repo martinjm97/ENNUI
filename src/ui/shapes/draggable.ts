@@ -13,11 +13,10 @@ export abstract class Draggable extends Shape {
 
     public static moveToFront(item: Layer){
 		item.svgComponent.moveToFront();
-		try{
+		if (!(item.activation === null)) {
 			item.activation.svgComponent.moveToFront();
 		}
-		catch(e){}
-		for(let connector of this.connectors){
+		for(let connector of item.connectors){
 			connector.moveToFront();
 		}
 	}
