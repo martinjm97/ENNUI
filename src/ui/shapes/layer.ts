@@ -1,6 +1,6 @@
 import { Draggable } from "./draggable";
 import { Rectangle, Point } from "./shape";
-import { Activation } from "@tensorflow/tfjs-layers/dist/layers/core";
+import { Activation } from "./activation";
 
 // TODO params for entering things in UI for layer properties
 
