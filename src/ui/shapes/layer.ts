@@ -1,9 +1,19 @@
 import { Draggable } from "./draggable";
 import { Rectangle, Point } from "./shape";
+import { Activation } from "@tensorflow/tfjs-layers/dist/layers/core";
+
+// TODO params for entering things in UI for layer properties
 
 export abstract class Layer extends Draggable {
     pages: Array<Rectangle>;
     hole: Rectangle;
+
+    inputLayers: Array<Layer>;
+    outputLayers: Array<Layer>;
+    wires: Array<Layer>;
+
+    activation: Activation = null;
+    uid: number;
 
 }
 
