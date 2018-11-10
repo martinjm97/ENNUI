@@ -1,7 +1,59 @@
+import { Dense } from "./shapes/layer";
+
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
+    var elmts = document.getElementsByClassName('option');
+	for(let elmt of elmts){
+		highlightOnMouseOver(elmt);
+		dispatchCreationOnClick(elmt);
+    }
+    
+    window.addEventListener('create', function( e ) {
+		appendItem(e);
+	});
     
 });
+
+function highlightOnMouseOver(elmt){
+	elmt.addEventListener('mouseover',function(e){
+		elmt.style.backgroundColor = '#ccc'
+	});
+	elmt.addEventListener('mouseout',function(e){
+		elmt.style.backgroundColor = 'transparent'
+	});
+}
+
+function dispatchCreationOnClick(elmt){
+	elmt.addEventListener('click', function(e){
+        console.log("test")
+        var itemType = elmt.parentElement.getAttribute('data-itemType')
+        console.log(itemType)
+        var detail = { itemType : itemType}
+        console.log(detail)
+        detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
+        console.log(detail)
+        var event = new CustomEvent('create', { detail : detail } );
+        console.log(event)
+		window.dispatchEvent(event);
+	});
+}
+
+function appendItem(options){
+	switch(options.detail.itemType){
+        case 'layer': switch(options.detail.layerType) {
+            case "dense": var item = new Dense("#fff"); console.log("dense test"); break;
+        }
+        
+    //     // var item = new Layer(); break;
+	// 	// case 'activation': var item = new Activation(options.detail); break;
+	// 	// case 'wire': var item = new Wire(options.detail); break;
+	// 	// case 'input': var item = new Input(options.detail); break;
+	}
+	// console.log('ops',options);
+	// svgData[options.detail.itemType].push(item);
+	// item.index = svgData[options.detail.itemType].length-1;
+	// item.id = (''+Math.random()).substring(2);
+}
 
 
 
@@ -16,20 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
 // 	output: []
 // }
 
-// // maybe deprecated?
-// function generatePythonCode(): string{
-// 	return [
-// 		'from keras.layers import *',
-// 		'from keras.models import Model',
-// 		'x_in = Input(shape=?)'
-// 	].concat(svgData.layer.map(
-// 		layer => layer.getPython()
-// 	)).concat([
-// 		'model = Model(inputs=x_in, outputs=x_out)',
-// 		'model.compile(loss = "mse")',
-// 		'model.fit(data,labels)'
-// 	]).join('\n');
-// }
 
 // function makeJSON(): string{
 // 	return '['+svgData.layer.concat([svgData.input]).concat([svgData.output]).map(layer => JSON.stringify(layer.getJSON()))+']';
