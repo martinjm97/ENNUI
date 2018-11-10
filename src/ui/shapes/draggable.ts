@@ -16,9 +16,6 @@ export abstract class Draggable extends Shape {
 		if (!(item.activation === null)) {
 			item.activation.svgComponent.moveToFront();
 		}
-		for(let connector of item.connectors){
-			connector.moveToFront();
-		}
 	}
 
     private static select(item: Draggable): void {
@@ -30,7 +27,7 @@ export abstract class Draggable extends Shape {
         }
 
         window.selectedElement = item;
-        item.moveToFront();
+        item.svgComponent.moveToFront();
         item.svgComponent.style('stroke','yellow')
     }
 
@@ -88,11 +85,11 @@ export abstract class Draggable extends Shape {
                 break;
             }
 
-            let mouse = Draggable.mousePosition();
+            // let mouse = Draggable.mousePosition();
             let position = item.getPosition();
 
-            window.xClickOffset = parseInt(position[0] - mouse[0]);
-            window.yClickOffset = parseInt(position[1] - mouse[1]);
+            // window.xClickOffset = parseInt(position[0] - mouse[0]);
+            // window.yClickOffset = parseInt(position[1] - mouse[1]);
 
         });
 
@@ -118,7 +115,7 @@ export abstract class Draggable extends Shape {
                 case 'wiring+wiring':
                 window.selectState = 'wiring+break'
                 console.log(window.selectState);
-                Draggable.connect(window.wireInputElement,item);
+                // Draggable.connect(window.wireInputElement,item);
                 window.wireInputElement = false;
                 break;
                 case 'wiring+break':

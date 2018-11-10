@@ -1,6 +1,7 @@
 import { Draggable } from "./draggable";
 import { Rectangle, Point } from "./shape";
 import { Activation } from "./activation";
+import { Wire } from "./wire";
 
 // TODO params for entering things in UI for layer properties
 
