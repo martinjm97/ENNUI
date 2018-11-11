@@ -41,7 +41,7 @@ function dispatchCreationOnClick(elmt){
 function appendItem(options){
 	switch(options.detail.itemType){
         case 'layer': switch(options.detail.layerType) {
-            case "dense": var item = new Dense("#fff"); console.log("dense test"); break;
+            case "dense": var item = new Dense("#fff"); console.log("dense test watch"); break;
         }
         
     //     // var item = new Layer(); break;

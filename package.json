@@ -18,7 +18,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --skipLibCheck"
+    "build": "tsc --skipLibCheck",
+    "watch": "tsc --skipLibCheck --watch & webpack --watch"
   },
   "repository": {
     "type": "git",
