@@ -51,7 +51,6 @@ export class Dense extends Layer {
                               .attr("width", 200)
                               .attr("height", 200)
                               .style("fill", "#f0f");
-        console.log("Babies are delicious")
         this.makeDraggable()
 		// let rectData = layerRectData[this.layerType];
 		// let portData = layerPortData;
