@@ -12,10 +12,9 @@ export abstract class Draggable extends Shape {
 
 
     public makeDraggable(){
-        var dragHandler = d3.drag().on("drag", function (d: any) {
-            d3.select(this)
-                .attr("x", d.x = d3.event.x)
-                .attr("y", d.y = d3.event.y)
+        var dragHandler = d3.drag().on("drag", function(d) {
+            d3.select(this).attr("transform", "translate(" + (d.x = d3.event.x) + ","
+            + (d.y = d3.event.y) + ")");
         })
         dragHandler(this.svgComponent)
     }

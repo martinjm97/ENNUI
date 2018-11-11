@@ -40,56 +40,32 @@ export class Conv2D extends Layer {
 
 export class Dense extends Layer {
     block: Array<Rectangle> = [new Rectangle(new Point(-8, -90), 26, 100, '#b00202')]
-    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
+    hole = new Rectangle(new Point(0, 1), 10, 10, '#eee')
 
     constructor() { 
         super()
         this.svgComponent = d3.select("svg")
                               .append("g")
-                              .data([{"x": 10, "y": 10}])
-                              .append("svg")
+                              .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
+                              .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')');
 
         for (var rect of this.block) {
             this.svgComponent.append("rect")
-                             .attr("x", 0)//rect.location.x)
-                             .attr("y", 0)//rect.location.y)
-                             .attr("width", 26)//rect.width)
-                             .attr("height", 100)//rect.height)
-                             .style("fill", rect.color);
+                             .attr("x", rect.location.x)//rect.location.x)
+                             .attr("y", rect.location.y)//rect.location.y)
+                             .attr("width", rect.width)//rect.width)
+                             .attr("height", rect.height)//rect.height)
+                             .style("fill", rect.color);                             
         }
 
-        // this.svgComponent.attr('transform','translate('+100+','+100+')');
-
         this.svgComponent.append("rect")
-                             .attr("x", 0)//rect.location.x)
-                             .attr("y", 0)//rect.location.y)
-                             .attr("width", 10)//rect.width)
-                             .attr("height", 10)//rect.height)
-                             .style("fill", "#0e0");
-
-        
-
+                             .attr("x", this.hole.location.x)//rect.location.x)
+                             .attr("y", this.hole.location.y)//rect.location.y)
+                             .attr("width", this.hole.width)//rect.width)
+                             .attr("height", this.hole.height)//rect.height)
+                             .style("fill", this.hole.color);
                               
         this.makeDraggable()
-		// let rectData = layerRectData[this.layerType];
-		// let portData = layerPortData;
-		// this.svgComponent = svg.append('g');
-		// this.ports = {};
-		// this.rectangles = {};
-		// for(let key in rectData){
-		// 	this.rectangles[key] = this.svgComponent.append('rect').attr('x',rectData[key][0]).attr('y',rectData[key][1]).attr('width',rectData[key][2]).attr('height',rectData[key][3]).style('fill',rectData[key][4]);
-		// }
-		// for(let key in portData){
-		// 	this.ports[key] = portData[key];
-		// }
-		// this.svgComponent.attr('transform','translate('+options.x+','+options.y+')');
-		// makeDraggable(this);
-
-		// this.connectors = [];
-		// this.inputs = [];
-		// this.outputs = [];
-
-		// this.htmlComponent = createParamBox(this.layerType);
     }
     
 } 
