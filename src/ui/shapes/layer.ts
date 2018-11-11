@@ -32,14 +32,12 @@ export abstract class Layer extends Draggable {
                              .style("fill", rect.color);
         }
 
-        // this.svgComponent.attr('transform','translate('+100+','+100+')');
-
         this.svgComponent.append("rect")
-                             .attr("x", this.hole.location.x)//rect.location.x)
-                             .attr("y", this.hole.location.y)//rect.location.y)
-                             .attr("width", this.hole.width)//rect.width)
-                             .attr("height", this.hole.height)//rect.height)
-                             .style("fill", this.hole.color);
+                         .attr("x", this.hole.location.x)//rect.location.x)
+                         .attr("y", this.hole.location.y)//rect.location.y)
+                         .attr("width", this.hole.width)//rect.width)
+                         .attr("height", this.hole.height)//rect.height)
+                         .style("fill", this.hole.color);
 
         
 
