@@ -58,6 +58,16 @@ export class Dense extends Layer {
                              .style("fill", rect.color);
         }
 
+        // this.svgComponent.attr('transform','translate('+100+','+100+')');
+
+        this.svgComponent.append("rect")
+                             .attr("x", 0)//rect.location.x)
+                             .attr("y", 0)//rect.location.y)
+                             .attr("width", 10)//rect.width)
+                             .attr("height", 10)//rect.height)
+                             .style("fill", "#0e0");
+
+        
 
                               
         this.makeDraggable()
