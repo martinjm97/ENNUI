@@ -10,7 +10,6 @@ export abstract class Draggable extends Shape {
     svgComponent: any;
 
 
-
     public makeDraggable(){
         var dragHandler = d3.drag().on("drag", function (d: any) {
             d3.select(this)

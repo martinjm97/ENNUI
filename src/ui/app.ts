@@ -1,4 +1,4 @@
-import { Dense } from "./shapes/layer";
+import { Dense, Conv2D, Layer } from "./shapes/layer";
 import { Draggable } from "./shapes/draggable";
 
 document.addEventListener("DOMContentLoaded", function() { 
@@ -40,10 +40,11 @@ function dispatchCreationOnClick(elmt){
 }
 
 function appendItem(options){
-	var item: Dense
+	var item: Layer
 	switch(options.detail.itemType){
         case 'layer': switch(options.detail.layerType) {
-            case "dense": item = new Dense(); console.log("dense test watch"); break;
+			case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
+			case "conv2D": item = new Conv2D(); console.log("Created Conv2D Layer"); break;
         }
         
     //     // var item = new Layer(); break;

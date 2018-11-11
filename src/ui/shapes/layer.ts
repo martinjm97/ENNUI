@@ -8,39 +8,13 @@ import * as d3 from "d3";
 
 export abstract class Layer extends Draggable {
     block: Array<Rectangle>;
-    hole: Rectangle;
-
+    hole = new Rectangle(new Point(0, 0), 10, 10, '#0e0')
     inputLayers: Array<Layer>;
     outputLayers: Array<Layer>;
     wires: Array<Layer>;
 
     activation: Activation = null;
     uid: number;
-
-}
-
-export class Conv2D extends Layer {
-    static readonly pageOffsetX: number = -17;
-    static readonly pageOffsetY: number = -20;
-    static readonly initOffsetX: number = -20;
-    static readonly initOffsetY: number = -40;
-    static readonly blockSize: number = 50;
-
-    block = [new Rectangle(new Point(2*Conv2D.pageOffsetX + Conv2D.initOffsetX, 
-                                     2*Conv2D.pageOffsetY + Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#028002'),
-             new Rectangle(new Point(Conv2D.pageOffsetX + Conv2D.initOffsetX, 
-                                     Conv2D.pageOffsetY + Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#029002'),
-             new Rectangle(new Point(Conv2D.initOffsetX, Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#02a002') ]
-    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
-
-}
-
-export class Dense extends Layer {
-    block: Array<Rectangle> = [new Rectangle(new Point(-8, -90), 26, 100, '#b00202')]
-    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
 
     constructor() { 
         super()
@@ -51,21 +25,21 @@ export class Dense extends Layer {
 
         for (var rect of this.block) {
             this.svgComponent.append("rect")
-                             .attr("x", 0)//rect.location.x)
-                             .attr("y", 0)//rect.location.y)
-                             .attr("width", 26)//rect.width)
-                             .attr("height", 100)//rect.height)
+                             .attr("x", rect.location.x)
+                             .attr("y", rect.location.y)
+                             .attr("width", rect.width)
+                             .attr("height", rect.height)
                              .style("fill", rect.color);
         }
 
         // this.svgComponent.attr('transform','translate('+100+','+100+')');
 
         this.svgComponent.append("rect")
-                             .attr("x", 0)//rect.location.x)
-                             .attr("y", 0)//rect.location.y)
-                             .attr("width", 10)//rect.width)
-                             .attr("height", 10)//rect.height)
-                             .style("fill", "#0e0");
+                             .attr("x", this.hole.location.x)//rect.location.x)
+                             .attr("y", this.hole.location.y)//rect.location.y)
+                             .attr("width", this.hole.width)//rect.width)
+                             .attr("height", this.hole.height)//rect.height)
+                             .style("fill", this.hole.color);
 
         
 
@@ -91,6 +65,28 @@ export class Dense extends Layer {
 
 		// this.htmlComponent = createParamBox(this.layerType);
     }
+
+}
+
+export class Conv2D extends Layer {
+    static readonly pageOffsetX: number = -17;
+    static readonly pageOffsetY: number = -20;
+    static readonly initOffsetX: number = -20;
+    static readonly initOffsetY: number = -40;
+    static readonly blockSize: number = 50;
+
+    block = [new Rectangle(new Point(2*Conv2D.pageOffsetX + Conv2D.initOffsetX, 
+                                     2*Conv2D.pageOffsetY + Conv2D.initOffsetY), 
+                           Conv2D.blockSize, Conv2D.blockSize, '#028002'),
+             new Rectangle(new Point(Conv2D.pageOffsetX + Conv2D.initOffsetX, 
+                                     Conv2D.pageOffsetY + Conv2D.initOffsetY), 
+                           Conv2D.blockSize, Conv2D.blockSize, '#029002'),
+             new Rectangle(new Point(Conv2D.initOffsetX, Conv2D.initOffsetY), 
+                           Conv2D.blockSize, Conv2D.blockSize, '#02a002') ]
+}
+
+export class Dense extends Layer {
+    block: Array<Rectangle> = [new Rectangle(new Point(0, 0), 26, 100, '#b00202')]
     
 } 
 
@@ -107,6 +103,5 @@ export class MaxPooling2D extends Layer {
              new Rectangle(new Point(MaxPooling2D.reducedSizeX + Conv2D.initOffsetX, 
                                      MaxPooling2D.reducedSizeY + Conv2D.initOffsetY), 
                            50, 50, '#02a002') ]
-    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
 
 }
