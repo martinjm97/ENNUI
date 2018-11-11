@@ -16,6 +16,27 @@ export abstract class Layer extends Draggable {
     activation: Activation = null;
     uid: number;
 
+}
+
+export class Conv2D extends Layer {
+    static readonly pageOffsetX: number = -17;
+    static readonly pageOffsetY: number = -20;
+    static readonly initOffsetX: number = -20;
+    static readonly initOffsetY: number = -40;
+    static readonly blockSize: number = 50;
+
+    block = [new Rectangle(new Point(2*Conv2D.pageOffsetX + Conv2D.initOffsetX, 
+                                     2*Conv2D.pageOffsetY + Conv2D.initOffsetY), 
+                           Conv2D.blockSize, Conv2D.blockSize, '#028002'),
+             new Rectangle(new Point(Conv2D.pageOffsetX + Conv2D.initOffsetX, 
+                                     Conv2D.pageOffsetY + Conv2D.initOffsetY), 
+                           Conv2D.blockSize, Conv2D.blockSize, '#029002'),
+             new Rectangle(new Point(Conv2D.initOffsetX, Conv2D.initOffsetY), 
+                           Conv2D.blockSize, Conv2D.blockSize, '#02a002') ]
+}
+
+export class Dense extends Layer {
+    block: Array<Rectangle> = [new Rectangle(new Point(0, 0), 26, 100, '#b00202')]
     constructor() { 
         super()
         this.svgComponent = d3.select("svg")
@@ -32,12 +53,14 @@ export abstract class Layer extends Draggable {
                              .style("fill", rect.color);
         }
 
+        // this.svgComponent.attr('transform','translate('+100+','+100+')');
+
         this.svgComponent.append("rect")
-                         .attr("x", this.hole.location.x)//rect.location.x)
-                         .attr("y", this.hole.location.y)//rect.location.y)
-                         .attr("width", this.hole.width)//rect.width)
-                         .attr("height", this.hole.height)//rect.height)
-                         .style("fill", this.hole.color);
+                             .attr("x", this.hole.location.x)//rect.location.x)
+                             .attr("y", this.hole.location.y)//rect.location.y)
+                             .attr("width", this.hole.width)//rect.width)
+                             .attr("height", this.hole.height)//rect.height)
+                             .style("fill", this.hole.color);
 
         
 
@@ -63,29 +86,6 @@ export abstract class Layer extends Draggable {
 
 		// this.htmlComponent = createParamBox(this.layerType);
     }
-
-}
-
-export class Conv2D extends Layer {
-    static readonly pageOffsetX: number = -17;
-    static readonly pageOffsetY: number = -20;
-    static readonly initOffsetX: number = -20;
-    static readonly initOffsetY: number = -40;
-    static readonly blockSize: number = 50;
-
-    block = [new Rectangle(new Point(2*Conv2D.pageOffsetX + Conv2D.initOffsetX, 
-                                     2*Conv2D.pageOffsetY + Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#028002'),
-             new Rectangle(new Point(Conv2D.pageOffsetX + Conv2D.initOffsetX, 
-                                     Conv2D.pageOffsetY + Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#029002'),
-             new Rectangle(new Point(Conv2D.initOffsetX, Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#02a002') ]
-}
-
-export class Dense extends Layer {
-    block: Array<Rectangle> = [new Rectangle(new Point(0, 0), 26, 100, '#b00202')]
-    
 } 
 
 export class MaxPooling2D extends Layer {
