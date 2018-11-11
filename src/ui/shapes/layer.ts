@@ -20,6 +20,7 @@ export abstract class Layer extends Draggable {
 
     constructor(block: Array<Rectangle>) { 
         super()
+        this.uid = Math.random()
         this.block = block
         this.svgComponent = d3.select("svg")
                               .append("g")
@@ -36,10 +37,10 @@ export abstract class Layer extends Draggable {
         }
 
         this.svgComponent.append("rect")
-                             .attr("x", this.hole.location.x)//rect.location.x)
-                             .attr("y", this.hole.location.y)//rect.location.y)
-                             .attr("width", this.hole.width)//rect.width)
-                             .attr("height", this.hole.height)//rect.height)
+                             .attr("x", this.hole.location.x)
+                             .attr("y", this.hole.location.y)
+                             .attr("width", this.hole.width)
+                             .attr("height", this.hole.height)
                              .style("fill", this.hole.color);
                               
         this.makeDraggable()

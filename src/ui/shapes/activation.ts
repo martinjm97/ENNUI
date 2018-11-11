@@ -3,11 +3,17 @@ import { Point, Rectangle } from "./shape";
 import { Layer } from "./layer";
 
 export abstract class Activation extends Draggable {
-    static readonly middleTooth: Rectangle;
-    static readonly main: Rectangle;
 
     freeFloatingLocation: Point = new Point(25, 25);
     layer: Layer = null;
+
+    constructor(color: string) { 
+        super();
+        let middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, color);
+        let lowerBlock: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, color);
+        // TODO: Finish making shapes!
+        this.svgComponent = lowerBlock;
+    }
 
     getLocation() {
         if (this.layer != null) {
@@ -19,16 +25,22 @@ export abstract class Activation extends Draggable {
 }
 
 export class Relu extends Activation {
-    static readonly middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, "#800080");
-    static readonly main: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, "#800080");
+
+    constructor() {
+        super("#800080")
+    }
 }
 
 export class Sigmoid extends Activation {
-    static readonly middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, "#a00060");
-    static readonly main: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, "#a00060");
+
+    constructor() {
+        super("a00060")
+    }
 }
 
 export class Softmax extends Activation {
-    static readonly middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, "#6000a0");
-    static readonly main: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, "#6000a0");
+    
+    constructor() {
+        super("6000a0")
+    }
 }
