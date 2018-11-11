@@ -39,18 +39,27 @@ export class Conv2D extends Layer {
 }
 
 export class Dense extends Layer {
+    block: Array<Rectangle> = [new Rectangle(new Point(-8, -90), 26, 100, '#b00202')]
+    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
 
     constructor() { 
         super()
         this.svgComponent = d3.select("svg")
+                              .append("g")
                               .data([{"x": 10, "y": 10}])
                               .append("svg")
-                              .append("rect")
-                              .attr("x", 10)
-                              .attr("y", 10)
-                              .attr("width", 200)
-                              .attr("height", 200)
-                              .style("fill", "#f0f");
+
+        for (var rect of this.block) {
+            this.svgComponent.append("rect")
+                             .attr("x", 0)//rect.location.x)
+                             .attr("y", 0)//rect.location.y)
+                             .attr("width", 26)//rect.width)
+                             .attr("height", 100)//rect.height)
+                             .style("fill", rect.color);
+        }
+
+
+                              
         this.makeDraggable()
 		// let rectData = layerRectData[this.layerType];
 		// let portData = layerPortData;
@@ -72,8 +81,7 @@ export class Dense extends Layer {
 
 		// this.htmlComponent = createParamBox(this.layerType);
     }
-    block = [new Rectangle(new Point(-8, -90), 26, 100, '#b00202')]
-    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
+    
 } 
 
 export class MaxPooling2D extends Layer {
