@@ -1,4 +1,5 @@
 import { Dense } from "./shapes/layer";
+import { Draggable } from "./shapes/draggable";
 
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
@@ -39,9 +40,10 @@ function dispatchCreationOnClick(elmt){
 }
 
 function appendItem(options){
+	var item: Dense
 	switch(options.detail.itemType){
         case 'layer': switch(options.detail.layerType) {
-            case "dense": var item = new Dense("#fff"); console.log("dense test watch"); break;
+            case "dense": item = new Dense(); console.log("dense test watch"); break;
         }
         
     //     // var item = new Layer(); break;
@@ -50,9 +52,9 @@ function appendItem(options){
 	// 	// case 'input': var item = new Input(options.detail); break;
 	}
 	// console.log('ops',options);
-	// svgData[options.detail.itemType].push(item);
+	svgData[options.detail.itemType].push(item);
 	// item.index = svgData[options.detail.itemType].length-1;
-	// item.id = (''+Math.random()).substring(2);
+	item.uid = Math.random();
 }
 
 
@@ -60,13 +62,13 @@ function appendItem(options){
 // let svg;
 // let height;
 // let width;
-// let svgData = {
-// 	layer : [],
-// 	activation : [],
-// 	wire : [],
-// 	input: [],
-// 	output: []
-// }
+let svgData = {
+	layer : [],
+	activation : [],
+	wire : [],
+	input: [],
+	output: []
+}
 
 
 // function makeJSON(): string{

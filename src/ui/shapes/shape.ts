@@ -1,9 +1,6 @@
 export abstract class Shape {
     color: string;
 
-    constructor(color: string) {
-        this.color = color;
-    }
 }
 
 export class Rectangle extends Shape {
@@ -12,7 +9,8 @@ export class Rectangle extends Shape {
     height: number;
 
     constructor(location: Point, width: number, height: number, color: string) {
-        super(color);
+        super()
+        this.color = color;
         this.location = location;
         this.width = width;
         this.height = height;

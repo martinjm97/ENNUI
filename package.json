@@ -5,6 +5,7 @@
   "main": "app.ts",
   "dependencies": {
     "@tensorflow/tfjs": "^0.13.1",
+    "@types/d3": "^5.0.1",
     "common-js": "^0.3.8",
     "d3": "^5.7.0",
     "webpack": "^4.25.1"

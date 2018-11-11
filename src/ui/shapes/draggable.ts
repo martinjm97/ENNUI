@@ -1,6 +1,7 @@
 import {Shape, Point} from "./shape";
 import {window} from "../window";
 import { Layer } from "./layer";
+import * as d3 from "d3";
 
 // TODO: A TON
 export abstract class Draggable extends Shape {
@@ -63,67 +64,81 @@ export abstract class Draggable extends Shape {
         console.log(window.selectState);
     }
 
-    makeDraggable(item){
+    // private static mousePosition(){
+    //     return d3.mouse(svg.node());
+    // }
 
-        item.svgComponent.on('mousedown', function(){
+    public makeDraggable(){
+        console.log("I eat thousands of babies")
+        var dragHandler = d3.drag().on("drag", function (d: any) {
+            console.log("I eat thousands of babies")
+            d3.select(this)
+                .attr("x", d.x = d3.event.x)
+                .attr("y", d.y = d3.event.y)
+        })
+        dragHandler(this.svgComponent)
+    }
+    // makeDraggable(item: Draggable){
 
-            //if a different element is selected, return
-            if(window.selectedElement && item !== window.selectedElement){return;}
+    //     item.svgComponent.on('mousedown', function(){
 
-            switch(window.selectState){
-                case 'default' :
-                window.selectState = 'selected+tracking';
-                console.log(window.selectState);
+    //         //if a different element is selected, return
+    //         if(window.selectedElement && item !== window.selectedElement){return;}
 
-                Draggable.select(item);
-                Draggable.bindToMouse(item);
-                break;
-                case 'selected+nontracking' :
-                window.selectState = 'abouttounselect+tracking';
-                console.log(window.selectState);
-                Draggable.bindToMouse(item);
-                break;
-            }
+    //         switch(window.selectState){
+    //             case 'default' :
+    //             window.selectState = 'selected+tracking';
+    //             console.log(window.selectState);
 
-            // let mouse = Draggable.mousePosition();
-            let position = item.getPosition();
+    //             Draggable.select(item);
+    //             Draggable.bindToMouse(item);
+    //             break;
+    //             case 'selected+nontracking' :
+    //             window.selectState = 'abouttounselect+tracking';
+    //             console.log(window.selectState);
+    //             Draggable.bindToMouse(item);
+    //             break;
+    //         }
 
-            // window.xClickOffset = parseInt(position[0] - mouse[0]);
-            // window.yClickOffset = parseInt(position[1] - mouse[1]);
+    //         let mouse = Draggable.mousePosition();
+    //         // let position = item.getPosition();
+            
+    //         window.xClickOffset = 100 - mouse[0];
+    //         window.yClickOffset = 100 - mouse[1];
 
-        });
+    //     });
 
-        item.svgComponent.on('mouseup', function(){
+    //     item.svgComponent.on('mouseup', function(){
 
-            //if a different element is selected, return
-            if(window.selectedElement && item !== window.selectedElement){return;}
-            console.log('mu',window.selectState)
-            switch(window.selectState){
-                case 'selected+tracking' :
-                window.selectState = 'selected+nontracking';
-                console.log(window.selectState);
+    //         //if a different element is selected, return
+    //         if(window.selectedElement && item !== window.selectedElement){return;}
+    //         console.log('mu',window.selectState)
+    //         switch(window.selectState){
+    //             case 'selected+tracking' :
+    //             window.selectState = 'selected+nontracking';
+    //             console.log(window.selectState);
 
-                Draggable.unbindFromMouse(item);
-                break;
-                case 'abouttounselect+tracking':
-                window.selectState = 'default';
-                console.log(window.selectState);
-                Draggable.unselect(item);
-                Draggable.unbindFromMouse(item);
-                item.snap();
-                break;
-                case 'wiring+wiring':
-                window.selectState = 'wiring+break'
-                console.log(window.selectState);
-                // Draggable.connect(window.wireInputElement,item);
-                window.wireInputElement = false;
-                break;
-                case 'wiring+break':
-                window.selectState = 'wiring+wiring'
-                console.log(window.selectState);
-                window.wireInputElement = item;
-                break;
-            }
-        });
-    }   
+    //             Draggable.unbindFromMouse(item);
+    //             break;
+    //             case 'abouttounselect+tracking':
+    //             window.selectState = 'default';
+    //             console.log(window.selectState);
+    //             Draggable.unselect(item);
+    //             Draggable.unbindFromMouse(item);
+    //             item.snap();
+    //             break;
+    //             case 'wiring+wiring':
+    //             window.selectState = 'wiring+break'
+    //             console.log(window.selectState);
+    //             // Draggable.connect(window.wireInputElement,item);
+    //             window.wireInputElement = false;
+    //             break;
+    //             case 'wiring+break':
+    //             window.selectState = 'wiring+wiring'
+    //             console.log(window.selectState);
+    //             window.wireInputElement = item;
+    //             break;
+    //         }
+    //     });
+    // }   
 }

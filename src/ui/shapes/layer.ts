@@ -2,6 +2,7 @@ import { Draggable } from "./draggable";
 import { Rectangle, Point } from "./shape";
 import { Activation } from "./activation";
 import { Wire } from "./wire";
+import * as d3 from "d3";
 
 // TODO params for entering things in UI for layer properties
 
@@ -38,6 +39,40 @@ export class Conv2D extends Layer {
 }
 
 export class Dense extends Layer {
+
+    constructor() { 
+        super()
+        this.svgComponent = d3.select("svg")
+                              .data([{"x": 10, "y": 10}])
+                              .append("svg")
+                              .append("rect")
+                              .attr("x", 10)
+                              .attr("y", 10)
+                              .attr("width", 200)
+                              .attr("height", 200)
+                              .style("fill", "#f0f");
+        console.log("Babies are delicious")
+        this.makeDraggable()
+		// let rectData = layerRectData[this.layerType];
+		// let portData = layerPortData;
+		// this.svgComponent = svg.append('g');
+		// this.ports = {};
+		// this.rectangles = {};
+		// for(let key in rectData){
+		// 	this.rectangles[key] = this.svgComponent.append('rect').attr('x',rectData[key][0]).attr('y',rectData[key][1]).attr('width',rectData[key][2]).attr('height',rectData[key][3]).style('fill',rectData[key][4]);
+		// }
+		// for(let key in portData){
+		// 	this.ports[key] = portData[key];
+		// }
+		// this.svgComponent.attr('transform','translate('+options.x+','+options.y+')');
+		// makeDraggable(this);
+
+		// this.connectors = [];
+		// this.inputs = [];
+		// this.outputs = [];
+
+		// this.htmlComponent = createParamBox(this.layerType);
+    }
     block = [new Rectangle(new Point(-8, -90), 26, 100, '#b00202')]
     hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
 } 
