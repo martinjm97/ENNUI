@@ -5,11 +5,12 @@ import { Wire } from "./wire";
 import * as d3 from "d3";
 
 // TODO params for entering things in UI for layer properties
+// TODO make holes transparent
+// TODO make dragging bring item to front
 
 export abstract class Layer extends Draggable {
     block: Array<Rectangle>;
-    hole: Rectangle;
-
+    hole = new Rectangle(new Point(0, 1), 10, 10, '#eee')
     inputLayers: Array<Layer>;
     outputLayers: Array<Layer>;
     wires: Array<Layer>;
@@ -17,33 +18,9 @@ export abstract class Layer extends Draggable {
     activation: Activation = null;
     uid: number;
 
-}
-
-export class Conv2D extends Layer {
-    static readonly pageOffsetX: number = -17;
-    static readonly pageOffsetY: number = -20;
-    static readonly initOffsetX: number = -20;
-    static readonly initOffsetY: number = -40;
-    static readonly blockSize: number = 50;
-
-    block = [new Rectangle(new Point(2*Conv2D.pageOffsetX + Conv2D.initOffsetX, 
-                                     2*Conv2D.pageOffsetY + Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#028002'),
-             new Rectangle(new Point(Conv2D.pageOffsetX + Conv2D.initOffsetX, 
-                                     Conv2D.pageOffsetY + Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#029002'),
-             new Rectangle(new Point(Conv2D.initOffsetX, Conv2D.initOffsetY), 
-                           Conv2D.blockSize, Conv2D.blockSize, '#02a002') ]
-    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
-
-}
-
-export class Dense extends Layer {
-    block: Array<Rectangle> = [new Rectangle(new Point(-8, -90), 26, 100, '#b00202')]
-    hole = new Rectangle(new Point(0, 1), 10, 10, '#eee')
-
-    constructor() { 
+    constructor(block: Array<Rectangle>) { 
         super()
+        this.block = block
         this.svgComponent = d3.select("svg")
                               .append("g")
                               .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
@@ -51,11 +28,11 @@ export class Dense extends Layer {
 
         for (var rect of this.block) {
             this.svgComponent.append("rect")
-                             .attr("x", rect.location.x)//rect.location.x)
-                             .attr("y", rect.location.y)//rect.location.y)
-                             .attr("width", rect.width)//rect.width)
-                             .attr("height", rect.height)//rect.height)
-                             .style("fill", rect.color);                             
+                             .attr("x", rect.location.x)
+                             .attr("y", rect.location.y)
+                             .attr("width", rect.width)
+                             .attr("height", rect.height)
+                             .style("fill", rect.color);
         }
 
         this.svgComponent.append("rect")
@@ -67,22 +44,32 @@ export class Dense extends Layer {
                               
         this.makeDraggable()
     }
-    
+
+}
+
+export class Conv2D extends Layer {
+    static readonly blockSize: number = 50;
+
+    constructor() {
+        super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#028002'),
+               new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#029002'),
+               new Rectangle(new Point(-20, -40), Conv2D.blockSize, Conv2D.blockSize, '#02a002')])
+    }
+}
+
+export class Dense extends Layer {
+    constructor() {
+        super([new Rectangle(new Point(-8, -90), 26, 100, '#b00202')])
+    }
 } 
 
 export class MaxPooling2D extends Layer {
-    static readonly reducedSizeX: number = 10;
-    static readonly reducedSizeY: number = 20;
+    static readonly blockSize: number = 30;
 
-    block = [new Rectangle(new Point(MaxPooling2D.reducedSizeX + (2*Conv2D.pageOffsetX + Conv2D.initOffsetX), 
-                                     MaxPooling2D.reducedSizeY + (2*Conv2D.pageOffsetY + Conv2D.initOffsetY)), 
-                           50, 50, '#028002'),
-             new Rectangle(new Point(MaxPooling2D.reducedSizeX + (Conv2D.pageOffsetX + Conv2D.initOffsetX), 
-                                     MaxPooling2D.reducedSizeY + (Conv2D.pageOffsetY + Conv2D.initOffsetY)), 
-                           50, 50, '#029002'),
-             new Rectangle(new Point(MaxPooling2D.reducedSizeX + Conv2D.initOffsetX, 
-                                     MaxPooling2D.reducedSizeY + Conv2D.initOffsetY), 
-                           50, 50, '#02a002') ]
-    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
+    constructor() {
+        super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#3260a2'),
+               new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#3260c2'),
+               new Rectangle(new Point(-10, -20), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#3260e2')])
+    }
 
 }
