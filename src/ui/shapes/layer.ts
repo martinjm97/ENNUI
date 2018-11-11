@@ -7,6 +7,7 @@ import * as d3 from "d3";
 // TODO params for entering things in UI for layer properties
 // TODO make holes transparent
 // TODO make dragging bring item to front
+// TODO make transparent holes not terrible
 
 export abstract class Layer extends Draggable {
     block: Array<Rectangle>;
@@ -27,21 +28,33 @@ export abstract class Layer extends Draggable {
                               .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
                               .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')');
 
+        
+        var i = 0
         for (var rect of this.block) {
+            i += 1
+            let mask = this.svgComponent.append("mask").attr("id", "page"+i+"draggable"+this.uid)
+            mask.append("rect")
+                .attr("x", rect.location.x)
+                .attr("y", rect.location.y)
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .style("fill", "white")
+            mask.append("rect")
+                .attr("x", this.hole.location.x)
+                .attr("y", this.hole.location.y)
+                .attr("width", this.hole.width)
+                .attr("height", this.hole.height)
+
             this.svgComponent.append("rect")
                              .attr("x", rect.location.x)
                              .attr("y", rect.location.y)
                              .attr("width", rect.width)
                              .attr("height", rect.height)
-                             .style("fill", rect.color);
+                             .style("fill", rect.color)
+                             .attr("mask", "url(#page"+i+"draggable"+this.uid+")");
         }
 
-        this.svgComponent.append("rect")
-                             .attr("x", this.hole.location.x)
-                             .attr("y", this.hole.location.y)
-                             .attr("width", this.hole.width)
-                             .attr("height", this.hole.height)
-                             .style("fill", this.hole.color);
+        
                               
         this.makeDraggable()
     }
