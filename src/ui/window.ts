@@ -1,7 +1,9 @@
+import { Draggable } from "./shapes/draggable";
+
 class WindowProperties
 {
     private static _instance: WindowProperties;
-    selectedElement: any;
+    selectedElement: Draggable;
     draggedElement: any;
     selectState: any;
     xClickOffset: any;
@@ -17,4 +19,4 @@ class WindowProperties
     }
 }
 
-export const window = WindowProperties.Instance;
+export const windowProperties = WindowProperties.Instance;

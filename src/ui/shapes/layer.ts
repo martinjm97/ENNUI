@@ -3,6 +3,7 @@ import { Rectangle, Point } from "./shape";
 import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
+import { windowProperties } from "../window";
 
 // TODO params for entering things in UI for layer properties
 // TODO make holes transparent
@@ -53,6 +54,17 @@ export abstract class Layer extends Draggable {
                              .style("fill", rect.color)
                              .attr("mask", "url(#page"+i+"draggable"+this.uid+")");
         }
+
+        // this.svgComponent.selectAll("rect")
+        this.svgComponent.on("click", () => {
+            if (windowProperties.selectedElement != null) {
+                windowProperties.selectedElement.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
+            }
+            windowProperties.selectedElement = this
+            this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
+            console.log("Selected Layer")
+            
+        })
 
         
                               
