@@ -1,3 +1,4 @@
+change the color of the accuracy etc. based on the performance of the network.
 draggable bounding window
 touch compatability
 network visualization e.g.  convnet filter visuals
