@@ -49,10 +49,11 @@ function appendItem(options){
 			case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
 			case "conv2D": item = new Conv2D(); console.log("Created Conv2D Layer"); break;
 			case "maxPooling2D": item = new MaxPooling2D(); console.log("Created MaxPooling2D Layer"); break;
+		}
+		case 'activation': switch(options.detail.activationType) {
 			case 'relu': item = new Relu(); console.log("Created Relu"); break;
 			case 'sigmoid': item = new Sigmoid(); console.log("Created Sigmoid"); break;
 			case 'softmax': item = new Softmax(); console.log("Created Softmax"); break;
-			case 'wire': item = new Wire(); console.log("Created Wire"); break;
 		}
         
     //     // var item = new Layer(); break;
