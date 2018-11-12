@@ -1,13 +1,41 @@
 import { Draggable } from "./draggable";
 import { Point, Rectangle } from "./shape";
 import { Layer } from "./layer";
+import * as d3 from "d3"
 
 export abstract class Activation extends Draggable {
-    static readonly middleTooth: Rectangle;
-    static readonly main: Rectangle;
 
     freeFloatingLocation: Point = new Point(25, 25);
     layer: Layer = null;
+
+    constructor(color: string) { 
+        super();
+        let middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, color);
+        let lowerBlock: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, color);
+        // TODO: Finish making shapes!
+        this.svgComponent = d3.select("svg")
+                              .append("g")
+                              .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
+                              .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')');
+
+        this.svgComponent.append("rect")
+                         .attr("x", lowerBlock.location.x)
+                         .attr("y", lowerBlock.location.y)
+                         .attr("width", lowerBlock.width)
+                         .attr("height", lowerBlock.height)
+                         .style("fill", lowerBlock.color);
+
+        this.svgComponent.append("rect")
+                         .attr("x", middleTooth.location.x)
+                         .attr("y", middleTooth.location.y)
+                         .attr("width", middleTooth.width)
+                         .attr("height", middleTooth.height)
+                         .style("fill", middleTooth.color);
+
+        console.log("made a thing! ")
+
+        this.makeDraggable() 
+    }
 
     getLocation() {
         if (this.layer != null) {
@@ -19,16 +47,23 @@ export abstract class Activation extends Draggable {
 }
 
 export class Relu extends Activation {
-    static readonly middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, "#800080");
-    static readonly main: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, "#800080");
+
+    constructor() {
+        super("#00CCCC")
+        console.log("MADE A RELU!")
+    }
 }
 
 export class Sigmoid extends Activation {
-    static readonly middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, "#a00060");
-    static readonly main: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, "#a00060");
+
+    constructor() {
+        super("#FF00FF")
+    }
 }
 
 export class Softmax extends Activation {
-    static readonly middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, "#6000a0");
-    static readonly main: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, "#6000a0");
+    
+    constructor() {
+        super("6000a0")
+    }
 }

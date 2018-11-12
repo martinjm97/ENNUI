@@ -1,5 +1,8 @@
 import { Dense, Conv2D, Layer, MaxPooling2D } from "./shapes/layer";
 import { Draggable } from "./shapes/draggable";
+import { Wire } from "./shapes/wire";
+import { Shape } from "./shapes/shape";
+import { Relu, Sigmoid, Softmax } from "./shapes/activation";
 
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
@@ -40,13 +43,18 @@ function dispatchCreationOnClick(elmt){
 }
 
 function appendItem(options){
-	var item: Layer
+	var item: Shape
 	switch(options.detail.itemType){
         case 'layer': switch(options.detail.layerType) {
 			case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
 			case "conv2D": item = new Conv2D(); console.log("Created Conv2D Layer"); break;
 			case "maxPooling2D": item = new MaxPooling2D(); console.log("Created MaxPooling2D Layer"); break;
-        }
+		}
+		case 'activation': switch(options.detail.activationType) {
+			case 'relu': item = new Relu(); console.log("Created Relu"); break;
+			case 'sigmoid': item = new Sigmoid(); console.log("Created Sigmoid"); break;
+			case 'softmax': item = new Softmax(); console.log("Created Softmax"); break;
+		}
         
     //     // var item = new Layer(); break;
 	// 	// case 'activation': var item = new Activation(options.detail); break;
@@ -56,7 +64,6 @@ function appendItem(options){
 	// console.log('ops',options);
 	svgData[options.detail.itemType].push(item);
 	// item.index = svgData[options.detail.itemType].length-1;
-	item.uid = Math.random();
 }
 
 
