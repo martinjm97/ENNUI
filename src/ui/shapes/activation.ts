@@ -50,7 +50,6 @@ export class Relu extends Activation {
 
     constructor() {
         super("#00CCCC")
-        console.log("MADE A RELU!")
     }
 }
 
