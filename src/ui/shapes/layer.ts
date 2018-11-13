@@ -13,9 +13,12 @@ import { windowProperties } from "../window";
 export abstract class Layer extends Draggable {
     block: Array<Rectangle>;
     hole = new Rectangle(new Point(0, 1), 10, 10, '#eee')
-    inputLayers: Array<Layer>;
-    outputLayers: Array<Layer>;
-    wires: Array<Layer>;
+    connections: Set<Layer> = new Set();
+    wires: Array<d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>>;
+
+    wireCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    wireCircleSelected: boolean = false;
+    
 
     activation: Activation = null;
     uid: number;
@@ -24,8 +27,8 @@ export abstract class Layer extends Draggable {
         super()
         this.uid = Math.random()
         this.block = block
-        this.svgComponent = d3.select("svg")
-                              .append("g")
+        this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
+                              .append<SVGGraphicsElement>("g")
                               .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
                               .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')');
 
@@ -55,20 +58,118 @@ export abstract class Layer extends Draggable {
                              .attr("mask", "url(#page"+i+"draggable"+this.uid+")");
         }
 
-        // this.svgComponent.selectAll("rect")
-        this.svgComponent.on("click", () => {
-            if (windowProperties.selectedElement != null) {
-                windowProperties.selectedElement.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
-            }
-            windowProperties.selectedElement = this
-            this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
-            console.log("Selected Layer")
-            
-        })
+        this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
+                                                .attr("cx", this.center().x)
+                                                .attr("cy", this.center().y)
+                                                .attr("r", 10)
+                                                .style("fill", "black")
+                                                .style("stroke-width", "2")
+                                                .style("visibility", "hidden")
+                                                
 
-        
+        this.svgComponent.on("click", () => {this.select()})
+
+        this.wireCircle.on("click", () => {
+            this.wireCircleSelected = true
+            this.wireCircle.style("stroke", "red")
+        })
                               
         this.makeDraggable()
+    }
+
+    public select() {
+        if (windowProperties.selectedElement != null) {
+            if (windowProperties.selectedElement === this) {
+                return
+            } else if (windowProperties.selectedElement instanceof Layer && windowProperties.selectedElement.wireCircleSelected) {
+                Layer.createConnection(this, windowProperties.selectedElement)
+
+                console.log(this.connections)
+            }
+            windowProperties.selectedElement.unselect()
+        }
+        windowProperties.selectedElement = this
+        this.svgComponent.raise()
+        this.wireCircle.style("visibility", "visible")
+        this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
+    }
+
+    public unselect() {
+        this.wireCircle.style("visibility", "hidden")
+        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
+        this.wireCircleSelected = false
+        this.wireCircle.style("stroke", null)
+    }
+
+    public static createConnection(layer1: Layer, layer2: Layer) {
+        layer1.connections.add(layer2)
+        layer2.connections.add(layer1)
+        layer2.wires.push(d3.select("svg").append("line"))
+
+        function convertCoords(x,y) {
+
+            // var offset = svgDoc.getBoundingClientRect();
+          
+            
+          }
+
+        var lines = 
+                .style("stroke", "gray") // <<<<< Add a color
+                .attr("x1", function (d: any, i) {
+                    var matrix = layer1.svgComponent.node().getScreenCTM();
+                    let x = layer1.center().x
+                    let y = layer1.center().y
+          
+                    let thing = {
+                    x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
+                    y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
+                    };
+                    return thing.x
+                })
+                .attr("y1", function (d: any) {
+                    var matrix = layer1.svgComponent.node().getScreenCTM();
+                    let x = layer1.center().x
+                    let y = layer1.center().y
+          
+                    let thing = {
+                    x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
+                    y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
+                    };
+                    return thing.y
+                })
+                .attr("x2", function (d: any) {
+                    var matrix = layer2.svgComponent.node().getScreenCTM();
+                    let x = layer2.center().x
+                    let y = layer2.center().y
+          
+                    let thing = {
+                    x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
+                    y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
+                    };
+                    return thing.x
+                })
+                .attr("y2", function (d: any) {
+                    var matrix = layer2.svgComponent.node().getScreenCTM();
+                    let x = layer2.center().x
+                    let y = layer2.center().y
+
+                    console.log(matrix)
+                    console.log(layer2.center())
+          
+                    let thing = {
+                    x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
+                    y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
+                    };
+                    return thing.y
+                })
+
+
+    }
+
+    public center(): Point {
+        let bbox = this.svgComponent.node().getBBox()
+        console.log(bbox)
+        return new Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2)
     }
 
 }

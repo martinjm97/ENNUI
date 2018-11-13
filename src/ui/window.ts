@@ -1,9 +1,15 @@
 import { Draggable } from "./shapes/draggable";
 
+export enum Mode {
+    Move,
+    Connect
+}
+
 class WindowProperties
 {
     private static _instance: WindowProperties;
     selectedElement: Draggable;
+    mode: Mode = Mode.Move
     draggedElement: any;
     selectState: any;
     xClickOffset: any;
