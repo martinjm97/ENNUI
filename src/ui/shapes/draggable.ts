@@ -26,6 +26,11 @@ export abstract class Draggable extends Shape {
                 }
                 this.svgComponent.attr("transform", "translate(" + (d.x = d3.event.x) + ","
                 + (d.y = d3.event.y) + ")")
+                if (this instanceof Layer) {
+                    for (let wire of this.wires) {
+                        wire.updatePosition()
+                    }
+                }                
             })
             .on("end", () => {firstDrag = true})
 

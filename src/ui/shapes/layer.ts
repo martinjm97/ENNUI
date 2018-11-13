@@ -14,10 +14,11 @@ export abstract class Layer extends Draggable {
     block: Array<Rectangle>;
     hole = new Rectangle(new Point(0, 1), 10, 10, '#eee')
     connections: Set<Layer> = new Set();
-    wires: Array<d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>>;
+    wires: Array<Wire> = [];
 
     wireCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     wireCircleSelected: boolean = false;
+    type: string;
     
 
     activation: Activation = null;
@@ -101,67 +102,106 @@ export abstract class Layer extends Draggable {
         this.wireCircle.style("stroke", null)
     }
 
+    getPosition(): number[] {
+		let transformation = this.svgComponent.attr('transform')
+		return transformation.substring( transformation.indexOf('(') + 1 , transformation.indexOf(')') ).split(',').map(value => parseInt(value));
+	}
+
     public static createConnection(layer1: Layer, layer2: Layer) {
         layer1.connections.add(layer2)
         layer2.connections.add(layer1)
-        layer2.wires.push(d3.select("svg").append("line"))
 
-        function convertCoords(x,y) {
+        let newWire = new Wire(layer1, layer2)
 
-            // var offset = svgDoc.getBoundingClientRect();
+        layer1.wires.push(newWire)
+        layer2.wires.push(newWire)
+
+
+
+        // var inputPosition = this.input.getPosition();
+		// var outputPosition = this.output.getPosition();
+		// if(this.svgComponent){this.svgComponent.remove();}
+		// this.svgComponent = svg.append('g');
+
+		// let endTypes = this.input.layerType + this.output.layerType + 'Data'
+		// console.log(endTypes)
+		// for(let data of connectorData[endTypes].cross || []){
+		// 	console.log(inputPosition,data)
+		// 	this.svgComponent.append('line')
+		// 	.attr('x1',inputPosition[0]+data[0])
+		// 	.attr('y1',inputPosition[1]+data[1])
+		// 	.attr('x2',outputPosition[0]+data[2])
+		// 	.attr('y2',outputPosition[1]+data[3])
+		// 	.style('stroke','black')
+		// 	.style('stroke-width',2);
+		// }
+		// for(let data of connectorData[endTypes].input || []){
+		// 	this.svgComponent.append('line')
+		// 	.attr('x1',inputPosition[0]+data[0])
+		// 	.attr('y1',inputPosition[1]+data[1])
+		// 	.attr('x2',inputPosition[0]+data[2])
+		// 	.attr('y2',inputPosition[1]+data[3])
+		// 	.style('stroke','black')
+		// 	.style('stroke-width',2);
+		// }
+        // layer2.wires.push(d3.select("svg").append("line").style("stroke", "gray").attr())
+
+        // function convertCoords(x,y) {
+
+        //     // var offset = svgDoc.getBoundingClientRect();
           
             
-          }
+        //   }
 
-        var lines = 
-                .style("stroke", "gray") // <<<<< Add a color
-                .attr("x1", function (d: any, i) {
-                    var matrix = layer1.svgComponent.node().getScreenCTM();
-                    let x = layer1.center().x
-                    let y = layer1.center().y
+        // var lines = 
+        //          // <<<<< Add a color
+        //         .attr("x1", function (d: any, i) {
+        //             var matrix = layer1.svgComponent.node().getScreenCTM();
+        //             let x = layer1.center().x
+        //             let y = layer1.center().y
           
-                    let thing = {
-                    x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
-                    y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
-                    };
-                    return thing.x
-                })
-                .attr("y1", function (d: any) {
-                    var matrix = layer1.svgComponent.node().getScreenCTM();
-                    let x = layer1.center().x
-                    let y = layer1.center().y
+        //             let thing = {
+        //             x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
+        //             y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
+        //             };
+        //             return thing.x
+        //         })
+        //         .attr("y1", function (d: any) {
+        //             var matrix = layer1.svgComponent.node().getScreenCTM();
+        //             let x = layer1.center().x
+        //             let y = layer1.center().y
           
-                    let thing = {
-                    x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
-                    y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
-                    };
-                    return thing.y
-                })
-                .attr("x2", function (d: any) {
-                    var matrix = layer2.svgComponent.node().getScreenCTM();
-                    let x = layer2.center().x
-                    let y = layer2.center().y
+        //             let thing = {
+        //             x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
+        //             y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
+        //             };
+        //             return thing.y
+        //         })
+        //         .attr("x2", function (d: any) {
+        //             var matrix = layer2.svgComponent.node().getScreenCTM();
+        //             let x = layer2.center().x
+        //             let y = layer2.center().y
           
-                    let thing = {
-                    x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
-                    y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
-                    };
-                    return thing.x
-                })
-                .attr("y2", function (d: any) {
-                    var matrix = layer2.svgComponent.node().getScreenCTM();
-                    let x = layer2.center().x
-                    let y = layer2.center().y
+        //             let thing = {
+        //             x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
+        //             y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
+        //             };
+        //             return thing.x
+        //         })
+        //         .attr("y2", function (d: any) {
+        //             var matrix = layer2.svgComponent.node().getScreenCTM();
+        //             let x = layer2.center().x
+        //             let y = layer2.center().y
 
-                    console.log(matrix)
-                    console.log(layer2.center())
+        //             console.log(matrix)
+        //             console.log(layer2.center())
           
-                    let thing = {
-                    x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
-                    y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
-                    };
-                    return thing.y
-                })
+        //             let thing = {
+        //             x: (matrix.a * x) + (matrix.c * y) + matrix.e, //- offset.left,
+        //             y: (matrix.b * x) + (matrix.d * y) + matrix.f, // - offset.top
+        //             };
+        //             return thing.y
+        //         })
 
 
     }
@@ -175,6 +215,7 @@ export abstract class Layer extends Draggable {
 }
 
 export class Conv2D extends Layer {
+    type = "conv2D"
     static readonly blockSize: number = 50;
 
     constructor() {
@@ -185,12 +226,14 @@ export class Conv2D extends Layer {
 }
 
 export class Dense extends Layer {
+    type = "dense"
     constructor() {
         super([new Rectangle(new Point(-8, -90), 26, 100, '#b00202')])
     }
 } 
 
 export class MaxPooling2D extends Layer {
+    type = "maxPooling2D"
     static readonly blockSize: number = 30;
 
     constructor() {
