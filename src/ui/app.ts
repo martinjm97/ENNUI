@@ -1,8 +1,9 @@
-import { Dense, Conv2D, Layer, MaxPooling2D } from "./shapes/layer";
+import { Dense, Conv2D, Layer, MaxPooling2D, Input, Output } from "./shapes/layer";
 import { Draggable } from "./shapes/draggable";
 import { Wire } from "./shapes/wire";
 import { Shape } from "./shapes/shape";
 import { Relu, Sigmoid, Softmax } from "./shapes/activation";
+import { windowProperties } from "./window";
 
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
@@ -15,6 +16,27 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener('create', function( e ) {
 		appendItem(e);
 	});
+
+	window.onkeyup = function(event){
+		switch(event.key){
+			case 'Escape' :
+				if(windowProperties.selectedElement){
+					windowProperties.selectedElement.unselect();
+					windowProperties.selectedElement = null;
+				}
+				break;
+			case 'Delete' :
+				if(windowProperties.selectedElement){
+					windowProperties.selectedElement.delete();
+					windowProperties.selectedElement = null;
+				}
+				break;
+		}
+	};
+
+	svgData.input = new Input();
+	svgData.output = new Output();
+
     
 });
 
@@ -38,7 +60,7 @@ function dispatchCreationOnClick(elmt){
 }
 
 function appendItem(options){
-	var item: Shape
+	var item: Draggable
 	switch(options.detail.itemType){
         case 'layer': switch(options.detail.layerType) {
 			case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
@@ -68,8 +90,8 @@ let svgData = {
 	layer : [],
 	activation : [],
 	wire : [],
-	input: [],
-	output: []
+	input: null,
+	output: null
 }
 
 

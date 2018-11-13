@@ -1,4 +1,5 @@
 import { Draggable } from "./shapes/draggable";
+import { Wire } from "./shapes/wire";
 
 export enum Mode {
     Move,
@@ -8,7 +9,7 @@ export enum Mode {
 class WindowProperties
 {
     private static _instance: WindowProperties;
-    selectedElement: Draggable;
+    selectedElement: Draggable | Wire;
     mode: Mode = Mode.Move
     draggedElement: any;
     selectState: any;

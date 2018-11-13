@@ -1,10 +1,8 @@
 import {Shape, Point} from "./shape";
-import {windowProperties} from "../window";
 import { Layer } from "./layer";
 import * as d3 from "d3";
-import { BaseType } from "d3";
 
-export abstract class Draggable extends Shape {
+export abstract class Draggable {
     static readonly snapRadius: number = 400;
     static readonly defaultLocation: Point = new Point(50,100);
     htmlComponent: any;
@@ -12,6 +10,7 @@ export abstract class Draggable extends Shape {
 
     public select(){}
     public unselect(){}
+    public delete(){}
 
 
     public makeDraggable(){
