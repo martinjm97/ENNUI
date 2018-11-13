@@ -29,15 +29,10 @@ function highlightOnMouseOver(elmt){
 
 function dispatchCreationOnClick(elmt){
 	elmt.addEventListener('click', function(e){
-        console.log("test")
         var itemType = elmt.parentElement.getAttribute('data-itemType')
-        console.log(itemType)
         var detail = { itemType : itemType}
-        console.log(detail)
         detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
-        console.log(detail)
         var event = new CustomEvent('create', { detail : detail } );
-        console.log(event)
 		window.dispatchEvent(event);
 	});
 }
@@ -55,13 +50,11 @@ function appendItem(options){
 			case 'sigmoid': item = new Sigmoid(); console.log("Created Sigmoid"); break;
 			case 'softmax': item = new Softmax(); console.log("Created Softmax"); break;
 		}
-        
-    //     // var item = new Layer(); break;
-	// 	// case 'activation': var item = new Activation(options.detail); break;
+		
+		
 	// 	// case 'wire': var item = new Wire(options.detail); break;
 	// 	// case 'input': var item = new Input(options.detail); break;
 	}
-	// console.log('ops',options);
 	svgData[options.detail.itemType].push(item);
 	// item.index = svgData[options.detail.itemType].length-1;
 }
