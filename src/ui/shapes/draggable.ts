@@ -1,5 +1,4 @@
-import {Shape, Point} from "./shape";
-import { Layer } from "./layer";
+import { Point } from "./shape";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
 
@@ -30,16 +29,16 @@ export abstract class Draggable {
                 }
                 this.svgComponent.attr("transform", "translate(" + (d.x = d3.event.x) + ","
                 + (d.y = d3.event.y) + ")")
-                if (this instanceof Layer) {
-                    for (let wire of this.wires) {
-                        wire.updatePosition()
-                    }
-                }                
+
+                this.dragAction()
             })
             .on("end", () => {firstDrag = true})
 
         this.svgComponent.call(dragHandler)
     }
+
+    // Special behavior when being dragged e.g. activations snap to Layers
+    public dragAction() {}
 
     public select() {
         if (windowProperties.selectedElement != null) {
@@ -68,8 +67,9 @@ export abstract class Draggable {
     }
     
 
-    getPosition(): number[] {
+    getPosition(): Point {
 		let transformation = this.svgComponent.attr('transform')
-		return transformation.substring( transformation.indexOf('(') + 1 , transformation.indexOf(')') ).split(',').map(value => parseInt(value));
-	}
+		let numArr = transformation.substring( transformation.indexOf('(') + 1 , transformation.indexOf(')') ).split(',').map(value => parseInt(value));
+        return new Point(numArr[0], numArr[1])
+    }
 }

@@ -1,12 +1,12 @@
 import { Draggable } from "./draggable";
 import { Point, Rectangle } from "./shape";
-import { Layer } from "./layer";
+import { ActivationLayer } from "./layer";
 import * as d3 from "d3"
+import { windowProperties } from "../window";
 
 export abstract class Activation extends Draggable {
 
-    freeFloatingLocation: Point = new Point(25, 25);
-    layer: Layer = null;
+    layer: ActivationLayer = null;
 
     constructor(color: string) { 
         super();
@@ -37,13 +37,36 @@ export abstract class Activation extends Draggable {
         this.makeDraggable() 
     }
 
-    getLocation() {
-        if (this.layer != null) {
-            return this.freeFloatingLocation;
-        } else {
-            // TODO Return the location of an activation relative to the parent layer
+    public dragAction() {
+
+        // Find the closest layer and its distances
+        let minDist = Infinity
+        let closestLayer: ActivationLayer = null
+        for (let activationLayer of windowProperties.activationLayers) {
+            let dist = activationLayer.getPosition().distance(this.getPosition())
+            if (dist < minDist) {
+                minDist = dist
+                closestLayer = activationLayer
+            }
+        }
+
+        // Snap activations if they are close enough
+        let snappingDistance = 400
+        if (minDist < snappingDistance) {
+            // if snap happens remove old connection
+            if (this.layer != null) {
+                this.layer.removeActivation()
+                this.layer = null
+            } 
+            closestLayer.addActivation(this)
+            this.layer = closestLayer
+        } else if (this.layer != null) {
+            this.layer.removeActivation()
+            this.layer = null
         }
     }
+
+
 }
 
 export class Relu extends Activation {

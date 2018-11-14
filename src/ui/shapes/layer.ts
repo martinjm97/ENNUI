@@ -40,6 +40,12 @@ export abstract class Layer extends Draggable {
         })  
     }
 
+    public dragAction() { 
+        for (let wire of this.wires) {
+            wire.updatePosition()
+        }
+    }
+
     public select() {
         let currSelected = windowProperties.selectedElement;
         if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
@@ -81,6 +87,9 @@ export abstract class ActivationLayer extends Layer {
 
     constructor(block: Array<Shape>) { 
         super(block)
+
+        // Keep track of activationLayers in global state for activation snapping
+        windowProperties.activationLayers.add(this)
         let blocks = this.svgComponent.selectAll<SVGGraphicsElement, {}>("rect").nodes()
         let lastBlock = blocks[blocks.length-1]
 
@@ -100,6 +109,38 @@ export abstract class ActivationLayer extends Layer {
         d3.select(lastBlock).attr("mask", "url(#hole"+this.uid+")");
     }
 
+
+    public dragAction() {
+        super.dragAction()
+        if (this.activation != null) {
+            let p = this.getPosition()
+            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + ","
+            + (p.y) + ")")
+        }
+    }
+
+    public delete() {
+        super.delete()
+        // Remove this layer from global state
+        windowProperties.activationLayers.delete(this)
+        if (this.activation != null) {
+            this.activation.delete()
+        } 
+    }
+
+    public addActivation(activation: Activation) {
+        if (this.activation != null) {
+            this.activation.layer = null
+        } 
+        this.activation = activation
+        let p = this.getPosition()
+        activation.svgComponent.attr("transform", "translate(" + (p.x) + ","
+        + (p.y) + ")")
+    }
+
+    public removeActivation() {
+        this.activation = null
+    }
 }
 
 export class Conv2D extends ActivationLayer {

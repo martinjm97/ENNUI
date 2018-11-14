@@ -62,15 +62,15 @@ export class Point {
         this.y = y;
     }
 
-    distance(p1: Point,p2: Point): number {
-	    return (p1.x - p2.x)**2 + (p1.y - p2.y)**2;
+    distance(other: Point): number {
+	    return (this.x - other.x)**2 + (this.y - other.y)**2;
     }
 
-    add(p1: Point,p2: Point): Point {
-	    return new Point(p1.x + p2.x, p1.y + p2.y);
+    add(other: Point): Point {
+	    return new Point(this.x + other.x, this.y + other.y);
     }
 
-    minus(p1: Point,p2: Point): Point {
-        return new Point(p1.x - p2.x, p1.y - p2.y);
+    minus(other: Point): Point {
+        return new Point(this.x - other.x, this.y - other.y);
     }
 }

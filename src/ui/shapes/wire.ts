@@ -29,10 +29,10 @@ export class Wire {
             this.lines.push(d3.select<SVGGraphicsElement, {}>("svg")
                     .append<SVGGraphicsElement>("g")
                     .append<SVGGraphicsElement>("line")
-                    .attr('x1',inputPosition[0]+points.input.x)
-                    .attr('y1',inputPosition[1]+points.input.y)
-                    .attr('x2',outputPosition[0]+points.output.x)
-                    .attr('y2',outputPosition[1]+points.output.y)
+                    .attr('x1',inputPosition.x+points.input.x)
+                    .attr('y1',inputPosition.y+points.input.y)
+                    .attr('x2',outputPosition.x+points.output.x)
+                    .attr('y2',outputPosition.y+points.output.y)
                     .style('stroke','black')
                     .style('stroke-width',2));
         }
@@ -51,10 +51,10 @@ export class Wire {
         let inputPosition = this.layer1.getPosition()
         let outputPosition = this.layer2.getPosition()
         for (let i in this.lineData) {
-            this.lines[i].attr('x1',inputPosition[0]+this.lineData[i].input.x)
-                         .attr('y1',inputPosition[1]+this.lineData[i].input.y)
-                         .attr('x2',outputPosition[0]+this.lineData[i].output.x)
-                         .attr('y2',outputPosition[1]+this.lineData[i].output.y)
+            this.lines[i].attr('x1',inputPosition.x+this.lineData[i].input.x)
+                         .attr('y1',inputPosition.y+this.lineData[i].input.y)
+                         .attr('x2',outputPosition.x+this.lineData[i].output.x)
+                         .attr('y2',outputPosition.y+this.lineData[i].output.y)
         }
     }
 
