@@ -23,11 +23,6 @@ export abstract class Layer extends Draggable {
     constructor(block: Array<Shape>) { 
         super()
         this.block = block
-        this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
-                              .append<SVGGraphicsElement>("g")
-                              .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
-                              .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')');
-
         for (var rect of this.block) {
             this.svgComponent.call(rect.svgAppender.bind(rect))
         }
@@ -38,46 +33,29 @@ export abstract class Layer extends Draggable {
                                                 .style("fill", "black")
                                                 .style("stroke-width", "2")
                                                 .style("visibility", "hidden")
-                                                
-
-        this.svgComponent.on("click", () => {this.select()})
-
+        
         this.wireCircle.on("click", () => {
             this.wireCircleSelected = true
             this.wireCircle.style("stroke", "red")
-        })
-                              
-        this.makeDraggable()
+        })  
     }
 
     public select() {
-        if (windowProperties.selectedElement != null) {
-            if (windowProperties.selectedElement === this) {
-                return
-            } else if (windowProperties.selectedElement instanceof Layer && windowProperties.selectedElement.wireCircleSelected) {
-                Layer.createConnection(this, windowProperties.selectedElement)
-
-                console.log(this.connections)
-            }
-            windowProperties.selectedElement.unselect()
+        let currSelected = windowProperties.selectedElement;
+        if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
+            Layer.createConnection(this, currSelected)
+            console.log(this.connections)
         }
-        windowProperties.selectedElement = this
-        this.svgComponent.raise()
+        super.select()
         this.wireCircle.style("visibility", "visible")
-        this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
     }
 
     public unselect() {
+        super.unselect()
         this.wireCircle.style("visibility", "hidden")
-        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
         this.wireCircleSelected = false
         this.wireCircle.style("stroke", null)
     }
-
-    getPosition(): number[] {
-		let transformation = this.svgComponent.attr('transform')
-		return transformation.substring( transformation.indexOf('(') + 1 , transformation.indexOf(')') ).split(',').map(value => parseInt(value));
-	}
 
     public static createConnection(layer1: Layer, layer2: Layer) {
         if (!layer1.connections.has(layer2) /* other way around works also */) {
@@ -89,19 +67,11 @@ export abstract class Layer extends Draggable {
             layer1.wires.add(newWire)
             layer2.wires.add(newWire)
         }
-
-
     }
 
     public delete() {
-        this.svgComponent.remove()
+        super.delete()
         this.wires.forEach((w) => w.delete()) // deleting wires should delete layer connection sets
-    }
-
-    public center(): Point {
-        let bbox = this.svgComponent.node().getBBox()
-        console.log(bbox)
-        return new Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2)
     }
 }
 
@@ -180,64 +150,5 @@ export class Output extends Layer {
                new Circle(new Point(0, -20), 10, '#010180'),
                new Circle(new Point(0, 20), 10, '#010180'),
                new Circle(new Point(0, 60), 10, '#010180')])
-		// this.svgComponent = svg.append('g');
-		// this.svgComponent.append('circle').attr('cx',0).attr('cy',-60).attr('r',10).style('fill','#010180');
-		// this.svgComponent.append('circle').attr('cx',0).attr('cy',-20).attr('r',10).style('fill','#010180');
-		// this.svgComponent.append('circle').attr('cx',0).attr('cy',+20).attr('r',10).style('fill','#010180');
-		// this.svgComponent.append('circle').attr('cx',0).attr('cy',+60).attr('r',10).style('fill','#010180');
-		// this.inputs = [];
-		// this.connectors = [];
-		// this.layerType = 'output';
-		// this.id = 'OUT';
-
-		// this.units = 4
-
-		// this.htmlComponent = createParamBox(this.layerType);
-
-		// this.htmlComponent.children[1]
 	}
-	// updateNumberOfUnits(n){
-	// 	if(this.units == n){
-	// 		return;
-	// 	}
-	// 	this.units = n;
-	// 	this.svgComponent.remove();
-	// 	this.svgComponent = svg.append('g');
-	// 	if(this.units > 10){
-	// 		this.svgComponent.append('ellipse')
-	// 		    .attr('cx', 0)  
-	// 		    .attr('cy', 0) 
-	// 		    .attr('rx', 10)
-	// 		    .attr('ry', 100)
-	// 		    .style('fill', '#010180');
-	// 	} else {
-	// 		for(let pos of [...(new Array(this.units)).keys()].map(x => 120/(this.units-1)*x-60)){
-	// 			this.svgComponent.append('circle').attr('cx',0).attr('cy',pos).attr('r',50/this.units).style('fill','#010180');			
-	// 		}
-	// 	}
-	// 	unselect(this);
-	// 	makeDraggable(this);
-	// 	onresize();
-	// }
-	// setPosition(x,y){}
-
-	// getPosition(){
-	// 	let transformation = this.svgComponent.attr('transform')
-	// 	return transformation.substring( transformation.indexOf('(') + 1 , transformation.indexOf(')') ).split(',').map(value => parseInt(value));
-	// }
-	// getJSON(){
-	// 	return {
-	//         "layer_name": "Output",
-	//         "children_ids": [],
-	//         "parent_ids": this.inputs.map(layer => layer.id),
-	//         "params": {
-	//             "units": 10,
-	//             "activation": "softmax"
-	//         },
-	//         "id": this.id
-	//     };
-	// }
-
-	// moveToFront(){}
-	// snap(){}
 }

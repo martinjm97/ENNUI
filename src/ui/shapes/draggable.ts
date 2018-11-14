@@ -1,6 +1,7 @@
 import {Shape, Point} from "./shape";
 import { Layer } from "./layer";
 import * as d3 from "d3";
+import { windowProperties } from "../window";
 
 export abstract class Draggable {
     static readonly snapRadius: number = 400;
@@ -8,10 +9,14 @@ export abstract class Draggable {
     htmlComponent: any;
     svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
 
-    public select(){}
-    public unselect(){}
-    public delete(){}
-
+    constructor() {
+        this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
+                              .append<SVGGraphicsElement>("g")
+                              .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
+                              .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')')
+                              .on("click", () => {this.select()})
+        this.makeDraggable()
+    }
 
     public makeDraggable(){
         var firstDrag = true
@@ -35,4 +40,36 @@ export abstract class Draggable {
 
         this.svgComponent.call(dragHandler)
     }
+
+    public select() {
+        if (windowProperties.selectedElement != null) {
+            if (windowProperties.selectedElement === this) {
+                return
+            }
+            windowProperties.selectedElement.unselect()
+        }
+        windowProperties.selectedElement = this
+        this.svgComponent.raise()
+        this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
+    }
+
+    public unselect() {
+        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
+    }
+
+    public delete() {
+        this.svgComponent.remove()
+    }
+
+    public center(): Point {
+        let bbox = this.svgComponent.node().getBBox()
+        console.log(bbox)
+        return new Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2)
+    }
+    
+
+    getPosition(): number[] {
+		let transformation = this.svgComponent.attr('transform')
+		return transformation.substring( transformation.indexOf('(') + 1 , transformation.indexOf(')') ).split(',').map(value => parseInt(value));
+	}
 }
