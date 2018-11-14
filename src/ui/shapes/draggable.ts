@@ -29,8 +29,9 @@ export abstract class Draggable {
                 }
                 this.svgComponent.attr("transform", "translate(" + (d.x = d3.event.x) + ","
                 + (d.y = d3.event.y) + ")")
+                console.log("drag", d3.event.x, d3.event.y)
 
-                this.dragAction()
+                this.dragAction(d)
             })
             .on("end", () => {firstDrag = true})
 
@@ -38,7 +39,7 @@ export abstract class Draggable {
     }
 
     // Special behavior when being dragged e.g. activations snap to Layers
-    public dragAction() {}
+    public dragAction(d) {}
 
     public select() {
         if (windowProperties.selectedElement != null) {

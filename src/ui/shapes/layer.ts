@@ -12,16 +12,20 @@ import { windowProperties } from "../window";
 
 export abstract class Layer extends Draggable {
     abstract wireConnectionPoints: Array<Point>;
+    abstract layerType: String;
     
     block: Array<Shape>;
     connections: Set<Layer> = new Set();
     wires: Set<Wire> = new Set();
     wireCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     wireCircleSelected: boolean = false;
-    uid: number = Math.random();
+    static nextID: number = 0;
+    uid: number;
 
     constructor(block: Array<Shape>) { 
         super()
+        this.uid = Layer.nextID
+        Layer.nextID += 1
         this.block = block
         for (var rect of this.block) {
             this.svgComponent.call(rect.svgAppender.bind(rect))
@@ -40,7 +44,7 @@ export abstract class Layer extends Draggable {
         })  
     }
 
-    public dragAction() { 
+    public dragAction(d) { 
         for (let wire of this.wires) {
             wire.updatePosition()
         }
@@ -49,7 +53,7 @@ export abstract class Layer extends Draggable {
     public select() {
         let currSelected = windowProperties.selectedElement;
         if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
-            Layer.createConnection(this, currSelected)
+            currSelected.createConnection(this)
             console.log(this.connections)
         }
         super.select()
@@ -63,15 +67,13 @@ export abstract class Layer extends Draggable {
         this.wireCircle.style("stroke", null)
     }
 
-    public static createConnection(layer1: Layer, layer2: Layer) {
-        if (!layer1.connections.has(layer2) /* other way around works also */) {
-            layer1.connections.add(layer2)
-            layer2.connections.add(layer1)
+    public createConnection(other: Layer) {
+        if (!this.connections.has(other) && !other.connections.has(this)) {
+            this.connections.add(other)
 
-            let newWire = new Wire(layer1, layer2)
-
-            layer1.wires.add(newWire)
-            layer2.wires.add(newWire)
+            let newWire = new Wire(this, other)
+            this.wires.add(newWire)
+            other.wires.add(newWire)
         }
     }
 
@@ -110,12 +112,13 @@ export abstract class ActivationLayer extends Layer {
     }
 
 
-    public dragAction() {
-        super.dragAction()
+    public dragAction(d) {
+        super.dragAction(d)
         if (this.activation != null) {
             let p = this.getPosition()
             this.activation.svgComponent.attr("transform", "translate(" + (p.x) + ","
-            + (p.y) + ")")
+            + (p.y) + ")").data([{"x": p.x, "y": p.y}])
+            console.log("activation drag", p.x, p.y)
         }
     }
 
@@ -144,7 +147,7 @@ export abstract class ActivationLayer extends Layer {
 }
 
 export class Conv2D extends ActivationLayer {
-    // type = "conv2D"
+    layerType = "Conv2D"
     static readonly blockSize: number = 50;
     wireConnectionPoints = [new Point(-20, -40), new Point(5, -40), new Point(5, -15), new Point(-20, -15)]
 
@@ -156,7 +159,7 @@ export class Conv2D extends ActivationLayer {
 }
 
 export class Dense extends ActivationLayer {
-    // type = "dense"
+    layerType = "Dense"
     wireConnectionPoints = [new Point(5, -70), new Point(5, -40), new Point(5, -10)]
     constructor() {
         super([new Rectangle(new Point(-8, -90), 26, 100, '#b00202')])
@@ -164,7 +167,7 @@ export class Dense extends ActivationLayer {
 } 
 
 export class MaxPooling2D extends ActivationLayer {
-    // type = "maxPooling2D"
+    layerType = "MaxPooling2D"
     static readonly blockSize: number = 30;
     wireConnectionPoints = [new Point(-10, -20), new Point(-10, -5), new Point(5, -5), new Point(5, -20)]
 
@@ -177,19 +180,35 @@ export class MaxPooling2D extends ActivationLayer {
 }
 
 export class Input extends Layer {
+    layerType = "Input"
     wireConnectionPoints = [new Point(20, 10), new Point(20, 30)]
 
 	constructor(){
         super([new Rectangle(new Point(0,0), 40, 40, '#010180')])
-	}
+    }
+    
+    delete() {}
 }
 
 export class Output extends Layer {
+    layerType = "Output";
     wireConnectionPoints = [new Point(0, -60), new Point(0, 0), new Point(0, 60)]
     constructor(){
         super([new Circle(new Point(0, -60), 10, '#010180'),
                new Circle(new Point(0, -20), 10, '#010180'),
                new Circle(new Point(0, 20), 10, '#010180'),
                new Circle(new Point(0, 60), 10, '#010180')])
-	}
+    }
+
+    select() {
+        super.select()
+        this.svgComponent.selectAll("circle").style("stroke", "yellow").style("stroke-width", "2")
+    }
+
+    unselect() {
+        super.unselect()
+        this.svgComponent.selectAll("circle").style("stroke", null)
+    }
+    
+    delete() {}
 }
