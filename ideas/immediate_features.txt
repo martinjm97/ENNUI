@@ -1,3 +1,4 @@
+on drag of black box make edges.
 bounding box to the window. 
 Get json creation working
 parambox should be populated with values
