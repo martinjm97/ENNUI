@@ -38,7 +38,9 @@ export abstract class Activation extends Draggable {
     }
 
     public dragAction() {
-
+        // TODO: BUG: For some reason after snapping 
+        // and being unsnapped theres a little jump on select
+        
         // Find the closest layer and its distances
         let minDist = Infinity
         let closestLayer: ActivationLayer = null
@@ -60,7 +62,7 @@ export abstract class Activation extends Draggable {
             } 
             closestLayer.addActivation(this)
             this.layer = closestLayer
-        } else if (this.layer != null) {
+        } else if (this.layer != null) { // otherwise, if we unsnap update as appropriate
             this.layer.removeActivation()
             this.layer = null
         }
