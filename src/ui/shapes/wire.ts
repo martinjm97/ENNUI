@@ -6,56 +6,70 @@ import { windowProperties } from "../window";
 export class Wire {
     static readonly defaultLocation: Point = new Point(200, 200);
 
-    layer1: Layer;
-    layer2: Layer;
-    lines: Array<d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>> = [];
-    lineData: Array<{input: Point, output: Point}> = [];
+    source: Layer;
+    dest: Layer;
+    line: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    triangle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
 
-    constructor(layer1: Layer, layer2: Layer) {
-        this.layer1 = layer1
-        this.layer2 = layer2
+    static nextID: number = 0;
+    id: number;
+    // lineData: Array<{input: Point, output: Point}> = [];
+
+    // TODO allow selecting of the arrow
+
+    constructor(source: Layer, dest: Layer) {
+        this.source = source
+        this.dest = dest
+        this.id = Wire.nextID;
+        Wire.nextID += 1;
+
+        this.triangle = d3.select<SVGGraphicsElement, {}>("svg").append<SVGGraphicsElement>("svg:defs").append<SVGGraphicsElement>("svg:marker")
+        .attr("id", "triangle"+this.id)
+        .attr("refX", 14)
+        .attr("refY", 3)
+        .attr("markerWidth", 20)
+        .attr("markerHeight", 20)
+        .attr("orient", "auto")
+        .on("click", () => {this.select()})
+        .append<SVGGraphicsElement>("path")
+        .attr("d", "M0,0 L6,3 L0,6 L1.5,3 L0,0")
+        .style("fill", "black")
+        .on("click", () => {this.select()})
 
 
-        let inputPosition = layer1.getPosition()
-        let outputPosition = layer2.getPosition()
+        let sourcePosition = this.source.getPosition()
+        let destPosition = this.dest.getPosition()
+        let sourceCenter = this.source.center()
+        let destCenter = this.dest.center()
 
-        for (let point1 of layer1.wireConnectionPoints) {
-            for (let point2 of layer2.wireConnectionPoints) {
-                this.lineData.push({input: point1, output: point2})
-            }
-        }
-
-        for (let points of this.lineData ) {
-            this.lines.push(d3.select<SVGGraphicsElement, {}>("svg")
+        this.line = d3.select<SVGGraphicsElement, {}>("svg")
                     .append<SVGGraphicsElement>("g")
                     .append<SVGGraphicsElement>("line")
-                    .attr('x1',inputPosition[0]+points.input.x)
-                    .attr('y1',inputPosition[1]+points.input.y)
-                    .attr('x2',outputPosition[0]+points.output.x)
-                    .attr('y2',outputPosition[1]+points.output.y)
+                    .attr('x1',sourcePosition[0]+sourceCenter.x)
+                    .attr('y1',sourcePosition[1]+sourceCenter.y)
+                    .attr('x2',destPosition[0]+destCenter.x)
+                    .attr('y2',destPosition[1]+destCenter.y)
                     .style('stroke','black')
-                    .style('stroke-width',2));
-        }
+                    .style('stroke-width',6)
+                    .attr("marker-end", "url(#triangle"+this.id+")");
+        // }
 
-        this.layer1.svgComponent.raise()
-        this.layer2.svgComponent.raise()
+        this.source.svgComponent.raise()
+        this.dest.svgComponent.raise()
 
-        for (let line of this.lines) {
-            line.on("click", () => {this.select()})
-        }
-
-        
+        this.line.on("click", () => {this.select()})
+        this.triangle.on("click", () => {this.select()})
     }
 
     updatePosition() {
-        let inputPosition = this.layer1.getPosition()
-        let outputPosition = this.layer2.getPosition()
-        for (let i in this.lineData) {
-            this.lines[i].attr('x1',inputPosition[0]+this.lineData[i].input.x)
-                         .attr('y1',inputPosition[1]+this.lineData[i].input.y)
-                         .attr('x2',outputPosition[0]+this.lineData[i].output.x)
-                         .attr('y2',outputPosition[1]+this.lineData[i].output.y)
-        }
+        let sourcePosition = this.source.getPosition()
+        let destPosition = this.dest.getPosition()
+        let sourceCenter = this.source.center()
+        let destCenter = this.dest.center()
+        this.line.attr('x1',sourcePosition[0]+sourceCenter.x)
+                 .attr('y1',sourcePosition[1]+sourceCenter.y)
+                 .attr('x2',destPosition[0]+destCenter.x)
+                 .attr('y2',destPosition[1]+destCenter.y)
     }
 
     public select() {
@@ -66,22 +80,23 @@ export class Wire {
             windowProperties.selectedElement.unselect()
         }
         windowProperties.selectedElement = this
-        this.lines.forEach( (l) => { l.raise()})
-        this.layer1.svgComponent.raise()
-        this.layer2.svgComponent.raise()
-        this.lines.forEach( (l) => { l.style("stroke", "yellow")})
+        this.line.raise()
+        this.source.svgComponent.raise()
+        this.dest.svgComponent.raise()
+        this.line.style("stroke", "yellow")
+        this.triangle.style("fill", "yellow")
     }
 
     public unselect() {
-        this.lines.forEach( (l) => { l.style("stroke", "black")})
+        this.line.style("stroke", "black")
+        this.triangle.style("fill", "black")
     }
 
     public delete() {
-        this.lines.forEach( (l) => {l.remove()})
-        this.layer1.connections.delete(this.layer2)
-        this.layer2.connections.delete(this.layer1)
-        this.layer1.wires.delete(this)
-        this.layer2.wires.delete(this)
+        this.line.remove()
+        this.source.connections.delete(this.dest)
+        this.source.wires.delete(this)
+        this.dest.wires.delete(this)
     }
 
 }
