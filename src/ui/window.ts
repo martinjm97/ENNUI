@@ -1,5 +1,6 @@
 import { Draggable } from "./shapes/draggable";
 import { Wire } from "./shapes/wire";
+import { ActivationLayer } from "./shapes/layer";
 
 export enum Mode {
     Move,
@@ -10,7 +11,8 @@ class WindowProperties
 {
     private static _instance: WindowProperties;
     selectedElement: Draggable | Wire;
-    mode: Mode = Mode.Move
+    activationLayers: Set<ActivationLayer> = new Set();
+    mode: Mode = Mode.Move;
     draggedElement: any;
     selectState: any;
     xClickOffset: any;

@@ -45,10 +45,10 @@ export class Wire {
         this.line = d3.select<SVGGraphicsElement, {}>("svg")
                     .append<SVGGraphicsElement>("g")
                     .append<SVGGraphicsElement>("line")
-                    .attr('x1',sourcePosition[0]+sourceCenter.x)
-                    .attr('y1',sourcePosition[1]+sourceCenter.y)
-                    .attr('x2',destPosition[0]+destCenter.x)
-                    .attr('y2',destPosition[1]+destCenter.y)
+                    .attr('x1',sourcePosition.x+sourceCenter.x)
+                    .attr('y1',sourcePosition.y+sourceCenter.y)
+                    .attr('x2',destPosition.x+destCenter.x)
+                    .attr('y2',destPosition.y+destCenter.y)
                     .style('stroke','black')
                     .style('stroke-width',6)
                     .attr("marker-end", "url(#triangle"+this.id+")");
@@ -66,10 +66,10 @@ export class Wire {
         let destPosition = this.dest.getPosition()
         let sourceCenter = this.source.center()
         let destCenter = this.dest.center()
-        this.line.attr('x1',sourcePosition[0]+sourceCenter.x)
-                 .attr('y1',sourcePosition[1]+sourceCenter.y)
-                 .attr('x2',destPosition[0]+destCenter.x)
-                 .attr('y2',destPosition[1]+destCenter.y)
+        this.line.attr('x1',sourcePosition.x+sourceCenter.x)
+                 .attr('y1',sourcePosition.y+sourceCenter.y)
+                 .attr('x2',destPosition.x+destCenter.x)
+                 .attr('y2',destPosition.y+destCenter.y)
     }
 
     public select() {
