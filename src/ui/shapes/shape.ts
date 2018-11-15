@@ -63,7 +63,7 @@ export class Point {
     }
 
     distance(other: Point): number {
-	    return (this.x - other.x)**2 + (this.y - other.y)**2;
+	    return Math.sqrt((this.x - other.x)**2 + (this.y - other.y)**2);
     }
 
     add(other: Point): Point {

@@ -13,9 +13,6 @@ export class Wire {
 
     static nextID: number = 0;
     id: number;
-    // lineData: Array<{input: Point, output: Point}> = [];
-
-    // TODO allow selecting of the arrow
 
     constructor(source: Layer, dest: Layer) {
         this.source = source
@@ -23,37 +20,24 @@ export class Wire {
         this.id = Wire.nextID;
         Wire.nextID += 1;
 
-        this.triangle = d3.select<SVGGraphicsElement, {}>("svg").append<SVGGraphicsElement>("svg:defs").append<SVGGraphicsElement>("svg:marker")
-        .attr("id", "triangle"+this.id)
-        .attr("refX", 14)
-        .attr("refY", 3)
-        .attr("markerWidth", 20)
-        .attr("markerHeight", 20)
-        .attr("orient", "auto")
-        .on("click", () => {this.select()})
-        .append<SVGGraphicsElement>("path")
-        .attr("d", "M0,0 L6,3 L0,6 L1.5,3 L0,0")
-        .style("fill", "black")
-        .on("click", () => {this.select()})
+        let sourceCenter = this.source.getPosition().add(this.source.center())
+        let destCenter = this.dest.getPosition().add(this.dest.center())
 
+        let newGroup = d3.select<SVGGraphicsElement, {}>("svg")
+                        .append<SVGGraphicsElement>("g")
 
-        let sourcePosition = this.source.getPosition()
-        let destPosition = this.dest.getPosition()
-        let sourceCenter = this.source.center()
-        let destCenter = this.dest.center()
+        this.line = newGroup.append<SVGGraphicsElement>("line")
+                            .attr('x1',sourceCenter.x)
+                            .attr('y1',sourceCenter.y)
+                            .attr('x2',destCenter.x)
+                            .attr('y2',destCenter.y)
+                            .style('stroke','black')
+                            .style('stroke-width',6)
+        
+        this.triangle = newGroup.append<SVGGraphicsElement>("polygon")
+                                .attr("points", "0,16, 20,0, 0,-16")
 
-        this.line = d3.select<SVGGraphicsElement, {}>("svg")
-                    .append<SVGGraphicsElement>("g")
-                    .append<SVGGraphicsElement>("line")
-                    .attr('x1',sourcePosition.x+sourceCenter.x)
-                    .attr('y1',sourcePosition.y+sourceCenter.y)
-                    .attr('x2',destPosition.x+destCenter.x)
-                    .attr('y2',destPosition.y+destCenter.y)
-                    .style('stroke','black')
-                    .style('stroke-width',6)
-                    .attr("marker-end", "url(#triangle"+this.id+")");
-        // }
-
+        this.updatePosition()
         this.source.svgComponent.raise()
         this.dest.svgComponent.raise()
 
@@ -62,14 +46,15 @@ export class Wire {
     }
 
     updatePosition() {
-        let sourcePosition = this.source.getPosition()
-        let destPosition = this.dest.getPosition()
-        let sourceCenter = this.source.center()
-        let destCenter = this.dest.center()
-        this.line.attr('x1',sourcePosition.x+sourceCenter.x)
-                 .attr('y1',sourcePosition.y+sourceCenter.y)
-                 .attr('x2',destPosition.x+destCenter.x)
-                 .attr('y2',destPosition.y+destCenter.y)
+        let sourceCenter = this.source.getPosition().add(this.source.center())
+        let destCenter = this.dest.getPosition().add(this.dest.center())
+        this.line.attr('x1',sourceCenter.x)
+                 .attr('y1',sourceCenter.y)
+                 .attr('x2',destCenter.x)
+                 .attr('y2',destCenter.y)
+        let angle = Math.atan2(destCenter.y - sourceCenter.y, destCenter.x - sourceCenter.x) * 180 / Math.PI;//angle for tangent
+        this.triangle.attr("transform", "translate(" + ((sourceCenter.x+destCenter.x)/2) + ","
+                + ((sourceCenter.y+destCenter.y)/2) + ")rotate("+ angle + ")")
     }
 
     public select() {
@@ -94,7 +79,9 @@ export class Wire {
 
     public delete() {
         this.line.remove()
-        this.source.connections.delete(this.dest)
+        this.triangle.remove()
+        this.source.children.delete(this.dest)
+        this.dest.parents.delete(this.source)
         this.source.wires.delete(this)
         this.dest.wires.delete(this)
     }

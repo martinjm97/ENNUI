@@ -7,6 +7,7 @@ import { windowProperties } from "../window";
 export abstract class Activation extends Draggable {
 
     layer: ActivationLayer = null;
+    abstract activationType: String;
 
     constructor(color: string) { 
         super();
@@ -69,6 +70,7 @@ export abstract class Activation extends Draggable {
 }
 
 export class Relu extends Activation {
+    activationType = "relu"
 
     constructor() {
         super("#00CCCC")
@@ -76,6 +78,7 @@ export class Relu extends Activation {
 }
 
 export class Sigmoid extends Activation {
+    activationType = "sigmoid"
 
     constructor() {
         super("#FF00FF")
@@ -83,6 +86,7 @@ export class Sigmoid extends Activation {
 }
 
 export class Softmax extends Activation {
+    activationType = "softmax"
     
     constructor() {
         super("6000a0")

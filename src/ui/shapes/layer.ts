@@ -15,7 +15,8 @@ export abstract class Layer extends Draggable {
     abstract layerType: String;
     
     block: Array<Shape>;
-    connections: Set<Layer> = new Set();
+    children: Set<Layer> = new Set();
+    parents: Set<Layer> = new Set();
     wires: Set<Wire> = new Set();
     wireCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     wireCircleSelected: boolean = false;
@@ -53,8 +54,8 @@ export abstract class Layer extends Draggable {
     public select() {
         let currSelected = windowProperties.selectedElement;
         if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
-            currSelected.createConnection(this)
-            console.log(this.connections)
+            currSelected.addChild(this)
+            console.log(this.children, this.parents)
         }
         super.select()
         this.wireCircle.style("visibility", "visible")
@@ -67,19 +68,30 @@ export abstract class Layer extends Draggable {
         this.wireCircle.style("stroke", null)
     }
 
-    public createConnection(other: Layer) {
-        if (!this.connections.has(other) && !other.connections.has(this)) {
-            this.connections.add(other)
+    public addChild(child: Layer) {
+        if (!this.children.has(child) && !child.children.has(this)) {
+            this.children.add(child)
+            child.parents.add(this)
 
-            let newWire = new Wire(this, other)
+            let newWire = new Wire(this, child)
             this.wires.add(newWire)
-            other.wires.add(newWire)
+            child.wires.add(newWire)
         }
     }
 
     public delete() {
         super.delete()
         this.wires.forEach((w) => w.delete()) // deleting wires should delete layer connection sets
+    }
+
+    public toJson() {
+        return {
+            "layer_name": this.layerType,
+            "children_ids": Array.from(this.children, child => child.uid),
+            "parent_ids": Array.from(this.parents, parent => parent.uid),
+            "params": {},
+            "id": this.uid
+        }
     }
 }
 
@@ -143,6 +155,12 @@ export abstract class ActivationLayer extends Layer {
 
     public removeActivation() {
         this.activation = null
+    }
+
+    public toJson() {
+        let json = super.toJson()
+        json["activation"] = this.activation.activationType
+        return json
     }
 }
 

@@ -46,32 +46,20 @@ document.addEventListener("DOMContentLoaded", function() {
 function graphToJson() {
 	// Initialize queues, dags, and parents (visited) 
 	let queue: Layer[] = [svgData.input]
-	let dag: Map<Layer, Set<Layer>> = new Map() // nodes to children
-	let parents: Map<Layer, Layer> = new Map() // node to its parent in BFS
-	parents.set(svgData.input, null) // Input has no parent
+	let visited: Set<Layer> = new Set()
+	let json: {}[] = []
 	while (queue.length != 0) {
-		let current = queue.shift()	
-		// create a new node in the dag	
-		dag.set(current, new Set())
-		// don't search past output since its the end node
-		if (!(current instanceof Output)) {
-			// check each connections of the node
-			for (let child of current.connections) {
-				// add node to queue if not visited already
-				if (!parents.has(child)) {
-					queue.push(child)
-					parents.set(child, current)
-				}
-
-				// for all connections of the node beside its parent, add to dag
-				if (child !== parents.get(current)) {
-					dag.get(current).add(child)
-				}
+		let current = queue.shift()
+		json.push(current.toJson())
+		// check each connections of the node
+		for (let child of current.children) {
+			if (!visited.has(child)) {
+				queue.push(child)
+				visited.add(child)
 			}
 		}
 	}
-	let json = []
-	console.log(dag)
+	console.log(json)
 }
 
 function highlightOnMouseOver(elmt){
