@@ -96,15 +96,10 @@ function appendItem(options){
 			case 'sigmoid': item = new Sigmoid(); console.log("Created Sigmoid"); break;
 			case 'softmax': item = new Softmax(); console.log("Created Softmax"); break;
 		}
-		
-		
-	// 	// case 'wire': var item = new Wire(options.detail); break;
-	// 	// case 'input': var item = new Input(options.detail); break;
 	}
 	svgData[options.detail.itemType].push(item);
 	// item.index = svgData[options.detail.itemType].length-1;
 }
-
 
 
 // let svg;

@@ -29,9 +29,11 @@
 
 		<div id = 'generate' class = 'category'>
 			<div class = 'categoryTitle'>Train</div>
-			<div class = 'optionNC' data-actionType = 'python' onclick = 'console.log(generatePythonCode())'> On cloud </div>
+			<!-- <div class = 'optionNC' data-actionType = 'python' onclick = 'console.log(generatePythonCode())'> On cloud </div> -->
 
-			<div class = 'optionNC' data-actionType = 'json' onclick = 'download("model_info.json",makeJSON())'> Locally </div>
+			<!-- <div class = 'optionNC' data-actionType = 'json' onclick = 'download("model_info.json",makeJSON())'> Locally </div> -->
+			<div class = 'optionNC' data-actionType = 'js' onclick = 'call_train()'> Train </div>
+
 		</div>
 
 	</div>
@@ -69,6 +71,12 @@
 		<div class = 'category' id='paramtruck'>
 			<div class = 'categoryTitle'>Parameters</div>
 			<div id='defaultparambox' class = 'parambox'>Click on a layer to view and change its parameters.</div>
+			<div class = 'parambox'>
+				<div class = 'paramline'>
+					<div class = 'paramname'>units:</div>
+					<div class = 'paramvalue'>10</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
