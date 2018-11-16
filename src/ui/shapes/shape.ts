@@ -73,4 +73,12 @@ export class Point {
     minus(other: Point): Point {
         return new Point(this.x - other.x, this.y - other.y);
     }
+
+    angleTo(other: Point): number {
+        return Math.atan2(other.y - this.y, other.x - this.x) * 180 / Math.PI;//angle for tangent
+    }
+
+    midpoint(other: Point): Point {
+        return new Point((this.x+other.x)/2, (this.y+other.y)/2)
+    }
 }

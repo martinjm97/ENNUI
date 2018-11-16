@@ -1,4 +1,3 @@
-// Adapted from https://github.com/tensorflow/tfjs-examples/tree/master/mnist
 import * as tf from '@tensorflow/tfjs';
 
 export const IMAGE_H = 28;
@@ -6,7 +5,7 @@ export const IMAGE_W = 28;
 const IMAGE_SIZE = IMAGE_H * IMAGE_W;
 const NUM_CLASSES = 10;
 const NUM_DATASET_ELEMENTS = 65000;
-    
+
 const NUM_TRAIN_ELEMENTS = 55000;
 const NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
 
@@ -20,12 +19,7 @@ const MNIST_LABELS_PATH =
  * tf.Tensors.
  */
 export class MnistData {
-  datasetImages: Float32Array;
-  datasetLabels: Uint8Array;
-  trainImages: Float32Array;
-  trainLabels: Uint8Array;
-  testImages: Float32Array;
-  testLabels: Uint8Array;
+  datasetImages: any
   constructor() {}
 
   async load() {
@@ -85,6 +79,12 @@ export class MnistData {
         this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS);
   }
 
+  datasetLabels: any
+  trainImages: any
+  testImages: any
+  trainLabels: any
+  testLabels: any
+
   /**
    * Get all training data as a data tensor and a labels tensor.
    *
@@ -94,11 +94,18 @@ export class MnistData {
    *     `[numTrainExamples, 10]`.
    */
   getTrainData() {
-    const xs = tf.tensor4d(
+    let numExamples = 10000;
+    let xs = tf.tensor4d(
         this.trainImages,
         [this.trainImages.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
-    const labels = tf.tensor2d(
+    let labels = tf.tensor2d(
         this.trainLabels, [this.trainLabels.length / NUM_CLASSES, NUM_CLASSES]);
+
+    if (numExamples != null) {
+        xs = xs.slice([0, 0, 0, 0], [numExamples, IMAGE_H, IMAGE_W, 1]);
+        labels = labels.slice([0, 0], [numExamples, NUM_CLASSES]);
+    }
+
     return {xs, labels};
   }
 

@@ -51,7 +51,7 @@ export abstract class Activation extends Draggable {
         }
 
         // Snap activations if they are close enough
-        let snappingDistance = 400
+        let snappingDistance = 20
         if (minDist < snappingDistance) {
             // if snap happens remove old connection
             if (this.layer != null) {

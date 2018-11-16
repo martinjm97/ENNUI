@@ -4,6 +4,7 @@ import { Wire } from "./shapes/wire";
 import { Shape } from "./shapes/shape";
 import { Relu, Sigmoid, Softmax } from "./shapes/activation";
 import { windowProperties } from "./window";
+import { buildNetwork, train } from "../model/build_network";
 
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
@@ -32,7 +33,8 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 				break;
 			case 'Enter' :
-				graphToJson();
+				// graphToJson();
+				train(buildNetwork(svgData.input))
 				break;
 		}
 	};

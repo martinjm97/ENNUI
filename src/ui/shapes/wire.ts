@@ -48,13 +48,14 @@ export class Wire {
     updatePosition() {
         let sourceCenter = this.source.getPosition().add(this.source.center())
         let destCenter = this.dest.getPosition().add(this.dest.center())
+        let midPoint = sourceCenter.midpoint(destCenter)
         this.line.attr('x1',sourceCenter.x)
                  .attr('y1',sourceCenter.y)
                  .attr('x2',destCenter.x)
                  .attr('y2',destCenter.y)
-        let angle = Math.atan2(destCenter.y - sourceCenter.y, destCenter.x - sourceCenter.x) * 180 / Math.PI;//angle for tangent
-        this.triangle.attr("transform", "translate(" + ((sourceCenter.x+destCenter.x)/2) + ","
-                + ((sourceCenter.y+destCenter.y)/2) + ")rotate("+ angle + ")")
+        
+        this.triangle.attr("transform", "translate(" + midPoint.x + ","
+                + midPoint.y + ")rotate("+ sourceCenter.angleTo(destCenter) + ")")
     }
 
     public select() {
