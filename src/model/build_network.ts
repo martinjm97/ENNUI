@@ -15,8 +15,8 @@ typeToTensor.set("Conv2D", tf.layers.conv2d)
 let defaults: Map<String, any> = new Map()
 defaults.set("Input", {units: 10})
 defaults.set("Dense", {units: 10, activation: 'relu'})
-defaults.set("MaxPooling2D", {activation: 'relu', poolSize: 2, strides: 2})
-defaults.set("Conv2D", {activation: 'relu', kernelSize: 3, filters: 20})
+defaults.set("MaxPooling2D", {units: 10, activation: 'relu', poolSize: 2, strides: 2})
+defaults.set("Conv2D", {units: 10, activation: 'relu', kernelSize: 3, filters: 20})
 
 export function buildNetwork(input: Input) {
     // Initialize queues, dags, and parents (visited) 
@@ -26,16 +26,14 @@ export function buildNetwork(input: Input) {
     // let children: Map<Layer, any> = new Map()
 	let visited: Set<Layer> = new Set()
     // let json: {}[] = []
-    console.log("test1")
+    console.log("Building graph... ")
 	while (queue.length != 0) {
         let current = queue.shift()
         if (current.layerType != "Input" && current.layerType != "Output") {
-            console.log("test1", current)
             if (nextLayer.shape.length > 2 && current.layerType == "Dense") {
                 nextLayer = <SymbolicTensor> tf.layers.flatten().apply(nextLayer)
             }
             nextLayer = typeToTensor.get(current.layerType)(defaults.get(current.layerType)).apply(nextLayer)
-            console.log("test2")
         }
         
 		// check each connections of the node
@@ -45,30 +43,18 @@ export function buildNetwork(input: Input) {
 				visited.add(child)
 			}
 		}
-    } 
+    }
+    
+    console.log("Building model... ")
+    let test = tf.model({inputs: inputLayer, outputs: <SymbolicTensor> nextLayer})
+    return test
+}
+
+export function buildNetworkDAG(input: Input) {
     // TODO: Walk back from output node adding to concats as needed and not applying
     // Then, walk forward from input applying the line graph created
-    
-    
-    console.log("hi")
-    let test = tf.model({inputs: inputLayer, outputs: <SymbolicTensor> nextLayer})
-    console.log(test)
-    console.log("hi")
-    return test
-// 	console.log(json)
-
-
-
-
-//   // Creating a DAG neural network architecture
-// //   const inputs = tf.input({shape: [10]});
-//   const dense1 = tf.layers.dense({units: 8}).apply(inputs);
-//   // const dense2 = tf.layers.dense({units: 8}).apply(inputs);
-//   const concat = tf.layers.concatenate().apply(dense1);
-//   const predictions = tf.layers.dense({units: 3, activation: 'softmax'}).apply(concat);
-//   const model = tf.model({inputs: inputs, outputs: <SymbolicTensor> predictions});
-//   return model;
 }
+
 
 /**
  * Compile and train the given model.
@@ -101,7 +87,7 @@ export async function train(model) {
     let trainBatchCount = 0;
 
     const trainData = data.getTrainData();
-    const testData = data.getTestData(1000);
+    const testData = data.getTestData(100);
 
     const totalNumBatches =
         Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / batchSize) *

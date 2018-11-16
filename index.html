@@ -32,7 +32,6 @@
 			<!-- <div class = 'optionNC' data-actionType = 'python' onclick = 'console.log(generatePythonCode())'> On cloud </div> -->
 
 			<!-- <div class = 'optionNC' data-actionType = 'json' onclick = 'download("model_info.json",makeJSON())'> Locally </div> -->
-			<div class = 'optionNC' data-actionType = 'js' onclick = 'call_train()'> Train </div>
 
 		</div>
 
@@ -42,12 +41,14 @@
 
 	<!-- The right panel -->
 	<div id = 'paramshell'>
+		<div class = 'train' data-actionType = 'json'> Train </div>
+
 		<div class = 'category' id = 'kerasinfo'>
 			<div class = 'categoryTitle'>Performance</div>
 			<div class = 'parambox'>
-				<!-- <div id = 'ti_status' class = 'paramline'>
-					<div class = 'paramname'>Model status:</div>
-					<textarea class = 'paramvalue'>Inactive</textarea>
+				<!-- <div id = 'ti_training' class = 'paramline'>
+					<div class = 'paramname'>Training:</div>
+					<div class = 'paramvalue'>No</div>
 				</div> -->
 				<div id = 'ti_acc' class = 'paramline'>
 					<div class = 'paramname'>Accuracy:</div>
@@ -71,12 +72,12 @@
 		<div class = 'category' id='paramtruck'>
 			<div class = 'categoryTitle'>Parameters</div>
 			<div id='defaultparambox' class = 'parambox'>Click on a layer to view and change its parameters.</div>
-			<div class = 'parambox'>
+			<!-- <div class = 'parambox'>
 				<div class = 'paramline'>
 					<div class = 'paramname'>units:</div>
 					<div class = 'paramvalue'>10</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 

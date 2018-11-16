@@ -12,7 +12,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	for(let elmt of elmts){
 		highlightOnMouseOver(elmt);
 		dispatchCreationOnClick(elmt);
-    }
+	}
+	
+	var elmts = document.getElementsByClassName('train');
+	for(let elmt of elmts){
+		trainOnHighlight(elmt);
+		trainOnClick(elmt)
+	}
     
     window.addEventListener('create', function( e ) {
 		appendItem(e);
@@ -44,6 +50,30 @@ document.addEventListener("DOMContentLoaded", function() {
 
     
 });
+
+function trainOnHighlight(elmt){
+	elmt.addEventListener('mouseover',function(e){
+		elmt.style.background = '#002b2c'
+	});
+	elmt.addEventListener('mouseout',function(e){
+		elmt.style.background = '#007400'
+	});
+}
+
+
+function trainOnClick(elmt){
+	elmt.addEventListener('click', async function(e){
+		// let trainingBox = document.getElementById('ti_training');
+		// trainingBox.children[1].innerHTML = 'Yes'
+		elmt.innerHTML = "Training"
+		// TODO: Change color during training
+		// elmt.style.backgroundColor = '#900000'
+		await train(buildNetwork(svgData.input))
+		elmt.innerHTML = "Train"
+		// elmt.style.background = '#007400'
+		// trainingBox.children[1].innerHTML = 'No'
+	});
+}
 
 function graphToJson() {
 	// Initialize queues, dags, and parents (visited) 
