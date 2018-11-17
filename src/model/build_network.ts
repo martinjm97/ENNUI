@@ -3,6 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 import {IMAGE_H, IMAGE_W, MnistData} from './data';
 import { SymbolicTensor } from '@tensorflow/tfjs';
 import { Input, Layer } from '../ui/shapes/layer';
+import { text } from 'd3';
 
 let typeToTensor: Map<String, any> = new Map()
 
@@ -102,12 +103,13 @@ export async function train(model) {
         onBatchEnd: async (batch, logs) => {
             trainBatchCount++;
             console.log(batch, logs)
-            if (trainBatchCount % 10 == 0){
-                let accBox = document.getElementById('ti_acc');
-                let lossBox = document.getElementById('ti_loss');
-                accBox.children[1].innerHTML = String(Number((100*logs.acc).toFixed(2)))
-                lossBox.children[1].innerHTML = String(Number((logs.loss).toFixed(2)))
-            }
+            let accBox = document.getElementById('ti_acc');
+            let lossBox = document.getElementById('ti_loss');
+            let trainBox = document.getElementById('ti_training');
+            accBox.children[1].innerHTML = String(Number((100*logs.acc).toFixed(2)))
+            lossBox.children[1].innerHTML = String(Number((logs.loss).toFixed(2)))
+            trainBox.children[1].innerHTML = String((trainBatchCount / totalNumBatches * 100).toFixed(1)+'%')
+
             console.log(
                 `Training... (` +
                 `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
@@ -133,6 +135,11 @@ export async function train(model) {
     const testResult = model.evaluate(testData.xs, testData.labels);
     const testAccPercent = testResult[1].dataSync()[0] * 100;
     const finalValAccPercent = valAcc * 100;
+    
+    // elmt.style.background = '#007400'
+    // let trainingBox = document.getElementById('ti_training');
+    // trainingBox.children[1].innerHTML = 'No'
+
     // TODO: Add a termination message
     // ui.logStatus(
     //     `Final validation accuracy: ${finalValAccPercent.toFixed(1)}%; ` +

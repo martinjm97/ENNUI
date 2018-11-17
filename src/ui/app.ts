@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function trainOnHighlight(elmt){
 	elmt.addEventListener('mouseover',function(e){
-		elmt.style.background = '#002b2c'
+		elmt.style.background = '#00008B'
 	});
 	elmt.addEventListener('mouseout',function(e){
 		elmt.style.background = '#007400'
@@ -63,15 +63,15 @@ function trainOnHighlight(elmt){
 
 function trainOnClick(elmt){
 	elmt.addEventListener('click', async function(e){
-		// let trainingBox = document.getElementById('ti_training');
-		// trainingBox.children[1].innerHTML = 'Yes'
+		let trainingBox = document.getElementById('ti_training');
+		trainingBox.children[1].innerHTML = 'Yes'
 		elmt.innerHTML = "Training"
 		// TODO: Change color during training
 		// elmt.style.backgroundColor = '#900000'
 		await train(buildNetwork(svgData.input))
 		elmt.innerHTML = "Train"
+		trainingBox.children[1].innerHTML = 'No'
 		// elmt.style.background = '#007400'
-		// trainingBox.children[1].innerHTML = 'No'
 	});
 }
 
