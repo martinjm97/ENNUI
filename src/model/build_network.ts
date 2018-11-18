@@ -2,8 +2,9 @@ import * as tf from '@tensorflow/tfjs';
 
 import {IMAGE_H, IMAGE_W, MnistData} from './data';
 import { SymbolicTensor } from '@tensorflow/tfjs';
-import { Input, Layer } from '../ui/shapes/layer';
+import { Input, Layer, Output } from '../ui/shapes/layer';
 import { text } from 'd3';
+import { assert } from '@tensorflow/tfjs-core/dist/util';
 
 let typeToTensor: Map<String, any> = new Map()
 
@@ -51,9 +52,60 @@ export function buildNetwork(input: Input) {
     return test
 }
 
-export function buildNetworkDAG(input: Input) {
-    // TODO: Walk back from output node adding to concats as needed and not applying
-    // Then, walk forward from input applying the line graph created
+export function buildNetworkDAG(out: Layer) {
+    let input = null
+    let cache: Map<Layer, any> = new Map()
+    function dfs(out: Layer) {
+        console.log("Entering DAG... ")
+        console.log(out)
+        // Check the memo
+        if (cache.has(out)) {
+            return cache.get(out)
+        }
+
+        // When we reach the 
+        if (out.layerType == "Input") {
+            console.log("Should be input... ")
+            console.log(out)
+            input = tf.input({shape: [IMAGE_H, IMAGE_W, 1]})
+            cache.set(out, input)
+            return input
+        }
+    
+        let parents = out.parents
+        let preds: SymbolicTensor[] = []
+        for (let parent of parents) {
+            preds.push(<SymbolicTensor> dfs(parent))
+        }
+        let prevLayer: SymbolicTensor = null 
+        if (preds.length > 1) {  // multiple layers coming in are concatentated
+            console.log("Should be output... ")
+            console.log(out)
+            prevLayer = <SymbolicTensor> tf.layers.concatenate().apply(preds)
+            if (prevLayer.shape.length > 2) {
+                prevLayer = <SymbolicTensor> tf.layers.flatten().apply(prevLayer)
+            }
+        } else {  // a single layer
+            prevLayer = preds[0]
+            console.log("About to try to combine... ")
+            console.log(prevLayer)
+            if (prevLayer.shape.length > 2 && out.layerType == "Dense") {  // ensure input dimensions
+                prevLayer = <SymbolicTensor> tf.layers.flatten().apply(prevLayer)
+            }
+        }
+
+        // We want to add the node to the graph and memoize         
+        if (out.layerType != "Output"){
+            let layer = typeToTensor.get(out.layerType)(defaults.get(out.layerType)).apply(prevLayer)
+            cache.set(out, layer)
+            return layer
+        }
+
+        // When it's output we make an extra dense with a softmax to output something of the right dimensions
+        prevLayer = <SymbolicTensor> tf.layers.dense({units: 10, activation: 'softmax'}).apply(prevLayer)
+        return tf.model({inputs: input, outputs: <SymbolicTensor> prevLayer})
+    }
+    return dfs(out)
 }
 
 
