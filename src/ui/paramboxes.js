@@ -1,13 +1,13 @@
-// 			// <!--<div class = 'parambox'>
-// 			// 	<div class = 'paramline'>
-// 			// 		<div class = 'paramname'>units:</div>
-// 			// 		<div class = 'paramvalue'>10</div>
-// 			// 	</div>
-// 			// 	<div class = 'paramline'>
-// 			// 		<div class = 'paramname'>bla:</div>
-// 			// 		<input class = 'paramvalue'>8</input>
-// 			// 	</div>
-// 			// </div>-->
+// <!--<div class = 'parambox'>
+// 	<div class = 'paramline'>
+// 		<div class = 'paramname'>units:</div>
+// 		<div class = 'paramvalue'>10</div>
+// 	</div>
+// 	<div class = 'paramline'>
+// 		<div class = 'paramname'>bla:</div>
+// 		<input class = 'paramvalue'>8</input>
+// 	</div>
+// </div>-->
 // function createParamBox(type){
 // 	let box = boxmaker['create'+titleCase(type)+'Parambox']();
 // 	box.style.visibility = 'hidden'

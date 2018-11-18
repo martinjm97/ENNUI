@@ -46,6 +46,17 @@
 	font-family: Helvetica, Arial, Sans-Serif;
 }
 
+#main > #paramshell > .train {
+	background: #007400;
+	color: #eee;
+	text-align:center;
+	height:35px;
+	line-height:35px;
+	font-size:22px;
+	font-family: Helvetica, Arial, Sans-Serif;
+	cursor:pointer;
+}
+
 #main > #menu > .category{
 	padding-bottom: 15px;
 	width:100%;
