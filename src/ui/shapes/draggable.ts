@@ -27,8 +27,12 @@ export abstract class Draggable {
                     this.select()
                     firstDrag = false
                 }
-                this.svgComponent.attr("transform", "translate(" + (d.x = d3.event.x) + ","
-                + (d.y = d3.event.y) + ")")
+                let canvas = document.getElementById("svg")          
+                // TODO: take into account the width of the object this.svgComponent      
+                if (d3.event.x > 0 && d3.event.x < canvas.clientWidth 
+                    && d3.event.y > 0 && d3.event.y < canvas.clientHeight) {
+                    this.svgComponent.attr("transform", "translate(" + (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")")
+                }
                 console.log("drag", d3.event.x, d3.event.y)
 
                 this.dragAction(d)

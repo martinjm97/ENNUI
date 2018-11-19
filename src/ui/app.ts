@@ -4,7 +4,8 @@ import { Wire } from "./shapes/wire";
 import { Shape } from "./shapes/shape";
 import { Relu, Sigmoid, Softmax } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetwork, train } from "../model/build_network";
+import { buildNetwork, train, buildNetworkDAG } from "../model/build_network";
+import { mod } from "@tensorflow/tfjs";
 
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
@@ -68,7 +69,10 @@ function trainOnClick(elmt){
 		elmt.innerHTML = "Training"
 		// TODO: Change color during training
 		// elmt.style.backgroundColor = '#900000'
-		await train(buildNetwork(svgData.input))
+		let model = buildNetworkDAG(svgData.output)
+		console.log("Built Model... ")
+		console.log(model)
+		await train(model)
 		elmt.innerHTML = "Train"
 		trainingBox.children[1].innerHTML = 'No'
 		// elmt.style.background = '#007400'
