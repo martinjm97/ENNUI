@@ -1,0 +1,4 @@
+left alignment of text
+transparency on the dot for dragging
+color scheme + sizing
+potentially find ways to provide instructions
