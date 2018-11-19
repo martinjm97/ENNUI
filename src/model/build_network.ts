@@ -69,7 +69,7 @@ export function buildNetworkDAG(out: Layer) {
             return cache.get(out)
         }
 
-        // When we reach the 
+        // When we reach the input
         if (out.layerType == "Input") {
             console.log("Should be input... ")
             console.log(out)
@@ -87,7 +87,14 @@ export function buildNetworkDAG(out: Layer) {
         if (preds.length > 1) {  // multiple layers coming in are concatentated
             console.log("Should be output... ")
             console.log(out)
-            prevLayer = <SymbolicTensor> tf.layers.concatenate().apply(preds)
+            let l = []
+            for (let pred of preds) {
+                if (pred.shape.length > 2) {
+                    pred = <SymbolicTensor> tf.layers.flatten().apply(pred)
+                }
+                l.push(pred)
+            }
+            prevLayer = <SymbolicTensor> tf.layers.concatenate().apply(l)
             if (prevLayer.shape.length > 2) {
                 prevLayer = <SymbolicTensor> tf.layers.flatten().apply(prevLayer)
             }
@@ -108,6 +115,9 @@ export function buildNetworkDAG(out: Layer) {
         }
 
         // When it's output we make an extra dense with a softmax to output something of the right dimensions
+        if (prevLayer.shape.length > 2) {
+            prevLayer = <SymbolicTensor> tf.layers.flatten().apply(prevLayer)
+        }
         prevLayer = <SymbolicTensor> tf.layers.dense({units: 10, activation: 'softmax'}).apply(prevLayer)
         return tf.model({inputs: input, outputs: <SymbolicTensor> prevLayer})
     }

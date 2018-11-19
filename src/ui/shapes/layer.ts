@@ -202,7 +202,7 @@ export class Input extends Layer {
     wireConnectionPoints = [new Point(20, 10), new Point(20, 30)]
 
 	constructor(){
-        super([new Rectangle(new Point(0,0), 40, 40, '#010180')])
+        super([new Rectangle(new Point(0,0), 40, 40, '#9500c1')])
     }
     
     delete() {}
@@ -212,10 +212,8 @@ export class Output extends Layer {
     layerType = "Output";
     wireConnectionPoints = [new Point(0, -60), new Point(0, 0), new Point(0, 60)]
     constructor(){
-        super([new Circle(new Point(0, -60), 10, '#010180'),
-               new Circle(new Point(0, -20), 10, '#010180'),
-               new Circle(new Point(0, 20), 10, '#010180'),
-               new Circle(new Point(0, 60), 10, '#010180')])
+        super([new Rectangle(new Point(-8, -90), 30, 200, '#9500c1')])
+
     }
 
     select() {
