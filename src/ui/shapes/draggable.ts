@@ -62,6 +62,7 @@ export abstract class Draggable {
     }
 
     public delete() {
+        this.unselect()
         this.svgComponent.remove()
     }
 

@@ -17,7 +17,7 @@ typeToTensor.set("Conv2D", tf.layers.conv2d)
 let defaults: Map<String, any> = new Map()
 defaults.set("Input", {units: 10})
 defaults.set("Dense", {units: 10, activation: 'relu'})
-defaults.set("MaxPooling2D", {poolSize: 2, strides: 2, activation: 'relu'})
+defaults.set("MaxPooling2D", {poolSize: 2, activation: 'relu'})
 defaults.set("Conv2D", {kernelSize: 3, filters: 32, activation: 'relu'})
 
 export function buildNetwork(input: Input) {
@@ -109,7 +109,13 @@ export function buildNetworkDAG(out: Layer) {
 
         // We want to add the node to the graph and memoize         
         if (out.layerType != "Output"){
-            let layer = typeToTensor.get(out.layerType)(defaults.get(out.layerType)).apply(prevLayer)
+            let parameters = defaults.get(out.layerType)
+            let config = out.toJson().params
+            for (let param in config) {
+                parameters[param] = config[param]
+            }
+            console.log(parameters)
+            let layer = typeToTensor.get(out.layerType)(parameters).apply(prevLayer)
             cache.set(out, layer)
             return layer
         }
@@ -133,10 +139,11 @@ export function buildNetworkDAG(out: Layer) {
 export async function train(model) {
     // TODO: start method
     // ui.logStatus('Training model...');
-
+    console.log("train")
     let data = new MnistData();
+    console.log("train1")
     await data.load();
-
+    console.log("train2")
     const LEARNING_RATE = 0.01;
     const optimizer = 'rmsprop';
 
@@ -145,7 +152,7 @@ export async function train(model) {
         loss: 'categoricalCrossentropy',
         metrics: ['accuracy'],
     });
-
+    console.log("train3")
     const batchSize = 64;
     const validationSplit = 0.15;
 
@@ -157,11 +164,11 @@ export async function train(model) {
 
     const trainData = data.getTrainData();
     const testData = data.getTestData(100);
-
+    console.log("train4")
     const totalNumBatches =
         Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / batchSize) *
         trainEpochs;
-
+        console.log("train5")
     let valAcc;
     await model.fit(trainData.xs, trainData.labels, {
         batchSize,
