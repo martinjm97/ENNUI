@@ -55,7 +55,6 @@ export abstract class Layer extends Draggable {
         let currSelected = windowProperties.selectedElement;
         if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
             currSelected.addChild(this)
-            console.log(this.children, this.parents)
         }
         super.select()
         this.wireCircle.style("visibility", "visible")
@@ -130,7 +129,6 @@ export abstract class ActivationLayer extends Layer {
             let p = this.getPosition()
             this.activation.svgComponent.attr("transform", "translate(" + (p.x) + ","
             + (p.y) + ")").data([{"x": p.x, "y": p.y}])
-            console.log("activation drag", p.x, p.y)
         }
     }
 

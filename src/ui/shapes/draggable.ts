@@ -29,11 +29,9 @@ export abstract class Draggable {
                 }
                 let canvas = document.getElementById("svg")          
                 // TODO: take into account the width of the object this.svgComponent      
-                if (d3.event.x > 0 && d3.event.x < canvas.clientWidth 
-                    && d3.event.y > 0 && d3.event.y < canvas.clientHeight) {
-                    this.svgComponent.attr("transform", "translate(" + (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")")
-                }
-                console.log("drag", d3.event.x, d3.event.y)
+                let tx = Math.min(Math.max(0, d3.event.x), canvas.clientWidth)
+                let ty = Math.min(Math.max(0, d3.event.y), canvas.clientHeight)
+                this.svgComponent.attr("transform", "translate(" + (d.x = tx) + "," + (d.y = ty) + ")")
 
                 this.dragAction(d)
             })
@@ -67,7 +65,6 @@ export abstract class Draggable {
 
     public center(): Point {
         let bbox = this.svgComponent.node().getBBox()
-        console.log(bbox)
         return new Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2)
     }
     

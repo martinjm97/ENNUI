@@ -33,8 +33,6 @@ export abstract class Activation extends Draggable {
                          .attr("height", middleTooth.height)
                          .style("fill", middleTooth.color);
 
-        console.log("made a thing! ")
-
         this.makeDraggable() 
     }
 

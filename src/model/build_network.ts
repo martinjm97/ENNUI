@@ -94,7 +94,7 @@ export function buildNetworkDAG(out: Layer) {
             }
         } else {  // a single layer
             prevLayer = preds[0]
-            console.log("About to try to combine... ")
+            console.log("Single layer... ")
             console.log(prevLayer)
             if (prevLayer.shape.length > 2 && out.layerType == "Dense") {  // ensure input dimensions
                 prevLayer = <SymbolicTensor> tf.layers.flatten().apply(prevLayer)
