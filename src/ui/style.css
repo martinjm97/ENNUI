@@ -71,7 +71,7 @@
 
 #main > #paramshell > .category > .parambox > .paramline{
 	width:100%;
-	text-align:center;
+	text-align:left;
 	height:30px;
 	line-height:30px;
 	font-size:22px;
@@ -82,7 +82,7 @@
 
 #main > #paramshell > .category > .parambox > .paramline > .paramname{
 	width:70%;
-	text-align:center;
+	text-align:left;
 	height:100%;
 	line-height:100%;
 	font-size:16px;
@@ -116,25 +116,6 @@ div[class='option'] {
 	line-height:30px;
 	font-size:18px;
 
-	font-family: Helvetica, Arial, Sans-Serif;
-
-	cursor:pointer;
-
-	margin-top: 10px;
-	margin-left: 10px;
-	margin-right: 10px;
-
-	background-color: transparent;
-
-	user-select:none;
-}
-
-div[class='optionNC'] {
-	width:calc(100% - 20px);
-	text-align:center;
-	height:30px;
-	line-height:30px;
-	font-size:18px;
 	font-family: Helvetica, Arial, Sans-Serif;
 
 	cursor:pointer;

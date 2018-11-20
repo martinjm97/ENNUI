@@ -7,20 +7,46 @@ export abstract class Draggable {
     static readonly defaultLocation: Point = new Point(50,100);
     htmlComponent: any;
     svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-
+    hoverText: any;
+    moveTimeout: any;
     constructor() {
+        this.hoverText = d3.select("body")
+                        .append("div")
+                        .style("position", "absolute")
+                        .style("font-weight", "bold")
+                        .style("padding", "6px")
+                        .style("background", "rgba(0, 0, 0, 0.8)")
+                        .style("color", "#eee")
+                        .style("border-radius", "2px")
+                        .style("visibility", "hidden")
+                        .style("font-family", "Helvetica")
+                        .style("user-select","none")
+                        .text(this.getHoverText());         
         this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
                               .append<SVGGraphicsElement>("g")
                               .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
                               .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')')
-                              .on("click", () => {this.select()})
+                              .on("click", () => { 
+                                  this.select()
+                                  window.clearTimeout(this.moveTimeout)
+                                  this.hoverText.style("visibility", "hidden") 
+                                })
+                              .on("mousemove", () => {
+                                  this.hoverText.style("visibility", "hidden")
+                                  clearTimeout(this.moveTimeout);
+                                  this.moveTimeout = setTimeout(() => {this.hoverText.style("visibility", "visible")}, 1000);
+                                  this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
+                              .on("mouseout", () => {clearTimeout(this.moveTimeout)})
         this.makeDraggable()
     }
 
     public makeDraggable(){
         var firstDrag = true
+
         let dragHandler = d3.drag().clickDistance(4)
             .on("drag", (d: any) => {
+                clearTimeout(this.moveTimeout)
+                this.hoverText.style("visibility", "hidden")
                 if (firstDrag) {
                     // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
                     // instead of after actually dragging a little bit)
@@ -36,12 +62,18 @@ export abstract class Draggable {
                 this.dragAction(d)
             })
             .on("end", () => {firstDrag = true})
-
         this.svgComponent.call(dragHandler)
+    }
+
+    public hoverAction(){ 
+
     }
 
     // Special behavior when being dragged e.g. activations snap to Layers
     public dragAction(d) {}
+
+    // The text to display when hovering over an object
+    public getHoverText(): string { return "" }
 
     public select() {
         if (windowProperties.selectedElement != null) {

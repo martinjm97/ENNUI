@@ -73,6 +73,9 @@ export class Relu extends Activation {
     constructor() {
         super("#00CCCC")
     }
+
+    getHoverText(): string { return "relu" }
+
 }
 
 export class Sigmoid extends Activation {
@@ -81,6 +84,9 @@ export class Sigmoid extends Activation {
     constructor() {
         super("#FF00FF")
     }
+
+    getHoverText(): string { return "sigmoid" }
+
 }
 
 export class Softmax extends Activation {
@@ -89,4 +95,6 @@ export class Softmax extends Activation {
     constructor() {
         super("6000a0")
     }
+
+    getHoverText(): string { return "softmax" }
 }

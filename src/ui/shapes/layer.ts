@@ -236,6 +236,9 @@ export class Conv2D extends ActivationLayer {
         line3.appendChild(value3);
         this.paramBox.append(line3);
     }
+
+    public getHoverText(): string { return "Conv" }
+
 }
 
 export class Dense extends ActivationLayer {
@@ -258,6 +261,7 @@ export class Dense extends ActivationLayer {
         this.paramBox.append(line);
     }
 
+    getHoverText(): string { return "Dense" }
 
 } 
 
@@ -285,6 +289,8 @@ export class MaxPooling2D extends ActivationLayer {
         this.paramBox.append(line);
     }
 
+    getHoverText(): string { return "maxpool" }
+
 }
 
 export class Input extends Layer {
@@ -295,6 +301,8 @@ export class Input extends Layer {
         super([new Rectangle(new Point(0,0), 40, 40, '#9500c1')])
     }
     
+    getHoverText(): string { return "Input" }
+
     delete() {}
 }
 
@@ -307,6 +315,8 @@ export class Output extends Layer {
         this.wireCircle.style("display", "none")
 
     }
+
+    getHoverText(): string { return "Output" }
     
     delete() {}
 }
