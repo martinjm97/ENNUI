@@ -57,7 +57,7 @@ function trainOnHighlight(elmt){
 		elmt.style.background = '#00008B'
 	});
 	elmt.addEventListener('mouseout',function(e){
-		elmt.style.background = '#007400'
+		elmt.style.background = '#447344'
 	});
 }
 

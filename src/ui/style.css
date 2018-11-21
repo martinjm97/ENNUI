@@ -1,27 +1,27 @@
 #main {
-	width:99%;
-	height:98%;
+	width:100%;
+	height:100%;
 	background-color: #D3D3DE;
-	border: solid 3px #555;
+	/* border: solid 3px #555; */
 }
 
 #main > #menu {
-	width: 197px;
+	width: 200px;
 	height: 100%;
 	float:left;
 	background-color: #E5E5FC;
-	border-right:solid 3px #555;
+	/* border-right:solid 3px #555; */
 	font-size:22px;
 	font-family: Helvetica;
 	user-select:none;
 }
 
 #main > #paramshell {
-	width: 197px;
+	width: 200px;
 	height: 100%;
 	float:right;
 	background-color: #E5E5FC;
-	border-left:solid 3px #555;
+	/* border-left:solid 3px #555; */
 	font-size:18px;
 	font-family: Helvetica;
 	user-select:none;
@@ -55,7 +55,7 @@
 }
 
 #main > #paramshell > .trainbox > .train {
-	background: #007400;
+	background: #447344;
 	color: #eee;
 	text-align:center;
 	height:50px;

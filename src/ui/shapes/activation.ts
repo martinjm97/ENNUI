@@ -15,19 +15,8 @@ export abstract class Activation extends Draggable {
         let middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, color);
         let lowerBlock: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, color);
 
-        this.svgComponent.append("rect")
-                         .attr("x", lowerBlock.location.x)
-                         .attr("y", lowerBlock.location.y)
-                         .attr("width", lowerBlock.width)
-                         .attr("height", lowerBlock.height)
-                         .style("fill", lowerBlock.color);
-
-        this.svgComponent.append("rect")
-                         .attr("x", middleTooth.location.x)
-                         .attr("y", middleTooth.location.y)
-                         .attr("width", middleTooth.width)
-                         .attr("height", middleTooth.height)
-                         .style("fill", middleTooth.color);
+        this.svgComponent.call(lowerBlock.svgAppender.bind(lowerBlock))
+        this.svgComponent.call(middleTooth.svgAppender.bind(middleTooth))
 
         this.makeDraggable() 
     }
@@ -67,7 +56,7 @@ export class Relu extends Activation {
     activationType = "relu"
 
     constructor() {
-        super("#00CCCC")
+        super("#736035")
     }
 
     getHoverText(): string { return "relu" }
@@ -78,7 +67,7 @@ export class Sigmoid extends Activation {
     activationType = "sigmoid"
 
     constructor() {
-        super("#FF00FF")
+        super("#38001C")
     }
 
     getHoverText(): string { return "sigmoid" }
@@ -89,7 +78,7 @@ export class Softmax extends Activation {
     activationType = "softmax"
     
     constructor() {
-        super("6000a0")
+        super("#344743")
     }
 
     getHoverText(): string { return "softmax" }

@@ -30,7 +30,7 @@ export abstract class Layer extends Draggable {
         this.uid = Layer.nextID
         Layer.nextID += 1
         this.block = block
-        for (var rect of this.block) {
+        for (let rect of this.block) {
             this.svgComponent.call(rect.svgAppender.bind(rect))
         }
         this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
@@ -122,7 +122,7 @@ export abstract class Layer extends Draggable {
  * Layers that can have an activation attached to them.
  */
 export abstract class ActivationLayer extends Layer {
-    hole = new Rectangle(new Point(0, 1), 10, 10, '#eee')
+    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
     activation: Activation = null;
 
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) { 
@@ -134,6 +134,7 @@ export abstract class ActivationLayer extends Layer {
         let lastBlock = blocks[blocks.length-1]
 
         let mask = this.svgComponent.append("mask").attr("id", "hole"+this.uid)
+        
         mask.append("rect")
             .attr("x", block[block.length-1].location.x)
             .attr("y", block[block.length-1].location.y)
@@ -143,8 +144,8 @@ export abstract class ActivationLayer extends Layer {
         mask.append("rect")
             .attr("x", this.hole.location.x)
             .attr("y", this.hole.location.y)
-            .attr("width", this.hole.width)
-            .attr("height", this.hole.height)
+            .attr("width", this.hole.width * 1.5)
+            .attr("height", this.hole.height * 1.5)
 
         d3.select(lastBlock).attr("mask", "url(#hole"+this.uid+")");
     }
@@ -196,9 +197,9 @@ export class Conv2D extends ActivationLayer {
     wireConnectionPoints = [new Point(-20, -40), new Point(5, -40), new Point(5, -15), new Point(-20, -15)]
 
     constructor() {
-        super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#028002'),
-               new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#029002'),
-               new Rectangle(new Point(-20, -40), Conv2D.blockSize, Conv2D.blockSize, '#02a002')])
+        super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#3B6B88'),
+               new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#3B7B88'),
+               new Rectangle(new Point(-20, -40), Conv2D.blockSize, Conv2D.blockSize, '#3B8B88')])
 
         
         // TODO: setting parameters logic should be pulled out into helper
@@ -254,7 +255,7 @@ export class Dense extends ActivationLayer {
     layerType = "Dense"
     wireConnectionPoints = [new Point(5, -70), new Point(5, -40), new Point(5, -10)]
     constructor() {
-        super([new Rectangle(new Point(-8, -90), 26, 100, '#b00202')])
+        super([new Rectangle(new Point(-8, -90), 26, 100, '#F7473B')])
 
         let line = document.createElement('div')
         line.className = 'paramline'
@@ -280,9 +281,9 @@ export class MaxPooling2D extends ActivationLayer {
     wireConnectionPoints = [new Point(-10, -20), new Point(-10, -5), new Point(5, -5), new Point(5, -20)]
 
     constructor() {
-        super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#3260a2'),
-               new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#3260c2'),
-               new Rectangle(new Point(-10, -20), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#3260e2')])
+        super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78114'),
+               new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78134'),
+               new Rectangle(new Point(-10, -20), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78154')])
 
         let line = document.createElement('div')
         line.className = 'paramline'
@@ -307,7 +308,7 @@ export class Input extends Layer {
     wireConnectionPoints = [new Point(20, 10), new Point(20, 30)]
 
 	constructor(){
-        super([new Rectangle(new Point(0,0), 40, 40, '#9500c1')], new Point(100, 400))
+        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, 400))
     }
     
     getHoverText(): string { return "Input" }
@@ -320,7 +321,7 @@ export class Output extends Layer {
     wireConnectionPoints = [new Point(0, -60), new Point(0, 0), new Point(0, 60)]
 
     constructor(){
-        super([new Rectangle(new Point(-8, -90), 30, 200, '#9500c1')], new Point(document.getElementById("svg").clientWidth - 100, 400))
+        super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')], new Point(document.getElementById("svg").clientWidth - 100, 400))
 
         this.wireCircle.style("display", "none")
 

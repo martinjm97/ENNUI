@@ -6,23 +6,20 @@ export abstract class Draggable {
     static readonly snapRadius: number = 400;
     htmlComponent: any;
     svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-    hoverText: any = d3.select("svg")
+    hoverText: any = d3.select("body")
                        .append("div")
-                       .attr("cx", 0)
-                       .attr("cy", 0)
-                       .attr("x", 0)
-                       .attr("y", 0)
                        .style("position", "absolute")
                        .style("font-weight", "bold")
                        .style("padding", "6px")
                        .style("background", "rgba(0, 0, 0, 0.8)")
                        .style("color", "#eee")
                        .style("border-radius", "2px")
-                       .style("visibility", "hidden")
+                       .style("display", "none")
                        .style("font-family", "Helvetica")
                        .style("user-select","none")
                        .text(this.getHoverText());
     moveTimeout: any;
+    
     constructor(defaultLocation=new Point(50,100)) {        
         this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
                               .append<SVGGraphicsElement>("g")
@@ -36,7 +33,7 @@ export abstract class Draggable {
                               .on("mousemove", () => {
                                   this.hoverText.style("visibility", "hidden")
                                   clearTimeout(this.moveTimeout);
-                                  this.moveTimeout = setTimeout(() => {this.hoverText.style("visibility", "visible")}, 1000);
+                                  this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 1000);
                                   this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
                               .on("mouseout", () => {clearTimeout(this.moveTimeout)})
         this.makeDraggable()

@@ -29,6 +29,7 @@ export class Rectangle extends Shape {
                                      .attr("width", this.width)
                                      .attr("height", this.height)
                                      .style("fill", this.color)
+                                     
     }
 }
 
