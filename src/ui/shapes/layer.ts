@@ -25,8 +25,8 @@ export abstract class Layer extends Draggable {
     static nextID: number = 0;
     uid: number;
 
-    constructor(block: Array<Shape>) { 
-        super()
+    constructor(block: Array<Shape>, defaultLocation) { 
+        super(defaultLocation)
         this.uid = Layer.nextID
         Layer.nextID += 1
         this.block = block
@@ -125,8 +125,8 @@ export abstract class ActivationLayer extends Layer {
     hole = new Rectangle(new Point(0, 1), 10, 10, '#eee')
     activation: Activation = null;
 
-    constructor(block: Array<Shape>) { 
-        super(block)
+    constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) { 
+        super(block, defaultLocation)
 
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this)
@@ -174,8 +174,7 @@ export abstract class ActivationLayer extends Layer {
         } 
         this.activation = activation
         let p = this.getPosition()
-        activation.svgComponent.attr("transform", "translate(" + (p.x) + ","
-        + (p.y) + ")")
+        activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
     }
 
     public removeActivation() {
@@ -307,8 +306,8 @@ export class Input extends Layer {
     layerType = "Input"
     wireConnectionPoints = [new Point(20, 10), new Point(20, 30)]
 
-	constructor(){
-        super([new Rectangle(new Point(0,0), 40, 40, '#9500c1')])
+	constructor(defaultLocation: Point=new Point(100, 400)){
+        super([new Rectangle(new Point(0,0), 40, 40, '#9500c1')], defaultLocation)
     }
     
     getHoverText(): string { return "Input" }
@@ -319,8 +318,9 @@ export class Input extends Layer {
 export class Output extends Layer {
     layerType = "Output";
     wireConnectionPoints = [new Point(0, -60), new Point(0, 0), new Point(0, 60)]
-    constructor(){
-        super([new Rectangle(new Point(-8, -90), 30, 200, '#9500c1')])
+
+    constructor(defaultLocation: Point=new Point(1000, 400)){
+        super([new Rectangle(new Point(-8, -90), 30, 200, '#9500c1')], defaultLocation)
 
         this.wireCircle.style("display", "none")
 

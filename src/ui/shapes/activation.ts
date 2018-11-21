@@ -8,6 +8,7 @@ export abstract class Activation extends Draggable {
 
     layer: ActivationLayer = null;
     abstract activationType: String;
+    defaultLocation: Point = new Point(50,150);
 
     constructor(color: string) { 
         super();
@@ -16,8 +17,8 @@ export abstract class Activation extends Draggable {
 
         this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
                               .append<SVGGraphicsElement>("g")
-                              .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
-                              .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')');
+                              .data([{"x": this.defaultLocation.x, "y": this.defaultLocation.y}])
+                              .attr('transform','translate('+this.defaultLocation.x+','+this.defaultLocation.y+')');
 
         this.svgComponent.append("rect")
                          .attr("x", lowerBlock.location.x)

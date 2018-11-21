@@ -14,19 +14,18 @@
 	float:left;
 	border-right:solid 3px #555;
 	font-size:22px;
-	font-family: Helvetica, Arial, Sans-Serif;
+	font-family: Helvetica;
 	user-select:none;
 
 }
 
 #main > #paramshell {
-
 	width: 197px;
 	height: 100%;
 	float:right;
 	border-left:solid 3px #555;
 	font-size:18px;
-	font-family: Helvetica, Arial, Sans-Serif;
+	font-family: Helvetica;
 	user-select:none;
 
 }
@@ -43,7 +42,7 @@
 	line-height: 35px;
 	color: #eee;
 	font-size:22px;
-	font-family: Helvetica, Arial, Sans-Serif;
+	font-family: Helvetica;
 }
 
 #main > #paramshell > .train {
@@ -53,7 +52,7 @@
 	height:35px;
 	line-height:35px;
 	font-size:22px;
-	font-family: Helvetica, Arial, Sans-Serif;
+	font-family: Helvetica;
 	cursor:pointer;
 }
 
@@ -75,7 +74,7 @@
 	height:30px;
 	line-height:30px;
 	font-size:22px;
-	font-family: Helvetica, Arial, Sans-Serif;
+	font-family: Helvetica;
 	background-color: transparent;
 	user-select:none;	
 }
@@ -86,7 +85,7 @@
 	height:100%;
 	line-height:100%;
 	font-size:16px;
-	font-family: Helvetica, Arial, Sans-Serif;
+	font-family: Helvetica;
 	background-color: transparent;
 	user-select:none;
 	float:left;
@@ -97,7 +96,7 @@
 	height:20px;
 	line-height:100%;
 	font-size:16px;
-	font-family: Helvetica, Arial, Sans-Serif;
+	font-family: Helvetica;
 	float:right;
 }
 
@@ -115,9 +114,7 @@ div[class='option'] {
 	height:30px;
 	line-height:30px;
 	font-size:18px;
-
-	font-family: Helvetica, Arial, Sans-Serif;
-
+	font-family: Helvetica;
 	cursor:pointer;
 
 	margin-top: 10px;
@@ -125,7 +122,6 @@ div[class='option'] {
 	margin-right: 10px;
 
 	background-color: transparent;
-
 	user-select:none;
 }
 

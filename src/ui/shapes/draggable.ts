@@ -4,12 +4,11 @@ import { windowProperties } from "../window";
 
 export abstract class Draggable {
     static readonly snapRadius: number = 400;
-    static readonly defaultLocation: Point = new Point(50,100);
     htmlComponent: any;
     svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     hoverText: any;
     moveTimeout: any;
-    constructor() {
+    constructor(defaultLocation=new Point(50,100)) {
         this.hoverText = d3.select("body")
                         .append("div")
                         .style("position", "absolute")
@@ -24,8 +23,8 @@ export abstract class Draggable {
                         .text(this.getHoverText());         
         this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
                               .append<SVGGraphicsElement>("g")
-                              .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
-                              .attr('transform','translate('+Draggable.defaultLocation.x+','+Draggable.defaultLocation.y+')')
+                              .data([{"x": defaultLocation.x, "y": defaultLocation.y}])
+                              .attr('transform','translate('+defaultLocation.x+','+defaultLocation.y+')')
                               .on("click", () => { 
                                   this.select()
                                   window.clearTimeout(this.moveTimeout)

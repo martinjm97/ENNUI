@@ -12,7 +12,6 @@ typeToTensor.set("Input", tf.input)
 typeToTensor.set("Dense", tf.layers.dense)
 typeToTensor.set("MaxPooling2D", tf.layers.maxPooling2d)
 typeToTensor.set("Conv2D", tf.layers.conv2d)
-// typeToTensor.set("output", tf)
 
 let defaults: Map<String, any> = new Map()
 defaults.set("Input", {units: 10})
