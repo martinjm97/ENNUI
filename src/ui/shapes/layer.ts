@@ -77,6 +77,10 @@ export abstract class Layer extends Draggable {
         this.paramBox.style.visibility = 'hidden'
     }
 
+    /**
+     * Add a child layer of this node (successor).
+     * @param child the layer pointed to by the given wire
+     */
     public addChild(child: Layer) {
         if (!this.children.has(child) && !child.children.has(this)) {
             this.children.add(child)
@@ -114,6 +118,9 @@ export abstract class Layer extends Draggable {
     }
 }
 
+/**
+ * Layers that can have an activation attached to them.
+ */
 export abstract class ActivationLayer extends Layer {
     hole = new Rectangle(new Point(0, 1), 10, 10, '#eee')
     activation: Activation = null;
@@ -177,7 +184,9 @@ export abstract class ActivationLayer extends Layer {
 
     public toJson() {
         let json = super.toJson()
-        json.params["activation"] = this.activation.activationType
+        if (this.activation != null) {
+            json.params["activation"] = this.activation.activationType
+        }
         return json
     }
 }
@@ -192,7 +201,8 @@ export class Conv2D extends ActivationLayer {
                new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#029002'),
                new Rectangle(new Point(-20, -40), Conv2D.blockSize, Conv2D.blockSize, '#02a002')])
 
-    
+        
+        // TODO: setting parameters logic should be pulled out into helper
         let line1 = document.createElement('div')
         line1.className = 'paramline'
     

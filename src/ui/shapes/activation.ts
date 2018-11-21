@@ -13,7 +13,7 @@ export abstract class Activation extends Draggable {
         super();
         let middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, color);
         let lowerBlock: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, color);
-        // TODO: Finish making shapes!
+
         this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
                               .append<SVGGraphicsElement>("g")
                               .data([{"x": Draggable.defaultLocation.x, "y": Draggable.defaultLocation.y}])
