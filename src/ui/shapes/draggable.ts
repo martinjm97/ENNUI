@@ -6,8 +6,12 @@ export abstract class Draggable {
     static readonly snapRadius: number = 400;
     htmlComponent: any;
     svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-    hoverText: any = d3.select("body")
+    hoverText: any = d3.select("svg")
                        .append("div")
+                       .attr("cx", 0)
+                       .attr("cy", 0)
+                       .attr("x", 0)
+                       .attr("y", 0)
                        .style("position", "absolute")
                        .style("font-weight", "bold")
                        .style("padding", "6px")
@@ -28,15 +32,13 @@ export abstract class Draggable {
                                   this.select()
                                   window.clearTimeout(this.moveTimeout)
                                   this.hoverText.style("visibility", "hidden") 
-                                  console.log("click")
                                 })
                               .on("mousemove", () => {
-                                  console.log("moving")
                                   this.hoverText.style("visibility", "hidden")
                                   clearTimeout(this.moveTimeout);
                                   this.moveTimeout = setTimeout(() => {this.hoverText.style("visibility", "visible")}, 1000);
                                   this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
-                              .on("mouseout", () => {console.log("out");clearTimeout(this.moveTimeout)})
+                              .on("mouseout", () => {clearTimeout(this.moveTimeout)})
         this.makeDraggable()
     }
 

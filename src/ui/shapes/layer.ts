@@ -38,7 +38,7 @@ export abstract class Layer extends Draggable {
                                            .attr("cy", this.center().y)
                                            .attr("r", 10)
                                            .style("fill", "black")
-                                           .style("stroke-width", "2")
+                                           .style("stroke-width", "4")
                                            .style("visibility", "hidden")
         
         this.wireCircle.on("click", () => {
@@ -306,8 +306,8 @@ export class Input extends Layer {
     layerType = "Input"
     wireConnectionPoints = [new Point(20, 10), new Point(20, 30)]
 
-	constructor(defaultLocation: Point=new Point(100, 400)){
-        super([new Rectangle(new Point(0,0), 40, 40, '#9500c1')], defaultLocation)
+	constructor(){
+        super([new Rectangle(new Point(0,0), 40, 40, '#9500c1')], new Point(100, 400))
     }
     
     getHoverText(): string { return "Input" }
@@ -319,8 +319,8 @@ export class Output extends Layer {
     layerType = "Output";
     wireConnectionPoints = [new Point(0, -60), new Point(0, 0), new Point(0, 60)]
 
-    constructor(defaultLocation: Point=new Point(1000, 400)){
-        super([new Rectangle(new Point(-8, -90), 30, 200, '#9500c1')], defaultLocation)
+    constructor(){
+        super([new Rectangle(new Point(-8, -90), 30, 200, '#9500c1')], new Point(document.getElementById("svg").clientWidth - 100, 400))
 
         this.wireCircle.style("display", "none")
 
