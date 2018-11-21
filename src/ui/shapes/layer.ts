@@ -34,12 +34,12 @@ export abstract class Layer extends Draggable {
             this.svgComponent.call(rect.svgAppender.bind(rect))
         }
         this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
-                                                .attr("cx", this.center().x)
-                                                .attr("cy", this.center().y)
-                                                .attr("r", 10)
-                                                .style("fill", "black")
-                                                .style("stroke-width", "2")
-                                                .style("visibility", "hidden")
+                                           .attr("cx", this.center().x)
+                                           .attr("cy", this.center().y)
+                                           .attr("r", 10)
+                                           .style("fill", "black")
+                                           .style("stroke-width", "2")
+                                           .style("visibility", "hidden")
         
         this.wireCircle.on("click", () => {
             this.wireCircleSelected = true

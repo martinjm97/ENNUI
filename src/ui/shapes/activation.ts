@@ -15,11 +15,6 @@ export abstract class Activation extends Draggable {
         let middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, color);
         let lowerBlock: Rectangle = new Rectangle(new Point(-8, 10), 26, 10, color);
 
-        this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
-                              .append<SVGGraphicsElement>("g")
-                              .data([{"x": this.defaultLocation.x, "y": this.defaultLocation.y}])
-                              .attr('transform','translate('+this.defaultLocation.x+','+this.defaultLocation.y+')');
-
         this.svgComponent.append("rect")
                          .attr("x", lowerBlock.location.x)
                          .attr("y", lowerBlock.location.y)
