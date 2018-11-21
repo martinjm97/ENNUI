@@ -1,33 +1,30 @@
 #main {
-	
 	width:99%;
 	height:98%;
-	background-color: #eee;
-
+	background-color: #D3D3DE;
 	border: solid 3px #555;
 }
 
 #main > #menu {
-
 	width: 197px;
 	height: 100%;
 	float:left;
+	background-color: #E5E5FC;
 	border-right:solid 3px #555;
 	font-size:22px;
 	font-family: Helvetica;
 	user-select:none;
-
 }
 
 #main > #paramshell {
 	width: 197px;
 	height: 100%;
 	float:right;
+	background-color: #E5E5FC;
 	border-left:solid 3px #555;
 	font-size:18px;
 	font-family: Helvetica;
 	user-select:none;
-
 }
 
 #main > #paramshell > .category{
@@ -45,14 +42,27 @@
 	font-family: Helvetica;
 }
 
-#main > #paramshell > .train {
+#main > #paramshell > .trainbox {
+	text-align: center;
+	margin-top: 20px;
+	margin-left: 18px;
+	margin-right: 10px;
+	width:160px;
+	height:70px;
+	line-height: 50px;
+	font-size:22px;
+	font-family: Helvetica;
+}
+
+#main > #paramshell > .trainbox > .train {
 	background: #007400;
 	color: #eee;
 	text-align:center;
-	height:35px;
-	line-height:35px;
-	font-size:22px;
+	height:50px;
+	line-height:50px;
+	font-size:24px;
 	font-family: Helvetica;
+	border-radius: 6px;
 	cursor:pointer;
 }
 
