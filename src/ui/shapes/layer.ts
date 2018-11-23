@@ -144,8 +144,8 @@ export abstract class ActivationLayer extends Layer {
         mask.append("rect")
             .attr("x", this.hole.location.x)
             .attr("y", this.hole.location.y)
-            .attr("width", this.hole.width * 1.5)
-            .attr("height", this.hole.height * 1.5)
+            .attr("width", this.hole.width)
+            .attr("height", this.hole.height)
 
         d3.select(lastBlock).attr("mask", "url(#hole"+this.uid+")");
     }

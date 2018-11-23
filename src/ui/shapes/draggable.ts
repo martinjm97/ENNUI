@@ -93,6 +93,7 @@ export abstract class Draggable {
     public delete() {
         this.unselect()
         this.svgComponent.remove()
+        this.hoverText.remove()
     }
 
     public center(): Point {
