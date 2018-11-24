@@ -66,6 +66,7 @@ export abstract class Layer extends Draggable {
         }
         super.select()
         this.wireCircle.style("visibility", "visible")
+        document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
     }
 
@@ -74,6 +75,7 @@ export abstract class Layer extends Draggable {
         this.wireCircle.style("visibility", "hidden")
         this.wireCircleSelected = false
         this.wireCircle.style("stroke", null)
+        document.getElementById("defaultparambox").style.display = null
         this.paramBox.style.visibility = 'hidden'
     }
 
