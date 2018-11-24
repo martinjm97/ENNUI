@@ -1,7 +1,6 @@
 import { Draggable } from "./draggable";
 import { Point, Rectangle } from "./shape";
 import { ActivationLayer } from "./layer";
-import * as d3 from "d3"
 import { windowProperties } from "../window";
 import { PassThrough } from "stream";
 
@@ -73,7 +72,7 @@ export class Relu extends Activation {
     activationType = "relu"
 
     constructor() {
-        super("#736035")
+        super("#B29F9C")
 
         this.svgComponent.append("path").attr("d", "M-5 20 l10 0 l7 -7")
                                         .style("stroke", "black")
@@ -90,7 +89,7 @@ export class Sigmoid extends Activation {
     activationType = "sigmoid"
 
     constructor() {
-        super("#38001C")
+        super("#F2A878")
 
         this.svgComponent.append("path").attr("d", "M-5 20 l10 0 l7 -7")
         .style("stroke", "black")
@@ -103,11 +102,11 @@ export class Sigmoid extends Activation {
 
 }
 
-export class Softmax extends Activation {
-    activationType = "softmax"
+export class Tanh extends Activation {
+    activationType = "tanh"
     
     constructor() {
-        super("#344743")
+        super("#A3A66D")
 
         this.svgComponent.append("path").attr("d", "M-5 20 l10 0 l7 -7")
         .style("stroke", "black")
@@ -116,5 +115,5 @@ export class Softmax extends Activation {
         
     }
 
-    getHoverText(): string { return "softmax" }
+    getHoverText(): string { return "tanh" }
 }

@@ -2,27 +2,9 @@
 import * as tf from '@tensorflow/tfjs';
 
 import {IMAGE_H, IMAGE_W, MnistData} from './data';
-import { SymbolicTensor } from '@tensorflow/tfjs';
 
 // Not using their ui now.
 // import * as ui from './ui';
-
-/**
- * Creates a convolutional neural network (Convnet) for the MNIST data.
- *
- * @returns {tf.Model} An instance of tf.Model.
- */
-function createModel() {
-  // Creating a DAG neural network architecture
-  // TODO: eval("generated script")
-  const inputs = tf.input({shape: [10]});
-  const dense1 = tf.layers.dense({units: 8}).apply(inputs);
-  // const dense2 = tf.layers.dense({units: 8}).apply(inputs);
-  const concat = tf.layers.concatenate().apply(dense1);
-  const predictions = tf.layers.dense({units: 3, activation: 'softmax'}).apply(concat);
-  const model = tf.model({inputs: inputs, outputs: <SymbolicTensor> predictions});
-  return model;
-}
 
 /**
  * Compile and train the given model.
