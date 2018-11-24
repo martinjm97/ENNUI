@@ -90,7 +90,7 @@
         ],
         "params": {
             "units": 10,
-            "activation": "softmax"
+            "activation": "tanh"
         },
         "id": 6
     }

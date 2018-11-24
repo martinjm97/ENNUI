@@ -1,7 +1,6 @@
 import { Draggable } from "./draggable";
 import { Point, Rectangle } from "./shape";
 import { ActivationLayer } from "./layer";
-import * as d3 from "d3"
 import { windowProperties } from "../window";
 
 export abstract class Activation extends Draggable {
@@ -56,7 +55,7 @@ export class Relu extends Activation {
     activationType = "relu"
 
     constructor() {
-        super("#736035")
+        super("#B29F9C")
     }
 
     getHoverText(): string { return "relu" }
@@ -67,19 +66,19 @@ export class Sigmoid extends Activation {
     activationType = "sigmoid"
 
     constructor() {
-        super("#38001C")
+        super("#F2A878")
     }
 
     getHoverText(): string { return "sigmoid" }
 
 }
 
-export class Softmax extends Activation {
-    activationType = "softmax"
+export class Tanh extends Activation {
+    activationType = "tanh"
     
     constructor() {
-        super("#344743")
+        super("#A3A66D")
     }
 
-    getHoverText(): string { return "softmax" }
+    getHoverText(): string { return "tanh" }
 }
