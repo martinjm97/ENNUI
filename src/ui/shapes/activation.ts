@@ -90,7 +90,7 @@ export class Sigmoid extends Activation {
     constructor(defaultLocation=new Point(50,100)) {
         super("#F2A878", defaultLocation)
 
-        this.svgComponent.append("path").attr("d", "M-5 20 l10 0 l7 -7")
+        this.svgComponent.append("path").attr("d", "M -3 20 Q 5 20 5 17 Q 5 14 13 14 ")
         .style("stroke", "black")
         .style("stroke-width", 3)
         .style("fill", "none")
@@ -107,7 +107,7 @@ export class Tanh extends Activation {
     constructor(defaultLocation=new Point(50,100)) {
         super("#A3A66D", defaultLocation)
 
-        this.svgComponent.append("path").attr("d", "M-5 20 l10 0 l7 -7")
+        this.svgComponent.append("path").attr("d", "M -4 26 Q 5 26 5 20 Q 5 14 14 14 ")
         .style("stroke", "black")
         .style("stroke-width", 3)
         .style("fill", "none")

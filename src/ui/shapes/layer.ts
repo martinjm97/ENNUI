@@ -1,5 +1,5 @@
 import { Draggable } from "./draggable";
-import { Rectangle, Point, Shape, Circle } from "./shape";
+import { Rectangle, Point, Shape, Circle, PathShape } from "./shape";
 import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
@@ -68,6 +68,7 @@ export abstract class Layer extends Draggable {
         this.wireCircle.style("visibility", "visible")
         document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
+        this.svgComponent.selectAll("path").style("stroke", "yellow").style("stroke-width", "2")
     }
 
     public unselect() {
@@ -77,6 +78,7 @@ export abstract class Layer extends Draggable {
         this.wireCircle.style("stroke", null)
         document.getElementById("defaultparambox").style.display = null
         this.paramBox.style.visibility = 'hidden'
+        this.svgComponent.selectAll("path").style("stroke", null).style("stroke-width", null)
     }
 
     /**
@@ -124,7 +126,7 @@ export abstract class Layer extends Draggable {
  * Layers that can have an activation attached to them.
  */
 export abstract class ActivationLayer extends Layer {
-    hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
+    // hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
     activation: Activation = null;
 
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) { 
@@ -132,24 +134,24 @@ export abstract class ActivationLayer extends Layer {
 
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this)
-        let blocks = this.svgComponent.selectAll<SVGGraphicsElement, {}>("rect").nodes()
-        let lastBlock = blocks[blocks.length-1]
+        // let blocks = this.svgComponent.selectAll<SVGGraphicsElement, {}>("rect").nodes()
+        // let lastBlock = blocks[blocks.length-1]
 
-        let mask = this.svgComponent.append("mask").attr("id", "hole"+this.uid)
+        // let mask = this.svgComponent.append("mask").attr("id", "hole"+this.uid)
         
-        mask.append("rect")
-            .attr("x", block[block.length-1].location.x)
-            .attr("y", block[block.length-1].location.y)
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .style("fill", "white")
-        mask.append("rect")
-            .attr("x", this.hole.location.x)
-            .attr("y", this.hole.location.y)
-            .attr("width", this.hole.width)
-            .attr("height", this.hole.height)
+        // mask.append("rect")
+        //     .attr("x", block[block.length-1].location.x)
+        //     .attr("y", block[block.length-1].location.y)
+        //     .attr("width", "100%")
+        //     .attr("height", "100%")
+        //     .style("fill", "white")
+        // mask.append("rect")
+        //     .attr("x", this.hole.location.x)
+        //     .attr("y", this.hole.location.y)
+        //     .attr("width", this.hole.width)
+        //     .attr("height", this.hole.height)
 
-        d3.select(lastBlock).attr("mask", "url(#hole"+this.uid+")");
+        // d3.select(lastBlock).attr("mask", "url(#hole"+this.uid+")");
     }
 
 
@@ -201,7 +203,7 @@ export class Conv2D extends ActivationLayer {
     constructor(defaultLocation=new Point(100,100)) {
         super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#3B6B88'),
                new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#3B7B88'),
-               new Rectangle(new Point(-20, -40), Conv2D.blockSize, Conv2D.blockSize, '#3B8B88')], 
+               new PathShape("M-20 -40 h50 v50 h-20 v-10 h-10 v10 h-20 v-50 Z", '#3B8B88')],
                defaultLocation)
 
         
@@ -257,9 +259,9 @@ export class Conv2D extends ActivationLayer {
 export class Dense extends ActivationLayer {
     layerType = "Dense"
     wireConnectionPoints = [new Point(5, -70), new Point(5, -40), new Point(5, -10)]
-    constructor(defaultLocation=new Point(100,100)) {
-        super([new Rectangle(new Point(-8, -90), 26, 100, '#F7473B')], defaultLocation)
 
+    constructor(defaultLocation=new Point(100,100)) {
+        super([new PathShape("M-8 -90 h26 v100 h-8 v-10 h-10 v10 h-8 v-100 Z", '#F7473B')], defaultLocation)
         let line = document.createElement('div')
         line.className = 'paramline'
         let name = document.createElement('div')
@@ -286,7 +288,7 @@ export class MaxPooling2D extends ActivationLayer {
     constructor() {
         super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78114'),
                new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78134'),
-               new Rectangle(new Point(-10, -20), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78154')])
+               new PathShape("M-10 -20 h30 v30 h-10 v-10 h-10 v10 h-10 v-30 Z", '#F78154')])
 
         let line = document.createElement('div')
         line.className = 'paramline'

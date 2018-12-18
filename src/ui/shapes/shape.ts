@@ -8,6 +8,28 @@ export abstract class Shape {
 
 }
 
+export class PathShape extends Shape {
+    location: Point;
+    path: string;
+    svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+
+    constructor(path: string, color: string) {
+        super()
+        this.color = color;
+        this.location = new Point(0,0);
+        this.path = path;
+    }
+
+    svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>) {
+        this.svgComponent = selection.append<SVGGraphicsElement>("path")
+                                     .attr("d", this.path)
+                                     .attr("x", this.location.x)
+                                     .attr("y", this.location.y)
+                                     .style("fill", this.color)
+    }
+
+}
+
 export class Rectangle extends Shape {
     location: Point;
     width: number;
