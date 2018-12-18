@@ -23,6 +23,15 @@ document.addEventListener("DOMContentLoaded", function() {
 		appendItem(e);
 	});
 
+	document.getElementById("svg").addEventListener("click", function(event) {
+		// Only click if there is a selected element, and the clicked element is an SVG Element, and its id is "svg"
+		// It does this to prevent unselecting if we click on a layer block or other svg shape
+		if(windowProperties.selectedElement && event.target instanceof SVGElement && event.target.id == "svg"){
+			windowProperties.selectedElement.unselect();
+			windowProperties.selectedElement = null;
+		}
+	})
+
 	window.onkeyup = function(event){
 		switch(event.key){
 			case 'Escape' :
