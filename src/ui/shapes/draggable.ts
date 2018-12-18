@@ -30,6 +30,10 @@ export abstract class Draggable {
                                   window.clearTimeout(this.moveTimeout)
                                   this.hoverText.style("visibility", "hidden") 
                                 })
+                                .on("contextmenu", () => {
+                                    window.clearTimeout(this.moveTimeout)
+                                    this.hoverText.style("visibility", "hidden") 
+                                  })
                               .on("mousemove", () => {
                                   this.hoverText.style("visibility", "hidden")
                                   clearTimeout(this.moveTimeout);
