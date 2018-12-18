@@ -2,7 +2,6 @@ import { Draggable } from "./draggable";
 import { Point, Rectangle } from "./shape";
 import { ActivationLayer } from "./layer";
 import { windowProperties } from "../window";
-import { PassThrough } from "stream";
 
 export abstract class Activation extends Draggable {
 
@@ -11,8 +10,8 @@ export abstract class Activation extends Draggable {
     defaultLocation: Point = new Point(50,150);
     body: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
 
-    constructor(color: string) { 
-        super();
+    constructor(color: string, defaultLocation) { 
+        super(defaultLocation);
 
         this.body = this.svgComponent.append<SVGGraphicsElement>("path").attr("d", "M0 0 h10 v10 h8 v20 h-26 v-20 h8 v-10 Z")
                                                                         .style("fill", color)
@@ -71,8 +70,8 @@ export abstract class Activation extends Draggable {
 export class Relu extends Activation {
     activationType = "relu"
 
-    constructor() {
-        super("#B29F9C")
+    constructor(defaultLocation=new Point(50,100)) {
+        super("#B29F9C", defaultLocation)
 
         this.svgComponent.append("path").attr("d", "M-5 20 l10 0 l7 -7")
                                         .style("stroke", "black")
@@ -88,8 +87,8 @@ export class Relu extends Activation {
 export class Sigmoid extends Activation {
     activationType = "sigmoid"
 
-    constructor() {
-        super("#F2A878")
+    constructor(defaultLocation=new Point(50,100)) {
+        super("#F2A878", defaultLocation)
 
         this.svgComponent.append("path").attr("d", "M -3 20 Q 5 20 5 17 Q 5 14 13 14 ")
         .style("stroke", "black")
@@ -105,8 +104,8 @@ export class Sigmoid extends Activation {
 export class Tanh extends Activation {
     activationType = "tanh"
     
-    constructor() {
-        super("#A3A66D")
+    constructor(defaultLocation=new Point(50,100)) {
+        super("#A3A66D", defaultLocation)
 
         this.svgComponent.append("path").attr("d", "M -4 26 Q 5 26 5 20 Q 5 14 14 14 ")
         .style("stroke", "black")
