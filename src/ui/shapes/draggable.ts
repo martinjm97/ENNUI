@@ -68,10 +68,6 @@ export abstract class Draggable {
         this.svgComponent.call(dragHandler)
     }
 
-    public hoverAction(){ 
-
-    }
-
     // Special behavior when being dragged e.g. activations snap to Layers
     public dragAction(d) {}
 
