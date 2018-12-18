@@ -109,7 +109,7 @@ export abstract class Draggable {
     }
     
     setPosition(position: Point) {
-		let transformation = this.svgComponent.data([{"x": position.x, "y": position.y}])
-                                              .attr('transform','translate('+position.x+','+position.y+')')
+		this.svgComponent.data([{"x": position.x, "y": position.y}])
+                         .attr('transform','translate('+position.x+','+position.y+')')
     }
 }
