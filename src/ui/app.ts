@@ -5,6 +5,12 @@ import { windowProperties } from "./window";
 import { buildNetwork, train, buildNetworkDAG } from "../model/build_network";
 import { blankTemplate, defaultTemplate } from "./model_templates";
 
+export interface DraggableData {
+	draggable: Array<Draggable>
+	input: Input
+	output: Output
+}
+
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
     var elmts = document.getElementsByClassName('option');
@@ -85,24 +91,6 @@ function trainOnClick(elmt){
 	});
 }
 
-function graphToJson() {
-	// Initialize queues, dags, and parents (visited) 
-	let queue: Layer[] = [svgData.input]
-	let visited: Set<Layer> = new Set()
-	let json: {}[] = []
-	while (queue.length != 0) {
-		let current = queue.shift()
-		json.push(current.toJson())
-		// check each connections of the node
-		for (let child of current.children) {
-			if (!visited.has(child)) {
-				queue.push(child)
-				visited.add(child)
-			}
-		}
-	}
-	console.log(json)
-}
 
 function highlightOnMouseOver(elmt){
 	elmt.addEventListener('mouseover',function(e){
@@ -149,7 +137,7 @@ function appendItem(options){
 }
 
 
-let svgData = {
+let svgData: DraggableData = {
 	draggable : [],
 	input: null,
 	output: null

@@ -6,6 +6,14 @@ import * as d3 from "d3";
 import { windowProperties } from "../window";
 import { parseString } from "../utils";
 
+interface layerJson {
+    layer_name: string
+    id: number
+    children_ids: Array<number>
+    parent_ids: Array<number>
+    params: Map<string, any> 
+}
+
 // TODO params for entering things in UI for layer properties
 // TODO make holes transparent
 // TODO make dragging bring item to front
