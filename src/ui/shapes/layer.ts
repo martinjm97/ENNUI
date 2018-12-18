@@ -198,10 +198,11 @@ export class Conv2D extends ActivationLayer {
     static readonly blockSize: number = 50;
     wireConnectionPoints = [new Point(-20, -40), new Point(5, -40), new Point(5, -15), new Point(-20, -15)]
 
-    constructor() {
+    constructor(defaultLocation=new Point(100,100)) {
         super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#3B6B88'),
                new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#3B7B88'),
-               new Rectangle(new Point(-20, -40), Conv2D.blockSize, Conv2D.blockSize, '#3B8B88')])
+               new Rectangle(new Point(-20, -40), Conv2D.blockSize, Conv2D.blockSize, '#3B8B88')], 
+               defaultLocation)
 
         
         // TODO: setting parameters logic should be pulled out into helper
@@ -256,8 +257,8 @@ export class Conv2D extends ActivationLayer {
 export class Dense extends ActivationLayer {
     layerType = "Dense"
     wireConnectionPoints = [new Point(5, -70), new Point(5, -40), new Point(5, -10)]
-    constructor() {
-        super([new Rectangle(new Point(-8, -90), 26, 100, '#F7473B')])
+    constructor(defaultLocation=new Point(100,100)) {
+        super([new Rectangle(new Point(-8, -90), 26, 100, '#F7473B')], defaultLocation)
 
         let line = document.createElement('div')
         line.className = 'paramline'
@@ -310,7 +311,8 @@ export class Input extends Layer {
     wireConnectionPoints = [new Point(20, 10), new Point(20, 30)]
 
 	constructor(){
-        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, 400))
+        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], 
+               new Point(100, document.getElementById("svg").clientHeight/2))
     }
     
     getHoverText(): string { return "Input" }
@@ -323,7 +325,8 @@ export class Output extends Layer {
     wireConnectionPoints = [new Point(0, -60), new Point(0, 0), new Point(0, 60)]
 
     constructor(){
-        super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')], new Point(document.getElementById("svg").clientWidth - 100, 400))
+        super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')], 
+               new Point(document.getElementById("svg").clientWidth - 100, document.getElementById("svg").clientHeight/2))
 
         this.wireCircle.style("display", "none")
 

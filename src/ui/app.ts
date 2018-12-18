@@ -1,11 +1,9 @@
-import { Dense, Conv2D, Layer, MaxPooling2D, Input, Output } from "./shapes/layer";
+import { Dense, Conv2D, Layer, MaxPooling2D } from "./shapes/layer";
 import { Draggable } from "./shapes/draggable";
-import { Wire } from "./shapes/wire";
-import { Shape } from "./shapes/shape";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
 import { buildNetwork, train, buildNetworkDAG } from "../model/build_network";
-import { mod } from "@tensorflow/tfjs";
+import { buildDefaultTemplate } from "./model_templates";
 
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
@@ -46,10 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	};
 
-	svgData.input = new Input();
-	svgData.output = new Output();
-
-    
+	buildDefaultTemplate(svgData)
 });
 
 function trainOnHighlight(elmt){
@@ -131,14 +126,14 @@ function appendItem(options){
 			case 'tanh': item = new Tanh(); console.log("Created Tanh"); break;
 		}
 	}
-	svgData[options.detail.itemType].push(item);
+	svgData.draggable.push(item);
 }
 
 
 let svgData = {
-	layer : [],
-	activation : [],
-	wire : [],
+	draggable : [],
+	// activation : [],
+	// wire : [],
 	input: null,
 	output: null
 }
