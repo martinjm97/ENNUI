@@ -51,7 +51,10 @@ export abstract class Layer extends Draggable {
         this.paramBox.style.visibility = 'hidden'
 	    this.paramBox.style.position = 'absolute'	
         document.getElementById("paramtruck").appendChild(this.paramBox);
+        this.populateParamBox()
     }
+
+    populateParamBox() {}
 
     public dragAction(d) { 
         for (let wire of this.wires) {
@@ -206,8 +209,9 @@ export class Conv2D extends ActivationLayer {
                new PathShape("M-20 -40 h50 v50 h-20 v-10 h-10 v10 h-20 v-50 Z", '#3B8B88')],
                defaultLocation)
 
-        
-        // TODO: setting parameters logic should be pulled out into helper
+    }
+
+    populateParamBox() {
         let line1 = document.createElement('div')
         line1.className = 'paramline'
     
@@ -262,6 +266,9 @@ export class Dense extends ActivationLayer {
 
     constructor(defaultLocation=new Point(100,100)) {
         super([new PathShape("M-8 -90 h26 v100 h-8 v-10 h-10 v10 h-8 v-100 Z", '#F7473B')], defaultLocation)
+    }
+
+    populateParamBox() {
         let line = document.createElement('div')
         line.className = 'paramline'
         let name = document.createElement('div')
@@ -289,7 +296,9 @@ export class MaxPooling2D extends ActivationLayer {
         super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78114'),
                new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78134'),
                new PathShape("M-10 -20 h30 v30 h-10 v-10 h-10 v10 h-10 v-30 Z", '#F78154')])
+    }
 
+    populateParamBox() {
         let line = document.createElement('div')
         line.className = 'paramline'
         let name = document.createElement('div')
