@@ -311,10 +311,10 @@ export class MaxPooling2D extends ActivationLayer {
 export class Input extends Layer {
     layerType = "Input"
     wireConnectionPoints = [new Point(20, 10), new Point(20, 30)]
+    defaultLocation = new Point(100, document.getElementById("svg").clientHeight/2)
 
 	constructor(){
-        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], 
-               new Point(100, document.getElementById("svg").clientHeight/2))
+        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, document.getElementById("svg").clientHeight/2))
     }
     
     getHoverText(): string { return "Input" }
@@ -325,9 +325,10 @@ export class Input extends Layer {
 export class Output extends Layer {
     layerType = "Output";
     wireConnectionPoints = [new Point(0, -60), new Point(0, 0), new Point(0, 60)]
+    defaultLocation = new Point(document.getElementById("svg").clientWidth - 100, document.getElementById("svg").clientHeight/2)
 
     constructor(){
-        super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')], 
+        super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')],
                new Point(document.getElementById("svg").clientWidth - 100, document.getElementById("svg").clientHeight/2))
 
         this.wireCircle.style("display", "none")

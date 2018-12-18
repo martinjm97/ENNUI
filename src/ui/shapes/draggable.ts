@@ -107,4 +107,9 @@ export abstract class Draggable {
 		let numArr = transformation.substring( transformation.indexOf('(') + 1 , transformation.indexOf(')') ).split(',').map(value => parseInt(value));
         return new Point(numArr[0], numArr[1])
     }
+    
+    setPosition(position: Point) {
+		let transformation = this.svgComponent.data([{"x": position.x, "y": position.y}])
+                                              .attr('transform','translate('+position.x+','+position.y+')')
+    }
 }

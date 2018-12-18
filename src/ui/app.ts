@@ -1,9 +1,9 @@
-import { Dense, Conv2D, Layer, MaxPooling2D } from "./shapes/layer";
+import { Dense, Conv2D, Layer, MaxPooling2D, Input, Output } from "./shapes/layer";
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
 import { buildNetwork, train, buildNetworkDAG } from "../model/build_network";
-import { buildDefaultTemplate } from "./model_templates";
+import { blankTemplate, defaultTemplate } from "./model_templates";
 
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
@@ -44,7 +44,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	};
 
-	buildDefaultTemplate(svgData)
+	svgData.input = new Input();
+	svgData.output = new Output();
+	defaultTemplate(svgData)
 });
 
 function trainOnHighlight(elmt){
@@ -114,6 +116,7 @@ function dispatchCreationOnClick(elmt){
 
 function appendItem(options){
 	var item: Draggable
+	var template = null
 	switch(options.detail.itemType){
         case 'layer': switch(options.detail.layerType) {
 			case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
@@ -125,15 +128,20 @@ function appendItem(options){
 			case 'sigmoid': item = new Sigmoid(); console.log("Created Sigmoid"); break;
 			case 'tanh': item = new Tanh(); console.log("Created Tanh"); break;
 		}
+		case 'template':  switch(options.detail.templateType) {
+			case 'default': template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
+			case 'blank': template = true; blankTemplate(svgData); console.log("Created Blank Template"); break;
+		}
 	}
-	svgData.draggable.push(item);
+
+	if (template == null) {
+		svgData.draggable.push(item);
+	}
 }
 
 
 let svgData = {
 	draggable : [],
-	// activation : [],
-	// wire : [],
 	input: null,
 	output: null
-}
+}	
