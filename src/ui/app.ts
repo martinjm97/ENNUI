@@ -14,7 +14,13 @@ export interface DraggableData {
 
 document.addEventListener("DOMContentLoaded", function() { 
     // this function runs when the DOM is ready, i.e. when the document has been parsed
-    var elmts = document.getElementsByClassName('option');
+	var elmts = document.getElementsByClassName('tab');
+	for(let elmt of elmts){
+		tabOnMouseOver(elmt);
+		dispatchSwitchTabOnClick(elmt);
+	}
+	
+	var elmts = document.getElementsByClassName('option');
 	for(let elmt of elmts){
 		highlightOnMouseOver(elmt);
 		dispatchCreationOnClick(elmt);
@@ -28,6 +34,10 @@ document.addEventListener("DOMContentLoaded", function() {
     
     window.addEventListener('create', function( e ) {
 		appendItem(e);
+	});
+
+	window.addEventListener('switch', function( e ) {
+		switchTab(e);
 	});
 
 	document.getElementById("svg").addEventListener("click", function(event) {
@@ -64,6 +74,15 @@ document.addEventListener("DOMContentLoaded", function() {
 	svgData.output = new Output();
 	defaultTemplate(svgData)
 });
+
+function tabOnMouseOver(elmt){
+	elmt.addEventListener('mouseover',function(e){
+		elmt.style.backgroundColor = '#ccc'
+	});
+	elmt.addEventListener('mouseout',function(e){
+		elmt.style.backgroundColor = 'transparent'
+	});
+}
 
 function trainOnHighlight(elmt){
 	elmt.addEventListener('mouseover',function(e){
@@ -102,6 +121,16 @@ function highlightOnMouseOver(elmt){
 	});
 }
 
+function dispatchSwitchTabOnClick(elmt){
+	elmt.addEventListener('click', function(e){
+        var tabType = elmt.getAttribute('data-tabType')
+        var detail = { tabType : tabType}
+        var event = new CustomEvent('switch', { detail : detail } );
+		window.dispatchEvent(event);
+	});
+}
+
+
 function dispatchCreationOnClick(elmt){
 	elmt.addEventListener('click', function(e){
         var itemType = elmt.parentElement.getAttribute('data-itemType')
@@ -137,6 +166,21 @@ function appendItem(options){
 	}
 }
 
+function hideCanvas() {
+    document.getElementById("svg").style.display = "none"
+}
+
+function showCanvas() {
+    document.getElementById("svg").style.display = null
+}
+
+function switchTab(tab) {
+	switch(tab.detail.tabType){
+		case 'network': showCanvas(); break; 
+		case 'progress': hideCanvas(); break;
+		case 'visualization': hideCanvas(); break;
+	}
+}
 
 let svgData: DraggableData = {
 	draggable : [],

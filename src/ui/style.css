@@ -9,6 +9,16 @@ body {
 	/* border: solid 3px #555; */
 }
 
+#main > #tabselector {
+	width: 50px;
+	height: 100%;
+	float:left;
+	background-color: #A8A8BD;
+	font-size:22px;
+	font-family: Helvetica;
+	user-select:none;
+}
+
 #main > #menu {
 	width: 200px;
 	height: 100%;
@@ -28,6 +38,24 @@ body {
 	/* border-left:solid 3px #555; */
 	font-size:18px;
 	font-family: Helvetica;
+	user-select:none;
+}
+
+#main > #tabselector > .tab{
+	width: 40px;
+	height: 40px;
+	line-height:50px;
+
+	text-align: center;
+	float:left;
+	background-color: #A8A8BD;
+	margin-top: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+
+	font-size:22px;
+	font-family: Helvetica;
+	cursor:pointer;
 	user-select:none;
 }
 
@@ -175,6 +203,6 @@ div[class = 'toggleOption'] {
 }
 
 #main > #svg {
-	width : calc(100% - 400px);
+	width : calc(100% - 450px);
 	height: 100%;
 }
