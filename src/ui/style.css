@@ -13,6 +13,9 @@ body {
 	width: 40px;
 	height: 100%;
 	float:left;
+	border-right-style: solid; 
+	border-right-color: #555; 
+	border-right-width: 2px; 
 	background-color: #A8A8BD;
 	font-size:22px;
 	font-family: Helvetica;
@@ -20,11 +23,10 @@ body {
 }
 
 #main > #menu {
-	width: 200px;
+	width: 180px;
 	height: 100%;
 	float:left;
 	background-color: #E5E5FC;
-	/* border-right:solid 3px #555; */
 	font-size:22px;
 	font-family: Helvetica;
 	user-select:none;
@@ -35,7 +37,6 @@ body {
 	height: 100%;
 	float:right;
 	background-color: #E5E5FC;
-	/* border-left:solid 3px #555; */
 	font-size:18px;
 	font-family: Helvetica;
 	user-select:none;
@@ -99,7 +100,7 @@ body {
  #main > #menu > .bottomCategory{
 	position: absolute; 
 	bottom: 10px;
-	width: 200px;
+	width: 180px;
 	padding-bottom: 15px;
 }
 
