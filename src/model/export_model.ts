@@ -1,5 +1,7 @@
 import { DraggableData } from "../ui/app";
 import { Layer } from "../ui/shapes/layer";
+import { saveAs } from 'file-saver';
+
 
 interface layerJson {
     layer_name: string
@@ -29,4 +31,12 @@ function graphToJson(svgData: DraggableData): layerJson[] {
 	console.log(json)
 }
 
-function jsonToPython()
+function jsonToPython(){}
+
+
+export function download(content: string, filename: string) {
+	let blob = new Blob([content], {
+	 type: "text/plain;charset=utf-8"
+	});
+	saveAs(blob, filename);
+} 
