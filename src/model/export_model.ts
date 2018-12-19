@@ -1,21 +1,13 @@
 import { DraggableData } from "../ui/app";
-import { Layer } from "../ui/shapes/layer";
+import { Layer, layerJson } from "../ui/shapes/layer";
 import { saveAs } from 'file-saver';
 
 
-interface layerJson {
-    layer_name: string
-    id: number
-    children_ids: Array<number>
-    parent_ids: Array<number>
-    params: Map<string, any> 
-}
-
-function graphToJson(svgData: DraggableData): layerJson[] {
+export function graphToJson(svgData: DraggableData): layerJson[] {
 	// Initialize queues, dags, and parents (visited) 
 	let queue: Layer[] = [svgData.input]
 	let visited: Set<Layer> = new Set()
-	let json: jsonModel = []
+	let json: layerJson[] = []
 	while (queue.length != 0) {
 		let current = queue.shift()
 		json.push(current.toJson())
@@ -28,7 +20,7 @@ function graphToJson(svgData: DraggableData): layerJson[] {
 		}
     }
     return json
-	console.log(json)
+
 }
 
 function jsonToPython(){}

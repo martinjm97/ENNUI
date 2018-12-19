@@ -4,6 +4,7 @@ import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
 import { buildNetwork, train, buildNetworkDAG } from "../model/build_network";
 import { blankTemplate, defaultTemplate } from "./model_templates";
+import { graphToJson } from "../model/export_model";
 
 export interface DraggableData {
 	draggable: Array<Draggable>

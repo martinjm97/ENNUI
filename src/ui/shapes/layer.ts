@@ -6,7 +6,7 @@ import * as d3 from "d3";
 import { windowProperties } from "../window";
 import { parseString } from "../utils";
 
-interface layerJson {
+export interface layerJson {
     layer_name: string
     id: number
     children_ids: Array<number>
@@ -21,7 +21,7 @@ interface layerJson {
 
 export abstract class Layer extends Draggable {
     abstract wireConnectionPoints: Array<Point>;
-    abstract layerType: String;
+    abstract layerType: string;
     paramBox;
     
     block: Array<Shape>;
@@ -112,7 +112,7 @@ export abstract class Layer extends Draggable {
         this.wires.forEach((w) => w.delete()) // deleting wires should delete layer connection sets
     }
 
-    public toJson() {
+    public toJson(): layerJson {
         return {
             "layer_name": this.layerType,
             "children_ids": Array.from(this.children, child => child.uid),
@@ -122,8 +122,8 @@ export abstract class Layer extends Draggable {
         }
     }
 
-    public getParams() {
-        let params = {}
+    public getParams(): Map<string, any> {
+        let params: Map<string, any> = new Map()
         for(let line of this.paramBox.children){
 			let name = line.children[0].getAttribute('data-name');
 			let value = line.children[1].value;
@@ -197,7 +197,7 @@ export abstract class ActivationLayer extends Layer {
         this.activation = null
     }
 
-    public toJson() {
+    public toJson(): layerJson {
         let json = super.toJson()
         if (this.activation != null) {
             json.params["activation"] = this.activation.activationType
