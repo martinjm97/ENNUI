@@ -13,9 +13,9 @@ body {
 	width: 40px;
 	height: 100%;
 	float:left;
-	border-right-style: solid; 
+	/* border-right-style: solid; 
 	border-right-color: #555; 
-	border-right-width: 2px; 
+	border-right-width: 2px;  */
 	background-color: #A8A8BD;
 	font-size:22px;
 	font-family: Helvetica;
@@ -46,12 +46,9 @@ body {
 	width: 40px;
 	height: 40px;
 	line-height:50px;
-
 	text-align: center;
 	float:left;
-	background-color: #A8A8BD;
 	margin-bottom: 5px;
-
 	font-size:22px;
 	font-family: Helvetica;
 	cursor:pointer;
@@ -202,6 +199,6 @@ div[class = 'toggleOption'] {
 }
 
 #main > #svg {
-	width : calc(100% - 450px);
+	width : calc(100% - 420px);
 	height: 100%;
 }

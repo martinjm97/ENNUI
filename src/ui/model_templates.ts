@@ -1,10 +1,12 @@
 import { Input, Output, ActivationLayer, Conv2D, Dense } from "./shapes/layer";
 import { Activation, Relu } from "./shapes/activation";
 import { Point } from "./shapes/shape";
+import { svg } from "d3";
 
 function resetWorkspace(svgData) {
     // Set input and output locations
-    svgData.input.setPosition(svgData.input.defaultLocation)
+	svgData.input.setPosition(svgData.input.defaultLocation)
+	svgData.input.wires.forEach((w) => w.delete())
     svgData.output.setPosition(svgData.output.defaultLocation)
     
     // Remove all other layers
