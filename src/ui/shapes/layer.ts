@@ -301,9 +301,9 @@ export class MaxPooling2D extends ActivationLayer {
     wireConnectionPoints = [new Point(-10, -20), new Point(-10, -5), new Point(5, -5), new Point(5, -20)]
 
     constructor() {
-        super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78114'),
-               new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78134'),
-               new PathShape("M-10 -20 h30 v30 h-10 v-10 h-10 v10 h-10 v-30 Z", '#F78154')])
+        super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F76034'),
+               new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F77134'),
+               new PathShape("M-10 -20 h30 v30 h-10 v-10 h-10 v10 h-10 v-30 Z", '#F78234')])
     }
 
     populateParamBox() {
