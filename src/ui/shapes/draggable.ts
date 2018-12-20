@@ -46,25 +46,28 @@ export abstract class Draggable {
     public makeDraggable(){
         var firstDrag = true
 
-        let dragHandler = d3.drag().clickDistance(4)
-            .on("drag", (d: any) => {
-                clearTimeout(this.moveTimeout)
-                this.hoverText.style("visibility", "hidden")
-                if (firstDrag) {
-                    // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
-                    // instead of after actually dragging a little bit)
-                    this.select()
-                    firstDrag = false
-                }
-                let canvas = document.getElementById("svg")          
-                // TODO: take into account the width of the object this.svgComponent      
-                let tx = Math.min(Math.max(0, d3.event.x), canvas.clientWidth)
-                let ty = Math.min(Math.max(0, d3.event.y), canvas.clientHeight)
-                this.svgComponent.attr("transform", "translate(" + (d.x = tx) + "," + (d.y = ty) + ")")
+        var dragThings = (d: any) => {
+            clearTimeout(this.moveTimeout)
+            this.hoverText.style("visibility", "hidden")
+            if (firstDrag) {
+                // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
+                // instead of after actually dragging a little bit)
+                this.select()
+                firstDrag = false
+            }
+            let canvas = document.getElementById("svg")          
+            // TODO: take into account the width of the object this.svgComponent      
+            let tx = Math.min(Math.max(0, d3.event.x), canvas.clientWidth)
+            let ty = Math.min(Math.max(0, d3.event.y), canvas.clientHeight)
+            this.svgComponent.attr("transform", "translate(" + (d.x = tx) + "," + (d.y = ty) + ")")
 
-                this.dragAction(d)
-            })
+            this.dragAction(d)
+        }
+
+        let dragHandler = d3.drag().touchable(true).clickDistance(4)
+            .on("drag", dragThings) 
             .on("end", () => {firstDrag = true})
+
         this.svgComponent.call(dragHandler)
     }
 
