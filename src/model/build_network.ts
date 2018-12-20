@@ -5,6 +5,7 @@ import { SymbolicTensor } from '@tensorflow/tfjs';
 import { Input, Layer, ActivationLayer } from '../ui/shapes/layer';
 import { text } from 'd3';
 import { assert } from '@tensorflow/tfjs-core/dist/util';
+import { plotLoss, plotAccuracy } from './graphs';
 
 let typeToTensor: Map<String, any> = new Map()
 
@@ -138,11 +139,8 @@ export function buildNetworkDAG(out: Layer) {
 export async function train(model) {
     // TODO: start method
     // ui.logStatus('Training model...');
-    console.log("train")
     let data = new MnistData();
-    console.log("train1")
     await data.load();
-    console.log("train2")
     const LEARNING_RATE = 0.01;
     const optimizer = 'rmsprop';
 
@@ -151,11 +149,10 @@ export async function train(model) {
         loss: 'categoricalCrossentropy',
         metrics: ['accuracy'],
     });
-    console.log("train3")
     const batchSize = 64;
     const validationSplit = 0.15;
 
-    // const trainEpochs = ui.getTrainEpochs();
+    // const trainEpochs = getTrainEpochs();
     const trainEpochs = 6;
 
     // We'll keep a buffer of loss and accuracy values over time.
@@ -163,46 +160,44 @@ export async function train(model) {
 
     const trainData = data.getTrainData();
     const testData = data.getTestData(100);
-    console.log("train4")
     const totalNumBatches =
         Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / batchSize) *
         trainEpochs;
-        console.log("train5")
     let valAcc;
     await model.fit(trainData.xs, trainData.labels, {
         batchSize,
         validationSplit,
         epochs: trainEpochs,
         callbacks: {
-        onBatchEnd: async (batch, logs) => {
-            trainBatchCount++;
-            console.log(batch, logs)
-            let accBox = document.getElementById('ti_acc');
-            let lossBox = document.getElementById('ti_loss');
-            let trainBox = document.getElementById('ti_training');
-            accBox.children[1].innerHTML = String(Number((100*logs.acc).toFixed(2)))
-            lossBox.children[1].innerHTML = String(Number((logs.loss).toFixed(2)))
-            trainBox.children[1].innerHTML = String((trainBatchCount / totalNumBatches * 100).toFixed(1)+'%')
+            onBatchEnd: async (batch, logs) => {
+                trainBatchCount++;
+                console.log(batch, logs)
+                let accBox = document.getElementById('ti_acc');
+                let lossBox = document.getElementById('ti_loss');
+                let trainBox = document.getElementById('ti_training');
+                accBox.children[1].innerHTML = String(Number((100*logs.acc).toFixed(2)))
+                lossBox.children[1].innerHTML = String(Number((logs.loss).toFixed(2)))
+                trainBox.children[1].innerHTML = String((trainBatchCount / totalNumBatches * 100).toFixed(1)+'%')
 
-            console.log(
-                `Training... (` +
-                `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
-                ` complete). To stop training, refresh or close page.`);
-        //   console.log.plotLoss(trainBatchCount, logs.loss, 'train');
-        //   ui.plotAccuracy(trainBatchCount, logs.acc, 'train');
-            await tf.nextFrame();
-        },
-        onEpochEnd: async (epoch, logs) => {
-            let valAcc = logs.val_acc;
-            let valLoss = logs.val_loss;
-            let vaccBox = document.getElementById('ti_vacc');
-            let vlossBox = document.getElementById('ti_vloss');
-            vaccBox.children[1].innerHTML = String(Number((100*valAcc).toFixed(2)))
-            vlossBox.children[1].innerHTML = String(Number((valLoss).toFixed(2)))
-        //   ui.plotLoss(trainBatchCount, logs.val_loss, 'validation');
-        //   ui.plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
-            await tf.nextFrame();
-        }
+                console.log(
+                    `Training... (` +
+                    `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
+                    ` complete). To stop training, refresh or close page.`);
+                plotLoss(trainBatchCount, logs.loss, 'train');
+                plotAccuracy(trainBatchCount, logs.acc, 'train');
+                await tf.nextFrame();
+            },
+            onEpochEnd: async (epoch, logs) => {
+                let valAcc = logs.val_acc;
+                let valLoss = logs.val_loss;
+                let vaccBox = document.getElementById('ti_vacc');
+                let vlossBox = document.getElementById('ti_vloss');
+                vaccBox.children[1].innerHTML = String(Number((100*valAcc).toFixed(2)))
+                vlossBox.children[1].innerHTML = String(Number((valLoss).toFixed(2)))
+                plotLoss(trainBatchCount, logs.val_loss, 'validation');
+                plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
+                await tf.nextFrame();
+            }
         }
     });
 

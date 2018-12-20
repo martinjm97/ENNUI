@@ -198,7 +198,30 @@ div[class = 'toggleOption'] {
 	margin-right: 5px
 }
 
-#main > #svg {
+#main > #middle {
+	float: left;
 	width : calc(100% - 420px);
+	height: 100%;
+}
+
+
+#main > #middle > #networkTab > #svg {
+	width: 100%;
+	height: 100%; 
+}
+
+
+#main > #middle > #networkTab {
+	width: 100%;
+	height: 100%; 
+}
+
+#main > #middle > #progressTab {
+	width: 100%;
+	height: 100%;
+}
+
+#main > #middle > #visualizationTab {
+	width: 100%;
 	height: 100%;
 }

@@ -43,7 +43,31 @@
 	</div>
 
 	<!-- The middle canvas -->
-	<svg id = 'svg'> </svg>
+	<!-- Network tab --> 
+	<div id = 'middle'>
+		<div id = 'networkTab'>
+			<svg id = 'svg'> </svg>
+		</div>
+
+		<div id = 'progressTab'>
+			<div id='trainingProgress'>Training Progress</div>
+			
+			<div class="canvases">
+				<label id="loss-label"></label>
+				<div id="loss-canvas"></div>
+			</div>
+
+			<div class="canvases">
+				<label id="accuracy-label"></label>
+				<div id="accuracy-canvas"></div>
+			</div>
+		</div>
+
+		<div id = 'visualizationTab'>
+			<div id='visulaization'>Visualization</div>
+		</div>
+	</div>
+
 
 	<!-- The right panel -->
 	<div id = 'paramshell'>

@@ -166,19 +166,17 @@ function appendItem(options){
 	}
 }
 
-function hideCanvas() {
-    document.getElementById("svg").style.display = "none"
-}
-
-function showCanvas() {
-    document.getElementById("svg").style.display = null
-}
 
 function switchTab(tab) {
+	// Hide all tabs
+	document.getElementById("networkTab").style.display = "none"
+    document.getElementById("progressTab").style.display = "none"
+    document.getElementById("visualizationTab").style.display = "none"
+
 	switch(tab.detail.tabType){
-		case 'network': showCanvas(); break; 
-		case 'progress': hideCanvas(); break;
-		case 'visualization': hideCanvas(); break;
+		case 'network': document.getElementById("networkTab").style.display = null; break; 
+		case 'progress': document.getElementById("progressTab").style.display = null; break;
+		case 'visualization': document.getElementById("visualizationTab").style.display = null; break;
 	}
 }
 

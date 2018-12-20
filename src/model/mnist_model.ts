@@ -1,5 +1,6 @@
 // Adapted from https://github.com/tensorflow/tfjs-examples/tree/master/mnist
 import * as tf from '@tensorflow/tfjs';
+import {plotAccuracy, plotLoss} from './graphs';
 
 import {IMAGE_H, IMAGE_W, MnistData} from './data';
 
@@ -46,21 +47,47 @@ async function train(model) {
     validationSplit,
     epochs: trainEpochs,
     callbacks: {
-      // TODO: ADD LOGGING!
+      onBatchEnd: async (batch, logs) => {
+        trainBatchCount++;
+        // ui.logStatus(
+        //     `Training... (` +
+        //     `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
+        //     ` complete). To stop training, refresh or close page.`);
+        plotLoss(trainBatchCount, logs.loss, 'train');
+        plotAccuracy(trainBatchCount, logs.acc, 'train');
+        // if (onIteration && batch % 10 === 0) {
+        //   onIteration('onBatchEnd', batch, logs);
+        // }
+        await tf.nextFrame();
+      },
+      onEpochEnd: async (epoch, logs) => {
+        valAcc = logs.val_acc;
+        plotLoss(trainBatchCount, logs.val_loss, 'validation');
+        plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
+        // if (onIteration) {
+        //   onIteration('onEpochEnd', epoch, logs);
+        // }
+        await tf.nextFrame();
+      }
+
+
+      // // TODO: ADD LOGGING!
       // onBatchEnd: async (batch, logs) => {
+      //   console.log("Batch END", logs)
       //   trainBatchCount++;
-      //   ui.logStatus(
-      //       `Training... (` +
-      //       `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
-      //       ` complete). To stop training, refresh or close page.`);
-      //   ui.plotLoss(trainBatchCount, logs.loss, 'train');
-      //   ui.plotAccuracy(trainBatchCount, logs.acc, 'train');
+      //   // ui.logStatus(
+      //   //     `Training... (` +
+      //   //     `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
+      //   //     ` complete). To stop training, refresh or close page.`);
+      //   // ui.plotLoss(trainBatchCount, logs.loss, 'train');
+      //   plotAccuracy(trainBatchCount, logs.acc, 'train');
       //   await tf.nextFrame();
       // },
       // onEpochEnd: async (epoch, logs) => {
+      //   console.log("epoch END", logs)
       //   valAcc = logs.val_acc;
-      //   ui.plotLoss(trainBatchCount, logs.val_loss, 'validation');
-      //   ui.plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
+      //   // ui.plotLoss(trainBatchCount, logs.val_loss, 'validation');
+      //   plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
       //   await tf.nextFrame();
       // }
     }
