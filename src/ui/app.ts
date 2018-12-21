@@ -2,9 +2,10 @@ import { Dense, Conv2D, Layer, MaxPooling2D, Input, Output } from "./shapes/laye
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetwork, train, buildNetworkDAG } from "../model/build_network";
+import { buildNetwork, buildNetworkDAG } from "../model/build_network";
 import { blankTemplate, defaultTemplate } from "./model_templates";
 import { graphToJson } from "../model/export_model";
+import { train } from "../model/mnist_model";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -16,6 +17,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // this function runs when the DOM is ready, i.e. when the document has been parsed
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){
+		// hide the progress and visualization tabs
+		document.getElementById("progressTab").style.display = "none"
+		document.getElementById("visualizationTab").style.display = "none"
 		tabOnMouseOver(elmt);
 		dispatchSwitchTabOnClick(elmt);
 	}
@@ -173,6 +177,7 @@ function switchTab(tab) {
     document.getElementById("progressTab").style.display = "none"
     document.getElementById("visualizationTab").style.display = "none"
 
+	// Display only the selected tab
 	switch(tab.detail.tabType){
 		case 'network': document.getElementById("networkTab").style.display = null; break; 
 		case 'progress': document.getElementById("progressTab").style.display = null; break;
