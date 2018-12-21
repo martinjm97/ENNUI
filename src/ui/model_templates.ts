@@ -1,7 +1,6 @@
 import { Input, Output, ActivationLayer, Conv2D, Dense } from "./shapes/layer";
 import { Activation, Relu } from "./shapes/activation";
 import { Point } from "./shapes/shape";
-import { svg } from "d3";
 
 function resetWorkspace(svgData) {
     // Set input and output locations

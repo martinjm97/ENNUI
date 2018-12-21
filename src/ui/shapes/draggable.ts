@@ -21,7 +21,7 @@ export abstract class Draggable {
     moveTimeout: any;
     
     constructor(defaultLocation=new Point(50,100)) {        
-        this.svgComponent = d3.select<SVGGraphicsElement, {}>("svg")
+        this.svgComponent = d3.select<SVGGraphicsElement, {}>("#svg")
                               .append<SVGGraphicsElement>("g")
                               .data([{"x": defaultLocation.x, "y": defaultLocation.y}])
                               .attr('transform','translate('+defaultLocation.x+','+defaultLocation.y+')')

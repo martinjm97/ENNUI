@@ -23,7 +23,7 @@ export class Wire {
         let sourceCenter = this.source.getPosition().add(this.source.center())
         let destCenter = this.dest.getPosition().add(this.dest.center())
 
-        let newGroup = d3.select<SVGGraphicsElement, {}>("svg")
+        let newGroup = d3.select<SVGGraphicsElement, {}>("#svg")
                         .append<SVGGraphicsElement>("g")
 
         this.line = newGroup.append<SVGGraphicsElement>("line")
