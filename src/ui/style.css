@@ -20,7 +20,7 @@ body {
 }
 
 #main > #menu {
-	width: 140px;
+	width: 160px;
 	height: calc(100% - 15px);
 	float:left;
 	background-color: #E5E5FC;
@@ -234,7 +234,7 @@ div[class = 'toggleOption'] {
 
 #middle {
 	float: left;
-	width : calc(100% - 430px);
+	width : calc(100% - 450px);
 	height: 100%;
 }
 
