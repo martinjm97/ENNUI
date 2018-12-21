@@ -42,7 +42,7 @@ body {
 	user-select:none;
 }
 
-#main > #tabselector > .tab{
+.tab{
 	width: 40px;
 	height: 40px;
 	line-height:50px;
@@ -53,6 +53,14 @@ body {
 	font-family: Helvetica;
 	cursor:pointer;
 	user-select:none;
+}
+
+.tab:hover {
+	background-color: #ccc; 
+}
+
+.tab-selected {
+	background-color: #E5E5FC;
 }
 
 #main > #paramshell > .category{
@@ -82,7 +90,7 @@ body {
 	font-family: Helvetica;
 }
 
-#main > #paramshell > .trainbox > .train {
+.train {
 	background: #447344;
 	color: #eee;
 	text-align:center;
@@ -92,6 +100,10 @@ body {
 	font-family: Helvetica;
 	border-radius: 6px;
 	cursor:pointer;
+}
+
+.train:hover {
+	background-color: #00008B; 
 }
 
  #main > #menu > .bottomCategory{
@@ -161,6 +173,10 @@ body {
 	color: #eee;
 }
 
+.option:hover {
+	background-color: #ccc; 
+}
+
 div[class='option'] {
 	width:calc(100% - 20px);
 	text-align:center;
@@ -198,30 +214,30 @@ div[class = 'toggleOption'] {
 	margin-right: 5px
 }
 
-#main > #middle {
+#middle {
 	float: left;
 	width : calc(100% - 420px);
 	height: 100%;
 }
 
 
-#main > #middle > #networkTab > #svg {
+#svg {
 	width: 100%;
 	height: 100%; 
 }
 
 
-#main > #middle > #networkTab {
+#networkTab {
 	width: 100%;
 	height: 100%; 
 }
 
-#main > #middle > #progressTab {
+#progressTab {
 	width: 100%;
 	height: 100%;
 }
 
-#main > #middle > #visualizationTab {
+#visualizationTab {
 	width: 100%;
 	height: 100%;
 }

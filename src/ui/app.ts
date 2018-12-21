@@ -14,25 +14,26 @@ export interface DraggableData {
 }
 
 document.addEventListener("DOMContentLoaded", function() { 
-    // this function runs when the DOM is ready, i.e. when the document has been parsed
+    // This function runs when the DOM is ready, i.e. when the document has been parsed
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){
-		// hide the progress and visualization tabs
+		// Initialize the network tab to selected
+		document.getElementById("network").classList.add("tab-selected");
+		
+		// Hide the progress and visualization tabs
 		document.getElementById("progressTab").style.display = "none"
 		document.getElementById("visualizationTab").style.display = "none"
-		tabOnMouseOver(elmt);
+
 		dispatchSwitchTabOnClick(elmt);
 	}
 	
 	var elmts = document.getElementsByClassName('option');
 	for(let elmt of elmts){
-		highlightOnMouseOver(elmt);
 		dispatchCreationOnClick(elmt);
 	}
 	
 	var elmts = document.getElementsByClassName('train');
 	for(let elmt of elmts){
-		trainOnHighlight(elmt);
 		trainOnClick(elmt)
 	}
     
@@ -67,6 +68,12 @@ document.addEventListener("DOMContentLoaded", function() {
 					windowProperties.selectedElement = null;
 				}
 				break;
+			case 'Backspace':
+				if(windowProperties.selectedElement){
+					windowProperties.selectedElement.delete();
+					windowProperties.selectedElement = null;
+				}
+				break;
 			case 'Enter' :
 				// graphToJson();
 				train(buildNetwork(svgData.input))
@@ -78,25 +85,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	svgData.output = new Output();
 	defaultTemplate(svgData)
 });
-
-function tabOnMouseOver(elmt){
-	elmt.addEventListener('mouseover',function(e){
-		elmt.style.backgroundColor = '#ccc'
-	});
-	elmt.addEventListener('mouseout',function(e){
-		elmt.style.backgroundColor = 'transparent'
-	});
-}
-
-function trainOnHighlight(elmt){
-	elmt.addEventListener('mouseover',function(e){
-		elmt.style.background = '#00008B'
-	});
-	elmt.addEventListener('mouseout',function(e){
-		elmt.style.background = '#447344'
-	});
-}
-
 
 function trainOnClick(elmt){
 	elmt.addEventListener('click', async function(e){
@@ -111,24 +99,13 @@ function trainOnClick(elmt){
 		await train(model)
 		elmt.innerHTML = "Train"
 		trainingBox.children[1].innerHTML = 'No'
-		// elmt.style.background = '#007400'
-	});
-}
-
-
-function highlightOnMouseOver(elmt){
-	elmt.addEventListener('mouseover',function(e){
-		elmt.style.backgroundColor = '#ccc'
-	});
-	elmt.addEventListener('mouseout',function(e){
-		elmt.style.backgroundColor = 'transparent'
 	});
 }
 
 function dispatchSwitchTabOnClick(elmt){
 	elmt.addEventListener('click', function(e){
         var tabType = elmt.getAttribute('data-tabType')
-        var detail = { tabType : tabType}
+		var detail = { tabType : tabType}
         var event = new CustomEvent('switch', { detail : detail } );
 		window.dispatchEvent(event);
 	});
@@ -139,7 +116,7 @@ function dispatchCreationOnClick(elmt){
 	elmt.addEventListener('click', function(e){
         var itemType = elmt.parentElement.getAttribute('data-itemType')
         var detail = { itemType : itemType}
-        detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
+		detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
         var event = new CustomEvent('create', { detail : detail } );
 		window.dispatchEvent(event);
 	});
@@ -175,13 +152,18 @@ function switchTab(tab) {
 	// Hide all tabs
 	document.getElementById("networkTab").style.display = "none"
     document.getElementById("progressTab").style.display = "none"
-    document.getElementById("visualizationTab").style.display = "none"
+	document.getElementById("visualizationTab").style.display = "none"
+
+	// Unselect all tabs
+	document.getElementById("network").classList.remove("tab-selected")
+	document.getElementById("progress").classList.remove("tab-selected")
+	document.getElementById("visualization").classList.remove("tab-selected")
 
 	// Display only the selected tab
 	switch(tab.detail.tabType){
-		case 'network': document.getElementById("networkTab").style.display = null; break; 
-		case 'progress': document.getElementById("progressTab").style.display = null; break;
-		case 'visualization': document.getElementById("visualizationTab").style.display = null; break;
+		case 'network': document.getElementById("networkTab").style.display = null; document.getElementById("network").classList.add("tab-selected"); break; 
+		case 'progress': document.getElementById("progressTab").style.display = null; document.getElementById("progress").classList.add("tab-selected"); break;
+		case 'visualization': document.getElementById("visualizationTab").style.display = null; document.getElementById("visualization").classList.add("tab-selected"); break;
 	}
 }
 
