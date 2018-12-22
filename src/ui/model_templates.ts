@@ -20,10 +20,12 @@ export function defaultTemplate(svgData) {
     // Initialize each of the layers and activations
 	let canvasWidth = document.getElementById("svg").clientWidth;
 	let canvasHeight = document.getElementById("svg").clientHeight;
-	let conv: ActivationLayer = new Conv2D(new Point(canvasWidth/3, canvasHeight/2))
-	let convRelu: Activation = new Relu()
-	let dense: ActivationLayer = new Dense(new Point(canvasWidth*2/3, canvasHeight/2))
-	let denseRelu: Activation = new Relu()
+	let convStartingPosition = new Point(canvasWidth/3, canvasHeight/2)
+	let denseStartingPosition = new Point(canvasWidth*2/3, canvasHeight/2)
+	let conv: ActivationLayer = new Conv2D(convStartingPosition)
+	let convRelu: Activation = new Relu(convStartingPosition)
+	let dense: ActivationLayer = new Dense(denseStartingPosition)
+	let denseRelu: Activation = new Relu(denseStartingPosition)
     
     // Add relationships among layers and activations
 	svgData.input.addChild(conv)
