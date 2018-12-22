@@ -68,12 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
 					windowProperties.selectedElement = null;
 				}
 				break;
-			case 'Backspace':
-				if(windowProperties.selectedElement){
-					windowProperties.selectedElement.delete();
-					windowProperties.selectedElement = null;
-				}
-				break;
 			case 'Enter' :
 				// graphToJson();
 				train(buildNetwork(svgData.input))
