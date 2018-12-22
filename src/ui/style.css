@@ -197,7 +197,8 @@ body {
 
 div[class='option'] {
 	width:calc(100% - 20px);
-	text-align:center;
+	text-align: left;
+	border-bottom: 1px solid gray;
 	height:30px;
 	line-height:30px;
 	font-size:18px;
@@ -224,8 +225,7 @@ div[class = 'toggle'] {
 div[class = 'toggleOption'] {
 	float:left;
 	width: calc(50% - 10px);
-	text-align: left;
-	border-bottom: 1px solid gray;
+	text-align: center;
 	height: 100%;
 	cursor: pointer;
 
