@@ -7,9 +7,9 @@ export abstract class Activation extends Draggable {
 
     layer: ActivationLayer = null;
     abstract activationType: String;
-    defaultLocation: Point = new Point(50,150);
+    static defaultLocation: Point = new Point(50, 100);
     body: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-
+    
     constructor(color: string, defaultLocation) { 
         super(defaultLocation);
 
@@ -70,7 +70,8 @@ export abstract class Activation extends Draggable {
 export class Relu extends Activation {
     activationType = "relu"
 
-    constructor(defaultLocation=new Point(50,100)) {
+    constructor(defaultLocation=Point.randomPoint(50, 50, Activation.defaultLocation)) {
+        
         super("#B29F9C", defaultLocation)
 
         this.svgComponent.append("path").attr("d", "M-5 20 l10 0 l7 -7")
@@ -87,7 +88,7 @@ export class Relu extends Activation {
 export class Sigmoid extends Activation {
     activationType = "sigmoid"
 
-    constructor(defaultLocation=new Point(50,100)) {
+    constructor(defaultLocation=Point.randomPoint(50, 50, Activation.defaultLocation)) {
         super("#F2A878", defaultLocation)
 
         this.svgComponent.append("path").attr("d", "M -3 20 Q 5 20 5 17 Q 5 14 13 14 ")
@@ -104,7 +105,7 @@ export class Sigmoid extends Activation {
 export class Tanh extends Activation {
     activationType = "tanh"
     
-    constructor(defaultLocation=new Point(50,100)) {
+    constructor(defaultLocation=Point.randomPoint(50, 50, Activation.defaultLocation)) {
         super("#A3A66D", defaultLocation)
 
         this.svgComponent.append("path").attr("d", "M -4 26 Q 5 26 5 20 Q 5 14 14 14 ")
