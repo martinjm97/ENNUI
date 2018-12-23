@@ -86,7 +86,7 @@ export class Point {
     }
 
     static randomPoint(width: number, height: number, initial: Point) {
-        return new Point(Math.random()* width + initial.x, Math.random()*height + initial.y)
+        return new Point(Math.random() * width + initial.x, Math.random()*height + initial.y)
     }
 
     distance(other: Point): number {

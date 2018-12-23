@@ -20,7 +20,6 @@ export interface layerJson {
 // TODO make transparent holes not terrible
 
 export abstract class Layer extends Draggable {
-    abstract wireConnectionPoints: Array<Point>;
     abstract layerType: string;
     paramBox;
     
@@ -32,7 +31,6 @@ export abstract class Layer extends Draggable {
     wireCircleSelected: boolean = false;
     static nextID: number = 0;
     uid: number;
-
     constructor(block: Array<Shape>, defaultLocation) { 
         super(defaultLocation)
         this.uid = Layer.nextID
@@ -139,10 +137,10 @@ export abstract class Layer extends Draggable {
 export abstract class ActivationLayer extends Layer {
     // hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
     activation: Activation = null;
-
+    static defaultInitialLocation = new Point(100,100)
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) { 
         super(block, defaultLocation)
-
+        
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this)
         // let blocks = this.svgComponent.selectAll<SVGGraphicsElement, {}>("rect").nodes()
@@ -209,14 +207,12 @@ export abstract class ActivationLayer extends Layer {
 export class Conv2D extends ActivationLayer {
     layerType = "Conv2D"
     static readonly blockSize: number = 50;
-    wireConnectionPoints = [new Point(-20, -40), new Point(5, -40), new Point(5, -15), new Point(-20, -15)]
 
-    constructor(defaultLocation=new Point(100,100)) {
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#3B6B88'),
                new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#3B7B88'),
                new PathShape("M-20 -40 h50 v50 h-20 v-10 h-10 v10 h-20 v-50 Z", '#3B8B88')],
                defaultLocation)
-
     }
 
     populateParamBox() {
@@ -270,9 +266,8 @@ export class Conv2D extends ActivationLayer {
 
 export class Dense extends ActivationLayer {
     layerType = "Dense"
-    wireConnectionPoints = [new Point(5, -70), new Point(5, -40), new Point(5, -10)]
 
-    constructor(defaultLocation=new Point(100,100)) {
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([new PathShape("M-8 -90 h26 v100 h-8 v-10 h-10 v10 h-8 v-100 Z", '#F7473B')], defaultLocation)
     }
 
@@ -298,12 +293,11 @@ export class Dense extends ActivationLayer {
 export class MaxPooling2D extends ActivationLayer {
     layerType = "MaxPooling2D"
     static readonly blockSize: number = 30;
-    wireConnectionPoints = [new Point(-10, -20), new Point(-10, -5), new Point(5, -5), new Point(5, -20)]
 
-    constructor() {
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F76034'),
                new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F77134'),
-               new PathShape("M-10 -20 h30 v30 h-10 v-10 h-10 v10 h-10 v-30 Z", '#F78234')])
+               new PathShape("M-10 -20 h30 v30 h-10 v-10 h-10 v10 h-10 v-30 Z", '#F78234')], defaultLocation)
     }
 
     populateParamBox() {
@@ -327,7 +321,6 @@ export class MaxPooling2D extends ActivationLayer {
 
 export class Input extends Layer {
     layerType = "Input"
-    wireConnectionPoints = [new Point(20, 10), new Point(20, 30)]
     defaultLocation = new Point(100, document.getElementById("svg").clientHeight/2)
 
 	constructor(){
@@ -341,7 +334,6 @@ export class Input extends Layer {
 
 export class Output extends Layer {
     layerType = "Output";
-    wireConnectionPoints = [new Point(0, -60), new Point(0, 0), new Point(0, 60)]
     defaultLocation = new Point(document.getElementById("svg").clientWidth - 100, document.getElementById("svg").clientHeight/2)
 
     constructor(){
