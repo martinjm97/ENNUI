@@ -15,15 +15,18 @@ export interface DraggableData {
 
 document.addEventListener("DOMContentLoaded", function() { 
     // This function runs when the DOM is ready, i.e. when the document has been parsed
+	
+	// Initialize the network tab to selected
+	document.getElementById("network").classList.add("tab-selected");
+	
+	// Hide the progress and visualization tabs
+	document.getElementById("progressTab").style.display = "none"
+	document.getElementById("visualizationTab").style.display = "none"
+	document.getElementById("informationTab").style.display = "none"
+
+	
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){
-		// Initialize the network tab to selected
-		document.getElementById("network").classList.add("tab-selected");
-		
-		// Hide the progress and visualization tabs
-		document.getElementById("progressTab").style.display = "none"
-		document.getElementById("visualizationTab").style.display = "none"
-
 		dispatchSwitchTabOnClick(elmt);
 	}
 	
@@ -41,9 +44,17 @@ document.addEventListener("DOMContentLoaded", function() {
 		appendItem(e);
 	});
 
-	window.addEventListener('switch', function( e ) {
-		switchTab(e);
+	window.addEventListener('switch', function( e: any ) {
+		if (e.detail.tabType == 'information') {
+			console.log("clicked on information")
+			showInformationOverlay()
+		} else {
+			console.log("switching tabs")
+			switchTab(e);
+		}
 	});
+	
+	document.getElementById("informationTab").onclick = (_) => 	document.getElementById("informationTab").style.display = "none";
 
 	document.getElementById("svg").addEventListener("click", function(event) {
 		// Only click if there is a selected element, and the clicked element is an SVG Element, and its id is "svg"
@@ -147,6 +158,7 @@ function switchTab(tab) {
 	document.getElementById("networkTab").style.display = "none"
     document.getElementById("progressTab").style.display = "none"
 	document.getElementById("visualizationTab").style.display = "none"
+	document.getElementById("informationTab").style.display = "none";
 
 	// Unselect all tabs
 	document.getElementById("network").classList.remove("tab-selected")
@@ -155,10 +167,24 @@ function switchTab(tab) {
 
 	// Display only the selected tab
 	switch(tab.detail.tabType){
-		case 'network': document.getElementById("networkTab").style.display = null; document.getElementById("network").classList.add("tab-selected"); break; 
-		case 'progress': document.getElementById("progressTab").style.display = null; document.getElementById("progress").classList.add("tab-selected"); break;
-		case 'visualization': document.getElementById("visualizationTab").style.display = null; document.getElementById("visualization").classList.add("tab-selected"); break;
+		case "network": document.getElementById("networkTab").style.display = null; document.getElementById("network").classList.add("tab-selected"); break; 
+		case "progress": document.getElementById("progressTab").style.display = null; document.getElementById("progress").classList.add("tab-selected"); break;
+		case "visualization": document.getElementById("visualizationTab").style.display = null; document.getElementById("visualization").classList.add("tab-selected"); break;
 	}
+}
+
+function showInformationOverlay() { 
+	console.log("Setting information tab to null.")
+	console.log(document.getElementById("informationTab").style.display)
+	if (document.getElementById("informationTab").style.display == "none") {
+		document.getElementById("informationTab").style.display = "block";
+	} else {
+		document.getElementById("informationTab").style.display = "none";
+	}
+}
+
+function off(){
+	document.getElementById("informationTab").style.display = "none";
 }
 
 let svgData: DraggableData = {

@@ -60,7 +60,6 @@ body {
 }
 
 .tab{
-	text-align: center;
     vertical-align: middle;
     line-height: 70px;
 	width: 50px;
@@ -259,5 +258,28 @@ div[class = 'toggleOption'] {
 #visualizationTab {
 	width: 100%;
 	height: 100%;
+}
+
+#informationTab {
+	padding: 5%;
+	text-align: center;
+	color: #E5E5FC;
+	font-size: 48;
+	width: 90%;
+	height: 80%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,0.8);
+	cursor: pointer;
+	font-family: Helvetica;
+}
+
+#informationBody {
+	text-align: left;
+	color: #E5E5FC;
+	font-size: 32;
 }
 

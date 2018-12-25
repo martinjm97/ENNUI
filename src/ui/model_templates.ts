@@ -1,4 +1,4 @@
-import { Input, Output, ActivationLayer, Conv2D, Dense } from "./shapes/layer";
+import { ActivationLayer, Conv2D, Dense } from "./shapes/layer";
 import { Activation, Relu } from "./shapes/activation";
 import { Point } from "./shapes/shape";
 
