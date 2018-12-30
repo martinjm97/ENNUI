@@ -148,6 +148,7 @@ function appendItem(options){
 	}
 
 	if (template == null) {
+		item.select()
 		svgData.draggable.push(item);
 	}
 }
