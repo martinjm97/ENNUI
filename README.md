@@ -1,4 +1,6 @@
 # ClientENNUI
+To install dependencies, run:
+`npm install`
 
 To Build the app, run:
 `npm run build`
