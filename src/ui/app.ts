@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("visualizationTab").style.display = "none"
 	document.getElementById("informationTab").style.display = "none"
 
+	// Hide the progress and visualization menus
+	document.getElementById("progressMenu").style.display = "none";
+	document.getElementById("visualizationMenu").style.display = "none";
 	
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){
@@ -161,6 +164,11 @@ function switchTab(tab) {
 	document.getElementById("visualizationTab").style.display = "none"
 	document.getElementById("informationTab").style.display = "none";
 
+	// Hide all menus
+	document.getElementById("networkMenu").style.display = "none";
+	document.getElementById("progressMenu").style.display = "none";
+	document.getElementById("visualizationMenu").style.display = "none";
+
 	// Unselect all tabs
 	document.getElementById("network").classList.remove("tab-selected")
 	document.getElementById("progress").classList.remove("tab-selected")
@@ -168,9 +176,21 @@ function switchTab(tab) {
 
 	// Display only the selected tab
 	switch(tab.detail.tabType){
-		case "network": document.getElementById("networkTab").style.display = null; document.getElementById("network").classList.add("tab-selected"); break; 
-		case "progress": document.getElementById("progressTab").style.display = null; document.getElementById("progress").classList.add("tab-selected"); break;
-		case "visualization": document.getElementById("visualizationTab").style.display = null; document.getElementById("visualization").classList.add("tab-selected"); break;
+		case "network": 
+			document.getElementById("networkTab").style.display = null; 
+			document.getElementById("network").classList.add("tab-selected");
+			document.getElementById("networkMenu").style.display = null;
+			break; 
+		case "progress": 
+			document.getElementById("progressTab").style.display = null; 
+			document.getElementById("progress").classList.add("tab-selected");
+			document.getElementById("progressMenu").style.display = null; 
+			break;
+		case "visualization": 
+			document.getElementById("visualizationTab").style.display = null; 
+			document.getElementById("visualization").classList.add("tab-selected");
+			document.getElementById("visualizationMenu").style.display = null; 
+			break;
 	}
 }
 

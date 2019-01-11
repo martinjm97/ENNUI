@@ -123,14 +123,14 @@ body {
 	background-color: #00008B; 
 }
 
- #main > #menu > .bottomCategory{
+.bottomCategory{
 	position: absolute; 
 	bottom: 10px;
 	width: 160px;
 	padding-bottom: 15px;
 }
 
-#main > #menu > .bottomCategory > .categoryTitle {
+.categoryTitle {
 	background: #555;
 	text-align: center;
 	height:35px;
@@ -138,7 +138,7 @@ body {
 	color: #eee;
 }
 
-#main > #menu > .category{
+.category{
 	padding-bottom: 15px;
 	width:100%;
 }
@@ -182,7 +182,7 @@ body {
 	float:right;
 }
 
-#main > #menu > .category > .categoryTitle {
+.categoryTitle {
 	background: #555;
 	text-align: center;
 	height:35px;
