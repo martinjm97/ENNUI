@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	for(let elmt of elmts){
 		trainOnClick(elmt)
 	}
-    
+
     window.addEventListener('create', function( e ) {
 		appendItem(e);
 	});
@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	
 	document.getElementById("informationTab").onclick = (_) => 	document.getElementById("informationTab").style.display = "none";
+	document.getElementById("x").onclick = (_) => 	document.getElementById("error").style.display = "none";
 
 	document.getElementById("svg").addEventListener("click", function(event) {
 		// Only click if there is a selected element, and the clicked element is an SVG Element, and its id is "svg"
@@ -94,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	defaultTemplate(svgData)
 });
 
-function trainOnClick(elmt){
+function trainOnClick(elmt) {
 	elmt.addEventListener('click', async function(e){
 		let trainingBox = document.getElementById('ti_training');
 		trainingBox.children[1].innerHTML = 'Yes'
@@ -195,8 +196,6 @@ function switchTab(tab) {
 }
 
 function showInformationOverlay() { 
-	console.log("Setting information tab to null.")
-	console.log(document.getElementById("informationTab").style.display)
 	if (document.getElementById("informationTab").style.display == "none") {
 		document.getElementById("informationTab").style.display = "block";
 	} else {
@@ -204,9 +203,6 @@ function showInformationOverlay() {
 	}
 }
 
-function off(){
-	document.getElementById("informationTab").style.display = "none";
-}
 
 let svgData: DraggableData = {
 	draggable : [],
