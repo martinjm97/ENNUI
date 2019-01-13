@@ -105,12 +105,16 @@ function trainOnClick(elmt) {
 		elmt.innerHTML = "Training"
 		// TODO: Change color during training
 		// elmt.style.backgroundColor = '#900000'
-		let model = buildNetworkDAG(svgData.output)
-		console.log("Built Model... ")
-		console.log(model)
-		await train(model)
-		elmt.innerHTML = "Train"
-		trainingBox.children[1].innerHTML = 'No'
+		try  {
+			let model = buildNetworkDAG(svgData.output)
+			console.log("Built Model... ")
+			console.log(model)
+			await train(model)
+		} 
+		finally {
+			elmt.innerHTML = "Train"
+			trainingBox.children[1].innerHTML = 'No'
+		}
 	});
 }
 
