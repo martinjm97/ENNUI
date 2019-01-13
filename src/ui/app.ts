@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Hide the progress and visualization menus
 	document.getElementById("progressMenu").style.display = "none";
 	document.getElementById("visualizationMenu").style.display = "none";
+
+	// Hide the error box
+	document.getElementById("error").style.display = "none";
 	
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){

@@ -57,6 +57,19 @@ export function buildNetwork(input: Input) {
 }
 
 export function buildNetworkDAG(out: Layer) {
+    try {
+        return networkDAG(out);
+    }
+      catch(err) {
+        // document.getElementById("x").style.display = null;
+        document.getElementById("error").style.display = null;
+        document.getElementById("errorMessage").innerHTML = err.message;
+        document.getElementById("error").title = err.message;
+        throw err;
+    }
+}
+
+function networkDAG(out: Layer) {
     let input = null
     let cache: Map<Layer, any> = new Map()
     function dfs(out: Layer) {

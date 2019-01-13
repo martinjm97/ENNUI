@@ -284,7 +284,6 @@ div[class = 'toggleOption'] {
 }
 
 #error {
-	display: none;
 	width: 144px;
 	height: 80px;
 	position: fixed;
@@ -298,10 +297,20 @@ div[class = 'toggleOption'] {
 }
 
 #x  {
-	display: none;
 	position: relative;
 	top: -5px;
 	left: 125px;
 	cursor: pointer;
 	background-color: #C7C7E0;
+}
+
+#errorMessage  {
+	width: 120px;
+	height: 80px;
+	position: absolute;
+	padding-right: 10px;
+	z-index: 9999;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	top: 5px;
 }
