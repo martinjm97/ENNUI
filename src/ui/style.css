@@ -290,7 +290,8 @@ div[class = 'toggleOption'] {
 	padding: 5px;
 	bottom: 20px;
 	right: 20px;
-	background-color: #C7C7E0;
+	background-color: #dca7a7;
+	/* background-color: #C7C7E0; */
 	border-style: solid;
 	border-width: 3px;
 	border-color: #555;
@@ -301,7 +302,7 @@ div[class = 'toggleOption'] {
 	top: -5px;
 	left: 125px;
 	cursor: pointer;
-	background-color: #C7C7E0;
+	/* background-color: #C7C7E0; */
 }
 
 #errorMessage  {
