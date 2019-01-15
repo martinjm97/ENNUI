@@ -17,12 +17,15 @@
     "tslint": "^5.12.0",
     "tslint-config-prettier": "^1.17.0",
     "typescript": "^3.2.2",
+    "node-sass": "^4.11.0",
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --skipLibCheck && webpack --mode development",
-    "watch": "tsc --skipLibCheck && webpack --mode development && tsc --skipLibCheck --watch & webpack --watch --mode development"
+    "scss": "node-sass src/ui -o src/ui",
+    "scss-watch": "node-sass --watch src/ui -o src/ui",
+    "build": "tsc --skipLibCheck && webpack --mode development && node-sass src/ui -o src/ui",
+    "watch": "tsc --skipLibCheck && webpack --mode development && node-sass src/ui -o src/ui && tsc --skipLibCheck --watch & webpack --watch --mode development & node-sass --watch src/ui -o src/ui"
   },
   "repository": {
     "type": "git",
