@@ -293,3 +293,30 @@ body {
      top: 5px;
  }
  
+ label {
+    display: inline-block;
+    width: 250px;
+    padding: 6px 0 6px 0;
+}
+.canvases {
+display: inline-block;
+}
+.prediction-canvas {
+width: 100px;
+}
+.pred {
+font-size: 20px;
+line-height: 25px;
+width: 100px;
+}
+.pred-correct {
+background-color: #00cf00;
+}
+.pred-incorrect {
+background-color: red;
+}
+.pred-container {
+display: inline-block;
+width: 100px;
+margin: 15px;
+}

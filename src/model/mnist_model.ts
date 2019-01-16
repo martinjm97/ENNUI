@@ -1,6 +1,6 @@
 // Adapted from https://github.com/tensorflow/tfjs-examples/tree/master/mnist
 import * as tf from '@tensorflow/tfjs';
-import {plotAccuracy, plotLoss} from './graphs';
+import {plotAccuracy, plotLoss, showPredictions} from './graphs';
 
 import {IMAGE_H, IMAGE_W, MnistData} from './data';
 /**
@@ -11,9 +11,11 @@ import {IMAGE_H, IMAGE_W, MnistData} from './data';
 export async function train(model) {
   // TODO: start method
   // ui.logStatus('Training model...');
+  // TODO: This is where we should do caching.
   let data = new MnistData();
   await data.load();
-  const LEARNING_RATE = 0.01;
+  let onIteration = () => showPredictions(model, data)
+  // TODO: we should make this a thing: const LEARNING_RATE = 0.01; 
   const optimizer = 'rmsprop';
 
   model.compile({
@@ -57,6 +59,9 @@ export async function train(model) {
                   ` complete). To stop training, refresh or close page.`);
               plotLoss(trainBatchCount, logs.loss, 'train');
               plotAccuracy(trainBatchCount, logs.acc, 'train');
+              if (batch % 60 === 0) {
+                onIteration();
+              }
               await tf.nextFrame();
           },
           onEpochEnd: async (epoch, logs) => {
@@ -68,6 +73,7 @@ export async function train(model) {
               vlossBox.children[1].innerHTML = String(Number((valLoss).toFixed(2)))
               plotLoss(trainBatchCount, logs.val_loss, 'validation');
               plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
+              onIteration();
               await tf.nextFrame();
           }
       }
