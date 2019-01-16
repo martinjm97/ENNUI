@@ -226,7 +226,7 @@ export class Conv2D extends ActivationLayer {
     
         let value1 = document.createElement('input')
         value1.className = 'paramvalue'
-        value1.value = '64'
+        value1.value = '10'
     
         line1.appendChild(name1);
         line1.appendChild(value1);
@@ -280,7 +280,7 @@ export class Dense extends ActivationLayer {
         name.setAttribute('data-name','units')
         let value = document.createElement('input')
         value.className = 'paramvalue'
-        value.value = '64'
+        value.value = '30'
         line.appendChild(name);
         line.appendChild(value);
         this.paramBox.append(line);

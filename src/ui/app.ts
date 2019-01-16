@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				break;
 			case 'Enter' :
 				// graphToJson();
-				train(buildNetwork(svgData.input))
+				// train(buildNetwork(svgData.input))
 				break;
 		}
 	};
