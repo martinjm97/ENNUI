@@ -1,5 +1,6 @@
 __pycache__
 *.pyc
+src/ui/style.css
 built/*
 node_modules/
 *.log
