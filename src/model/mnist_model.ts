@@ -57,8 +57,10 @@ export async function train(model) {
                   `Training... (` +
                   `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
                   ` complete). To stop training, refresh or close page.`);
-              plotLoss(trainBatchCount, logs.loss, 'train');
-              plotAccuracy(trainBatchCount, logs.acc, 'train');
+              if (batch % 10 === 0) {
+                plotLoss(trainBatchCount, logs.loss, 'train');
+                plotAccuracy(trainBatchCount, logs.acc, 'train');
+              }
               if (batch % 60 === 0) {
                 onIteration();
               }
