@@ -213,7 +213,7 @@ body {
  
  #middle {
      float: left;
-     width : calc(100% - 450px);
+     width : calc(100% - 430px);
      height: 100%;
  }
  
@@ -239,6 +239,11 @@ body {
      height: 100%;
  }
  
+ #images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+ }
  #informationTab {
      padding: 5%;
      text-align: center;
@@ -299,26 +304,26 @@ body {
     padding: 6px 0 6px 0;
 }
 .canvases {
-display: inline-block;
+    display: inline-block;
 }
 .prediction-canvas {
-width: 100px;
+    width: 100%;
 }
 .pred {
-font-size: 20px;
-line-height: 25px;
-width: 100px;
-font-family: Helvetica;
-text-align: center;
+    font-size: 20px;
+    line-height: 25px;
+    width: 100%;
+    font-family: Helvetica;
+    text-align: center;
 }
 .pred-correct {
-background-color: #00cf00;
+    background-color: #00cf00;
 }
 .pred-incorrect {
-background-color: red;
+    background-color: red;
 }
 .pred-container {
-display: inline-block;
-width: 100px;
-margin: 15px;
+    display: inline-block;
+    margin: 12px;
+    flex-basis: 7%;
 }

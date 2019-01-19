@@ -19,7 +19,7 @@ import * as tf from '@tensorflow/tfjs';
  * @param {tf.Model} model The model to be used for making the predictions.
  */
 export async function showPredictions(model, data) {
-  const testExamples = 40;
+  const testExamples = 60;
   const examples = data.getTestData(testExamples);
 
   // Code wrapped in a tf.tidy() function callback will have their tensors freed
