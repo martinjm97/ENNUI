@@ -30,7 +30,11 @@ export async function train(model) {
   const trainEpochs = 6;
 
   // We'll keep a buffer of loss and accuracy values over time.
-  let trainBatchCount = 0;
+  let trainBatchCount: number = 0;
+  let prevTrainBatchCount: number = 0;
+  let totalLoss: number = 0;
+  let totalAccuracy: number = 0;
+  let plotLossFrequency: number = 25;
 
   const trainData = data.getTrainData();
   const testData = data.getTestData(100);
@@ -45,21 +49,26 @@ export async function train(model) {
       callbacks: {
           onBatchEnd: async (batch, logs) => {
               trainBatchCount++;
-              console.log(batch, logs)
               let accBox = document.getElementById('ti_acc');
               let lossBox = document.getElementById('ti_loss');
               let trainBox = document.getElementById('ti_training');
               accBox.children[1].innerHTML = String(Number((100*logs.acc).toFixed(2)))
               lossBox.children[1].innerHTML = String(Number((logs.loss).toFixed(2)))
               trainBox.children[1].innerHTML = String((trainBatchCount / totalNumBatches * 100).toFixed(1)+'%')
-
-              console.log(
-                  `Training... (` +
-                  `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
-                  ` complete). To stop training, refresh or close page.`);
-              if (batch % 10 === 0) {
-                plotLoss(trainBatchCount, logs.loss, 'train');
+              // For logging training in console.
+              //   console.log(
+              //       `Training... (` +
+              //       `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
+              //       ` complete). To stop training, refresh or close page.`);
+              totalLoss += logs.loss;
+              totalAccuracy += logs.acc;
+              if (batch % plotLossFrequency === 0) {
+                // Compute the average loss for the last plotLossFrequency iterations
+                plotLoss(trainBatchCount, totalLoss / (trainBatchCount - prevTrainBatchCount), 'train');
                 plotAccuracy(trainBatchCount, logs.acc, 'train');
+                prevTrainBatchCount = trainBatchCount
+                totalLoss = 0;
+                totalAccuracy = 0;
               }
               if (batch % 60 === 0) {
                 onIteration();
