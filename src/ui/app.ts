@@ -42,11 +42,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	for(let elmt of elmts){
 		dispatchCreationOnClick(elmt);
 	}
-	
-	var elmts = document.getElementsByClassName('train');
-	for(let elmt of elmts){
-		trainOnClick(elmt)
-	}
 
     window.addEventListener('create', function( e ) {
 		appendItem(e);
@@ -62,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	});
 	
+	document.getElementById('train').onclick = trainOnClick 
 	document.getElementById("informationTab").onclick = (_) => 	document.getElementById("informationTab").style.display = "none";
 	document.getElementById("x").onclick = (_) => 	document.getElementById("error").style.display = "none";
 
@@ -100,24 +96,24 @@ document.addEventListener("DOMContentLoaded", function() {
 	defaultTemplate(svgData)
 });
 
-function trainOnClick(elmt) {
-	elmt.addEventListener('click', async function(e){
+async function trainOnClick() {
+	// Only train if not already training	
+	let training = document.getElementById('train'); 
+	if (!training.classList.contains("train-active")){
 		let trainingBox = document.getElementById('ti_training');
-		trainingBox.children[1].innerHTML = 'Yes'
-		elmt.innerHTML = "Training"
-		// TODO: Change color during training
-		// elmt.style.backgroundColor = '#900000'
-		try  {
+		trainingBox.children[1].innerHTML = 'Yes';
+		training.innerHTML = "Training"; 
+		training.classList.add("train-active");
+		try {
 			let model = buildNetworkDAG(svgData.output)
-			console.log("Built Model... ")
-			console.log(model)
 			await train(model)
 		} 
 		finally {
-			elmt.innerHTML = "Train"
+			training.innerHTML = "Train";
+			training.classList.remove("train-active");
 			trainingBox.children[1].innerHTML = 'No'
 		}
-	});
+	}	
 }
 
 function dispatchSwitchTabOnClick(elmt){
