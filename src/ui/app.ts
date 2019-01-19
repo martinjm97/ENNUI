@@ -6,6 +6,7 @@ import { buildNetwork, buildNetworkDAG } from "../model/build_network";
 import { blankTemplate, defaultTemplate } from "./model_templates";
 import { graphToJson } from "../model/export_model";
 import { train } from "../model/mnist_model";
+import { setupPlots } from "../model/graphs";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -14,7 +15,8 @@ export interface DraggableData {
 }
 
 document.addEventListener("DOMContentLoaded", function() { 
-    // This function runs when the DOM is ready, i.e. when the document has been parsed
+	// This function runs when the DOM is ready, i.e. when the document has been parsed
+	setupPlots();
 	
 	// Initialize the network tab to selected
 	document.getElementById("network").classList.add("tab-selected");
