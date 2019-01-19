@@ -50,9 +50,7 @@ export async function showPredictions(model, data) {
 
 export function showTestResults(batch, predictions, labels) {
   const imagesElement = document.getElementById('images');
-  console.log("called show test results")
   const testExamples = batch.xs.shape[0];
-  console.log(testExamples)
   imagesElement.innerHTML = '';
   for (let i = 0; i < testExamples; i++) {
     const image = batch.xs.slice([i, 0], [1, batch.xs.shape[1]]);
