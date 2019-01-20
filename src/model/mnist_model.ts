@@ -66,7 +66,7 @@ export async function train(model) {
               if (batch % plotLossFrequency === 0) {
                 // Compute the average loss for the last plotLossFrequency iterations
                 plotLoss(trainBatchCount, totalLoss / (trainBatchCount - prevTrainBatchCount), 'train');
-                plotAccuracy(trainBatchCount, logs.acc, 'train');
+                plotAccuracy(trainBatchCount, totalAccuracy / (trainBatchCount - prevTrainBatchCount), 'train');
                 prevTrainBatchCount = trainBatchCount
                 totalLoss = 0;
                 totalAccuracy = 0;
