@@ -173,6 +173,10 @@ export abstract class ActivationLayer extends Layer {
         }
     }
 
+    public select() {
+        super.select()
+        this.activation.svgComponent.raise()
+    }
     public delete() {
         super.delete()
         // Remove this layer from global state
