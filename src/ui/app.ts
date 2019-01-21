@@ -7,6 +7,7 @@ import { blankTemplate, defaultTemplate } from "./model_templates";
 import { graphToJson } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots } from "../model/graphs";
+import { networkParameters } from "../model/paramsObject"
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -29,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Hide the progress and visualization menus
 	document.getElementById("progressMenu").style.display = "none";
 	document.getElementById("visualizationMenu").style.display = "none";
-
+	
 	// Hide the error box
 	document.getElementById("error").style.display = "none";
 	
@@ -57,6 +58,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	});
 	
+	document.getElementById('defaultOptimizer').classList.add('selected')
+
 	document.getElementById('train').onclick = trainOnClick 
 	document.getElementById("informationTab").onclick = (_) => 	document.getElementById("informationTab").style.display = "none";
 	document.getElementById("x").onclick = (_) => 	document.getElementById("error").style.display = "none";
@@ -96,6 +99,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	defaultTemplate(svgData)
 });
 
+
+
 async function trainOnClick() {
 	// Only train if not already training	
 	let training = document.getElementById('train'); 
@@ -106,7 +111,7 @@ async function trainOnClick() {
 		training.classList.add("train-active");
 		try {
 			let model = buildNetworkDAG(svgData.output)
-			await train(model)
+			await train(model, networkParameters)
 		} 
 		finally {
 			training.innerHTML = "Train";
@@ -128,12 +133,35 @@ function dispatchSwitchTabOnClick(elmt){
 
 function dispatchCreationOnClick(elmt){
 	elmt.addEventListener('click', function(e){
-        var itemType = elmt.parentElement.getAttribute('data-itemType')
-        var detail = { itemType : itemType}
-		detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
-        var event = new CustomEvent('create', { detail : detail } );
-		window.dispatchEvent(event);
+		var itemType = elmt.parentElement.getAttribute('data-itemType')
+
+		if (networkParameters.isParam(itemType)){
+			var setting = elmt.getAttribute('data-trainType')
+			
+			var selected = document.getElementsByClassName("selected")
+			if (selected.length > 0) {
+				selected[0].classList.remove("selected")
+			}
+			elmt.classList.add("selected");
+			updateNetworkParameters({itemType: itemType, setting : setting})
+		}
+
+		else {
+			var detail = { itemType : itemType}
+			detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
+			var event = new CustomEvent('create', { detail : detail } );
+			window.dispatchEvent(event);
+		}
 	});
+}
+
+function updateNetworkParameters(params){
+	switch(params.itemType){
+		case 'optimizer':
+			networkParameters.optimizer = params.setting; 
+			break;
+
+	}
 }
 
 function appendItem(options){
