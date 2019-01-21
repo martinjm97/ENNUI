@@ -175,7 +175,9 @@ export abstract class ActivationLayer extends Layer {
 
     public select() {
         super.select()
-        this.activation.svgComponent.raise()
+        if (this.activation != null) {
+            this.activation.svgComponent.raise()
+        }
     }
     public delete() {
         super.delete()
