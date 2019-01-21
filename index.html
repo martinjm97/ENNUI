@@ -57,12 +57,12 @@
 				<div class = 'option' data-trainType = 'adagrad'> Adagrad </div>
 				<div class = 'option' data-trainType = 'adam'> Adam </div>
 			</div>
-			<div id = 'hyperparameters' class = 'category' data-itemType = 'hyperparameter'>
+			<!-- <div id = 'hyperparameters' class = 'category' data-itemType = 'hyperparameters'>
 				<div class = 'categoryTitle'>Hyperparams</div>
-				<div class = 'option' data-trainType = 'lr'> Learning rate </div>
-				<div class = 'option' data-trainType = 'epochs'> Epochs </div>
-				<div class = 'option' data-trainType = 'subset'> Subset </div>
-			</div>
+				<div class = 'option' data-activationType = 'lr'> Learning rate </div>
+				<div class = 'option' data-activationType = 'epochs'> Epochs </div>
+				<div class = 'option' data-activationType = 'subset'> Subset </div>
+			</div> -->
 		</div>
 
 		<div id = 'visualizationMenu'>
@@ -164,11 +164,41 @@
 				</div>
 			</div>
 		</div>
-
-		<div class = 'category' id='paramtruck'>
-			<div class = 'categoryTitle'>Parameters</div>
-			<div id='defaultparambox' class = 'parambox'>Click on a layer to view and change its parameters.</div>
+		<div id = 'networkParamshell'>
+			
+			<div class = 'category' id='paramtruck'>
+				<div class = 'categoryTitle' id='parameterTitle'>Parameters</div>
+				<div id='defaultparambox' class = 'parambox'>Click on a layer to view and change its parameters.</div>
+			</div>
 		</div>
+
+		<div id = 'progressParamshell'>
+			<!-- <div class = 'trainbox' id = 'trainbox'>
+				<div id = 'train' class = 'train' data-actionType = 'json'> Train </div>
+			</div>
+				 -->
+			<div class = 'category' id='paramtruck'>
+				<div class = 'categoryTitle' id='parameterTitle'>Hyperparams</div>
+				<div class = 'parambox'>
+					<div class = 'paramline'>
+						<div class="paramname" data-name="lr">Learning rate: </div>
+						<input class="paramvalue">
+					</div>
+					<div class = 'paramline'>
+						<div class="paramname" data-name="epochs">Epochs: </div>
+						<input class="paramvalue">
+					</div>
+					<div class = 'paramline'>
+						<div class="paramname" data-name="lr">Subset: </div>
+						<input class="paramvalue">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id = 'visualizationParamshell'>
+		</div>
+		
 	</div>
 
 	<!-- Error popup -->
