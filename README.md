@@ -2,7 +2,7 @@
 Ennui is an elegant neural network user interface that allows users to:
 - Build neural network architectures with a drag and drop interface.
 - Train those networks on the browser.
-- Visualize the training process
+- Visualize the training process.
 
 # Installation
 After cloning the repo, to install dependencies, run:
