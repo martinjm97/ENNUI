@@ -176,7 +176,7 @@ body {
  .option:hover {
      background-color: #ccc; 
  }
- 
+
  div[class='option'] {
      width:calc(100% - 20px);
      text-align: left;
@@ -186,14 +186,19 @@ body {
      font-size:18px;
      font-family: Helvetica;
      cursor:pointer;
- 
+
+    background-color: transparent;
      margin-top: 10px;
      margin-left: 10px;
      margin-right: 10px;
- 
-     background-color: transparent;
+
      user-select:none;
  }
+
+ div.option.selected {
+    background-color: #ccc;
+ }
+
  
  div[class = 'toggle'] {
      width: calc(100% - 10px);

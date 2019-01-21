@@ -8,7 +8,7 @@ import {IMAGE_H, IMAGE_W, MnistData} from './data';
  *
  * @param {*} model The model to
  */
-export async function train(model) {
+export async function train(model, params) {
   // TODO: start method
   // ui.logStatus('Training model...');
   // TODO: This is where we should do caching.
@@ -17,13 +17,14 @@ export async function train(model) {
   await data.load();
   let onIteration = () => showPredictions(model, data)
   // TODO: we should make this a thing: const LEARNING_RATE = 0.01; 
-  const optimizer = 'rmsprop';
+  let optimizer : string = params.optimizer
 
   model.compile({
       optimizer,
       loss: 'categoricalCrossentropy',
       metrics: ['accuracy'],
   });
+  console.log("Done")
   const batchSize = 64;
   const validationSplit = 0.15;
 
