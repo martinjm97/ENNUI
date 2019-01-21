@@ -30,7 +30,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Hide the progress and visualization menus
 	document.getElementById("progressMenu").style.display = "none";
 	document.getElementById("visualizationMenu").style.display = "none";
-	
+
+	// Hide the progress and visualization paramshell
+	document.getElementById("progressParamshell").style.display = "none";
+	document.getElementById("visualizationParamshell").style.display = "none";
+
 	// Hide the error box
 	document.getElementById("error").style.display = "none";
 	
@@ -203,6 +207,11 @@ function switchTab(tab) {
 	document.getElementById("progressMenu").style.display = "none";
 	document.getElementById("visualizationMenu").style.display = "none";
 
+	// Hide all paramshells
+	document.getElementById("networkParamshell").style.display = "none";
+	document.getElementById("progressParamshell").style.display = "none";
+	document.getElementById("visualizationParamshell").style.display = "none";	
+
 	// Unselect all tabs
 	document.getElementById("network").classList.remove("tab-selected")
 	document.getElementById("progress").classList.remove("tab-selected")
@@ -214,16 +223,19 @@ function switchTab(tab) {
 			document.getElementById("networkTab").style.display = null; 
 			document.getElementById("network").classList.add("tab-selected");
 			document.getElementById("networkMenu").style.display = null;
+			document.getElementById("networkParamshell").style.display = null;
 			break; 
 		case "progress": 
 			document.getElementById("progressTab").style.display = null; 
 			document.getElementById("progress").classList.add("tab-selected");
 			document.getElementById("progressMenu").style.display = null; 
+			document.getElementById("progressParamshell").style.display = null;
 			break;
 		case "visualization": 
 			document.getElementById("visualizationTab").style.display = null; 
 			document.getElementById("visualization").classList.add("tab-selected");
 			document.getElementById("visualizationMenu").style.display = null; 
+			document.getElementById("visualizationParamshell").style.display = null;			
 			break;
 	}
 }

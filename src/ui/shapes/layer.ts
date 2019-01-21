@@ -135,7 +135,6 @@ export abstract class Layer extends Draggable {
  * Layers that can have an activation attached to them.
  */
 export abstract class ActivationLayer extends Layer {
-    // hole = new Rectangle(new Point(0, 0), 10, 10, '#eee')
     activation: Activation = null;
     static defaultInitialLocation = new Point(100,100)
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) { 
@@ -143,24 +142,6 @@ export abstract class ActivationLayer extends Layer {
         
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this)
-        // let blocks = this.svgComponent.selectAll<SVGGraphicsElement, {}>("rect").nodes()
-        // let lastBlock = blocks[blocks.length-1]
-
-        // let mask = this.svgComponent.append("mask").attr("id", "hole"+this.uid)
-        
-        // mask.append("rect")
-        //     .attr("x", block[block.length-1].location.x)
-        //     .attr("y", block[block.length-1].location.y)
-        //     .attr("width", "100%")
-        //     .attr("height", "100%")
-        //     .style("fill", "white")
-        // mask.append("rect")
-        //     .attr("x", this.hole.location.x)
-        //     .attr("y", this.hole.location.y)
-        //     .attr("width", this.hole.width)
-        //     .attr("height", this.hole.height)
-
-        // d3.select(lastBlock).attr("mask", "url(#hole"+this.uid+")");
     }
 
 
@@ -173,6 +154,12 @@ export abstract class ActivationLayer extends Layer {
         }
     }
 
+    public select() {
+        super.select()
+        if (this.activation != null) {
+            this.activation.svgComponent.raise()
+        }
+    }
     public delete() {
         super.delete()
         // Remove this layer from global state
