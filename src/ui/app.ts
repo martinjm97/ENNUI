@@ -150,6 +150,10 @@ function dispatchCreationOnClick(elmt){
 			updateNetworkParameters({itemType: itemType, setting : setting})
 		}
 
+		else if (itemType == "classes") {
+			
+		}
+
 		else {
 			var detail = { itemType : itemType}
 			detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
