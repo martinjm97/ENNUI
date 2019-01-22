@@ -177,7 +177,7 @@ body {
     background-color: #ccc; 
 }
 
-div[class='option'] {
+.option {
     width:calc(100% - 20px);
     text-align: left;
     border-bottom: 1px solid gray;
@@ -187,19 +187,17 @@ div[class='option'] {
     font-family: Helvetica;
     cursor:pointer;
 
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
+    padding: 10px 10px 0px 10px;
 
     background-color: transparent;
     user-select:none;
 }
 
 div.option.selected {
-    background-color: #ccc;
+    background-color: #C4B7D1;
  }
  
-div[class = 'toggle'] {
+.toggle {
     width: calc(100% - 10px);
     height: 30px;
     line-height: 30px;
@@ -208,7 +206,7 @@ div[class = 'toggle'] {
     padding-right:5px;
 }
 
-div[class = 'toggleOption'] {
+.toggleOption {
     float:left;
     width: calc(50% - 10px);
     text-align: center;
