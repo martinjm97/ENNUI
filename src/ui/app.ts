@@ -128,9 +128,9 @@ async function trainOnClick() {
 
 function dispatchSwitchTabOnClick(elmt){
 	elmt.addEventListener('click', function(e){
-        var tabType = elmt.getAttribute('data-tabType')
-		var detail = { tabType : tabType}
-        var event = new CustomEvent('switch', { detail : detail } );
+        let tabType = elmt.getAttribute('data-tabType')
+		let detail = { tabType : tabType}
+        let event = new CustomEvent('switch', { detail : detail } );
 		window.dispatchEvent(event);
 	});
 }
@@ -138,27 +138,31 @@ function dispatchSwitchTabOnClick(elmt){
 
 function dispatchCreationOnClick(elmt){
 	elmt.addEventListener('click', function(e){
-		var itemType = elmt.parentElement.getAttribute('data-itemType')
+		let itemType = elmt.parentElement.getAttribute('data-itemType')
 
 		if (networkParameters.isParam(itemType)){
-			var setting = elmt.getAttribute('data-trainType')
+			let setting = elmt.getAttribute('data-trainType')
 			
-			var selected = document.getElementsByClassName("selected")
+			let selected = elmt.parentElement.getElementsByClassName("selected")
 			if (selected.length > 0) {
 				selected[0].classList.remove("selected")
 			}
 			elmt.classList.add("selected");
-			updateNetworkParameters({itemType: itemType, setting : setting})
-		}
-
-		else if (itemType == "classes") {
-			
+			updateNetworkParameters({itemType: itemType, setting : setting});
+		} else if (itemType == "classes") {
+			let classType = elmt.getAttribute('data-classType');
+			let selected = elmt.parentElement.getElementsByClassName("selected");
+			if (selected.length > 0) {
+				selected[0].classList.remove("selected")
+			}
+			elmt.classList.add("selected");
+			// Insert code here
 		}
 
 		else {
-			var detail = { itemType : itemType}
+			let detail = { itemType : itemType}
 			detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
-			var event = new CustomEvent('create', { detail : detail } );
+			let event = new CustomEvent('create', { detail : detail } );
 			window.dispatchEvent(event);
 		}
 	});
