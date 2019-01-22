@@ -1,5 +1,6 @@
 import * as tfvis from '@tensorflow/tfjs-vis';
 import * as tf from '@tensorflow/tfjs';
+import { IMAGE_W, IMAGE_H } from './data';
 
 // const statusElement = document.getElementById('status');
 // const messageElement = document.getElementById('message');
@@ -56,8 +57,8 @@ export function setupTestResults() {
     div.className = 'pred-container';
 
     const canvas = document.createElement('canvas');
-    canvas.width = 28;
-    canvas.height = 28;
+    canvas.width = IMAGE_W;
+    canvas.height = IMAGE_H;
     canvas.className = 'prediction-canvas';
     let ctx = canvas.getContext("2d");
     ctx.rect(0, 0, 1000, 5000);
