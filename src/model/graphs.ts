@@ -13,7 +13,7 @@ import * as tf from '@tensorflow/tfjs';
 //   console.log(message);
 // }
 
-const testExamples:number = 60;
+const testExamples:number = 50;
 /**
  * Show predictions on a number of test examples.
  *
@@ -56,11 +56,11 @@ export function setupTestResults() {
     div.className = 'pred-container';
 
     const canvas = document.createElement('canvas');
-    canvas.width = 76;
-    canvas.height = 76;
+    canvas.width = 28;
+    canvas.height = 28;
     canvas.className = 'prediction-canvas';
     let ctx = canvas.getContext("2d");
-    ctx.rect(0, 0, 76, 76);
+    ctx.rect(0, 0, 1000, 5000);
     ctx.fillStyle = "#888";
     ctx.fill();
     // draw(, canvas);
@@ -87,6 +87,8 @@ export function showTestResults(batch, predictions, labels) {
     div.className = 'pred-container';
 
     const canvas = document.createElement('canvas');
+    // canvas.width = 76;
+    // canvas.height = 76;
     canvas.className = 'prediction-canvas';
     draw(image.flatten(), canvas);
 
