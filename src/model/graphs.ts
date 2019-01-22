@@ -13,13 +13,13 @@ import * as tf from '@tensorflow/tfjs';
 //   console.log(message);
 // }
 
+const testExamples:number = 60;
 /**
  * Show predictions on a number of test examples.
  *
  * @param {tf.Model} model The model to be used for making the predictions.
  */
 export async function showPredictions(model, data) {
-  const testExamples = 60;
   const examples = data.getTestData(testExamples);
 
   // Code wrapped in a tf.tidy() function callback will have their tensors freed
@@ -48,9 +48,37 @@ export async function showPredictions(model, data) {
   });
 }
 
+export function setupTestResults() {
+  const imagesElement = document.getElementById('images');
+  imagesElement.innerHTML = '';
+  for (let i = 0; i < testExamples; i++) {
+    const div = document.createElement('div');
+    div.className = 'pred-container';
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 76;
+    canvas.height = 76;
+    canvas.className = 'prediction-canvas';
+    let ctx = canvas.getContext("2d");
+    ctx.rect(0, 0, 76, 76);
+    ctx.fillStyle = "#888";
+    ctx.fill();
+    // draw(, canvas);
+
+    const pred = document.createElement('div');
+    pred.className = `pred pred-none`;
+    pred.innerText = `pred: -`;
+
+    div.appendChild(pred);
+    div.appendChild(canvas);
+
+    imagesElement.appendChild(div);
+  }
+}
+
 export function showTestResults(batch, predictions, labels) {
   const imagesElement = document.getElementById('images');
-  const testExamples = batch.xs.shape[0];
+  // const testExamples = batch.xs.shape[0];
   imagesElement.innerHTML = '';
   for (let i = 0; i < testExamples; i++) {
     const image = batch.xs.slice([i, 0], [1, batch.xs.shape[1]]);
