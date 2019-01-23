@@ -38,7 +38,6 @@ export function buildNetwork(input: Input) {
                 params.activation = (<ActivationLayer>current).activation.activationType
             }
             nextLayer = typeToTensor.get(current.layerType)(params).apply(nextLayer)
-            console.log("test2")
         }
         
 		// check each connections of the node
