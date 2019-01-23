@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import { Rank } from '@tensorflow/tfjs';
 
 export const IMAGE_H = 28;
 export const IMAGE_W = 28;
@@ -162,8 +163,6 @@ export class MnistData {
         return this.getTestData(numExamples)
     }
 
-    // This reassignment gets around a pesky type error
-    let finalLabels = null
     // select only the numbers with the given label
     let newLabels = []
     let newXs = []
@@ -186,8 +185,7 @@ export class MnistData {
         }
     }
     xs = tf.concat(newXs)
-    finalLabels = tf.stack(newLabels)
-    labels = finalLabels
+    labels = <tf.Tensor<Rank.R2>> tf.stack(newLabels)
     return {xs, labels};
   }
 }
