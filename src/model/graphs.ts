@@ -1,6 +1,7 @@
 import * as tfvis from '@tensorflow/tfjs-vis';
 import * as tf from '@tensorflow/tfjs';
-import { IMAGE_W, IMAGE_H } from './data';
+import { IMAGE_W, IMAGE_H, data } from './data';
+import { model } from './paramsObject';
 
 // const statusElement = document.getElementById('status');
 // const messageElement = document.getElementById('message');
@@ -17,17 +18,25 @@ import { IMAGE_W, IMAGE_H } from './data';
 const testExamples:number = 50;
 /**
  * Show predictions on a number of test examples.
- *
- * @param {tf.Model} model The model to be used for making the predictions.
  */
-export async function showPredictions(model, data) {
-  const examples = data.getTestData(testExamples);
+export async function showPredictions() {
+  const testExamples = 60;
+
+  let label = null
+  let options = document.getElementsByClassName('visualization-option')
+  for (let option of options){
+      if (option.classList.contains("selected")){
+          label = option.getAttribute('data-classesType')
+          break
+      }
+  }
+  const examples = data.getTestDataWithLabel(testExamples, label);
 
   // Code wrapped in a tf.tidy() function callback will have their tensors freed
   // from GPU memory after execution without having to call dispose().
   // The tf.tidy callback runs synchronously.
   tf.tidy(() => {
-    const output = model.predict(examples.xs);
+    const output = model.architecture.predict(examples.xs);
 
     // tf.argMax() returns the indices of the maximum values in the tensor along
     // a specific axis. Categorical classification tasks like this one often
