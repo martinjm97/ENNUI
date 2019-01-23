@@ -46,6 +46,17 @@ body {
     min-height: 140px;
     width: 100%;
 }
+
+#bottomblanktab {
+    min-height: 100px;
+    width: 100%;
+
+    vertical-align: middle;
+    
+    width: 50px;
+    height: 70px;
+    float:left;
+}
  
 .icon{
     padding-top: 23;
@@ -195,6 +206,15 @@ body {
 
 div.option.selected {
     background-color: #C4B7D1;
+
+ }
+
+div.top_neighbor_tab-selected {
+    border-bottom-right-radius: 10px; 
+}
+
+ div.bottom_neighbor_tab-selected {
+    border-top-right-radius: 10px;
  }
  
 .toggle {
