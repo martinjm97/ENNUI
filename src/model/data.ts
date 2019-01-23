@@ -20,7 +20,12 @@ const MNIST_LABELS_PATH =
  */
 export class MnistData {
   datasetImages: any
-  constructor() {}
+  private static _instance: MnistData;
+
+  public static get Instance()
+  {
+      return this._instance || (this._instance = new this());
+  }
 
   async load() {
     // Make a request for the MNIST sprited image.
@@ -120,7 +125,7 @@ export class MnistData {
    *   labels: The one-hot encoded labels tensor, of shape
    *     `[numTestExamples, 10]`.
    */
-  getTestData(numExamples) {
+  getTestData(numExamples=null) {
     let xs = tf.tensor4d(
         this.testImages,
         [this.testImages.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
@@ -133,4 +138,59 @@ export class MnistData {
     }
     return {xs, labels};
   }
+
+
+   /**
+   * Get all test data as a data tensor a a labels tensor.
+   *
+   * @param {number} numExamples Optional number of examples to get. If not
+   *     provided,
+   *   all test examples will be returned.
+   * @returns
+   *   xs: The data tensor, of shape `[numTestExamples, 28, 28, 1]`.
+   *   labels: The one-hot encoded labels tensor, of shape
+   *     `[numTestExamples, 10]`.
+   */
+  getTestDataWithLabel(numExamples, label) {
+    let xs = tf.tensor4d(
+        this.testImages,
+        [this.testImages.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
+    let labels = tf.tensor2d(
+        this.testLabels, [this.testLabels.length / NUM_CLASSES, NUM_CLASSES]);
+    
+    if (label == "all") {
+        return this.getTestData(numExamples)
+    }
+
+    // This reassignment gets around a pesky type error
+    let finalLabels = null
+    // select only the numbers with the given label
+    let newLabels = []
+    let newXs = []
+    let goodIndices: number[] = [] 
+    for (let i=0; i < this.testLabels.length/NUM_CLASSES; i++) {
+        let theLabel = 0
+        for (let j=0; j < NUM_CLASSES; j++){
+            if (labels.get(i,j) == 1) {
+                theLabel = j
+                break
+            }
+        }
+        if (theLabel == label) {
+            newXs.push(xs.slice([i, 0, 0, 0], [1, IMAGE_H, IMAGE_W, 1]))
+            newLabels.push(labels.slice([i,0], [1,10]).squeeze())
+            goodIndices.push(i)
+        }
+        if (goodIndices.length >= numExamples) {
+            break
+        }
+    }
+    xs = tf.concat(newXs)
+    finalLabels = tf.stack(newLabels)
+    labels = finalLabels
+    return {xs, labels};
+  }
 }
+
+
+export const data = MnistData.Instance;

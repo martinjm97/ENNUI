@@ -1,9 +1,10 @@
 import * as tf from '@tensorflow/tfjs';
 
-import {IMAGE_H, IMAGE_W, MnistData} from './data';
+import { IMAGE_H, IMAGE_W } from './data';
 import { SymbolicTensor } from '@tensorflow/tfjs';
-import { Input, Layer, ActivationLayer } from '../ui/shapes/layer';
-import { plotLoss, plotAccuracy } from './graphs';
+import { Layer, ActivationLayer } from '../ui/shapes/layer';
+import { Input } from '../ui/shapes/layers/input';
+import { displayError } from '../ui/error';
 
 let typeToTensor: Map<String, any> = new Map()
 
@@ -38,7 +39,6 @@ export function buildNetwork(input: Input) {
                 params.activation = (<ActivationLayer>current).activation.activationType
             }
             nextLayer = typeToTensor.get(current.layerType)(params).apply(nextLayer)
-            console.log("test2")
         }
         
 		// check each connections of the node
@@ -59,13 +59,8 @@ export function buildNetwork(input: Input) {
 export function buildNetworkDAG(out: Layer) {
     try {
         return networkDAG(out);
-    }
-      catch(err) {
-        // document.getElementById("x").style.display = null;
-        document.getElementById("error").style.display = null;
-        document.getElementById("errorMessage").innerHTML = err.message;
-        document.getElementById("error").title = err.message;
-        throw err;
+    } catch(err) {
+        displayError(err)
     }
 }
 

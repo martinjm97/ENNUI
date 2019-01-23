@@ -1,4 +1,3 @@
-import { Dense, Conv2D, Layer, MaxPooling2D, Input, Output } from "./shapes/layer";
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
@@ -6,8 +5,13 @@ import { buildNetwork, buildNetworkDAG } from "../model/build_network";
 import { blankTemplate, defaultTemplate } from "./model_templates";
 import { graphToJson } from "../model/export_model";
 import { train } from "../model/mnist_model";
-import { setupPlots, setupTestResults } from "../model/graphs";
-import { networkParameters } from "../model/paramsObject"
+import { setupPlots, showPredictions, setupTestResults } from "../model/graphs";
+import { model } from "../model/paramsObject"
+import { Input } from "./shapes/layers/input";
+import { Output } from "./shapes/layers/output";
+import { Dense } from "./shapes/layers/dense";
+import { Conv2D } from "./shapes/layers/convolutional";
+import { MaxPooling2D } from "./shapes/layers/maxpooling";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -20,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	setupPlots();
 	setupTestResults();
 	
+	document.getElementById("all").classList.add("selected")
+
 	// Initialize the network tab to selected
 	document.getElementById("network").classList.add("tab-selected");
 	
@@ -51,6 +57,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.addEventListener('create', function( e ) {
 		appendItem(e);
+	});
+
+    window.addEventListener('selectClass', function( e ) {
+		switchClassExamples(e);
 	});
 
 	window.addEventListener('switch', function( e: any ) {
@@ -115,8 +125,8 @@ async function trainOnClick() {
 		training.innerHTML = "Training"; 
 		training.classList.add("train-active");
 		try {
-			let model = buildNetworkDAG(svgData.output)
-			await train(model, networkParameters)
+			model.architecture = buildNetworkDAG(svgData.output)
+			await train()
 		} 
 		finally {
 			training.innerHTML = "Train";
@@ -140,7 +150,7 @@ function dispatchCreationOnClick(elmt){
 	elmt.addEventListener('click', function(e){
 		let itemType = elmt.parentElement.getAttribute('data-itemType')
 
-		if (networkParameters.isParam(itemType)){
+		if (model.params.isParam(itemType)){
 			let setting = elmt.getAttribute('data-trainType')
 			
 			let selected = elmt.parentElement.getElementsByClassName("selected")
@@ -150,16 +160,16 @@ function dispatchCreationOnClick(elmt){
 			elmt.classList.add("selected");
 			updateNetworkParameters({itemType: itemType, setting : setting});
 		} else if (itemType == "classes") {
-			let classType = elmt.getAttribute('data-classType');
 			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {
 				selected[0].classList.remove("selected")
 			}
 			elmt.classList.add("selected");
-			// Insert code here
-		}
-
-		else {
+			
+			if (model.architecture != null){
+				showPredictions()
+			}
+		} else {
 			let detail = { itemType : itemType}
 			detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
 			let event = new CustomEvent('create', { detail : detail } );
@@ -171,9 +181,8 @@ function dispatchCreationOnClick(elmt){
 function updateNetworkParameters(params){
 	switch(params.itemType){
 		case 'optimizer':
-			networkParameters.optimizer = params.setting; 
+			model.params.optimizer = params.setting; 
 			break;
-
 	}
 }
 
@@ -201,6 +210,10 @@ function appendItem(options){
 		item.select()
 		svgData.draggable.push(item);
 	}
+}
+
+function switchClassExamples(options){
+	// showPredictions()	
 }
 
 
