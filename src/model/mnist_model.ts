@@ -11,6 +11,7 @@ import { model } from './paramsObject';
  *
  * @param {*} model The model to
  */
+ 
 export async function train() {
     // TODO: start method
     // ui.logStatus('Training model...');
@@ -19,20 +20,20 @@ export async function train() {
     setupTestResults();
     await data.load();
     
-    let onIteration = () => showPredictions()
-    // TODO: we should make this a thing: const LEARNING_RATE = 0.01; 
-    let optimizer : string = model.params.optimizer
+    let onIteration = () => showPredictions() 
+    let optimizer = model.params.getOptimizer()
   
+    
     model.architecture.compile({
         optimizer,
         loss: 'categoricalCrossentropy',
         metrics: ['accuracy'],
     });
-    const batchSize = 64;
+    const batchSize = model.params.batchSize;
     const validationSplit = 0.15;
   
     // const trainEpochs = getTrainEpochs();
-    const trainEpochs = 6;
+    const trainEpochs = model.params.epochs;
   
     // We'll keep a buffer of loss and accuracy values over time.
     let trainBatchCount: number = 0;
