@@ -12,6 +12,7 @@ import { Output } from "./shapes/layers/output";
 import { Dense } from "./shapes/layers/dense";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
+import { displayError } from "./error";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -117,7 +118,43 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 async function trainOnClick() {
-	// Only train if not already training	
+
+	// Grab hyperparameters
+	
+	let temp : number = 0;
+	let hyperparams = document.getElementsByClassName("hyperparamvalue")
+
+	for (var hp of hyperparams) {
+		let name : string = hp.id; 
+
+		temp = Number((<HTMLInputElement>document.getElementById(name)).value);
+		if (temp > 0) {
+			
+		}
+		else {
+			let error : Error = Error("Hyperparameters should be positive numbers.")
+			displayError(error);
+			return;
+		}
+		switch(name){
+			case "paramlr":
+				model.params.learningRate = temp;
+				break;
+			
+			case "paramepoch":
+				model.params.epochs = Math.trunc(temp);
+				break;
+
+			case "parambaatch":
+				model.params.batchSize = Math.trunc(temp);
+				break;
+
+		};
+
+	}
+
+	// Only train if not already training
+
 	let training = document.getElementById('train'); 
 	if (!training.classList.contains("train-active")){
 		let trainingBox = document.getElementById('ti_training');
