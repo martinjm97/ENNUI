@@ -155,6 +155,8 @@ function dispatchCreationOnClick(elmt){
 			if (selected.length > 0) {
 				selected[0].classList.remove("selected")
 			}
+
+
 			elmt.classList.add("selected");
 			// Insert code here
 		}
@@ -210,7 +212,7 @@ function switchTab(tab) {
     document.getElementById("progressTab").style.display = "none"
 	document.getElementById("visualizationTab").style.display = "none"
 	document.getElementById("informationTab").style.display = "none";
-
+	
 	// Hide all menus
 	document.getElementById("networkMenu").style.display = "none";
 	document.getElementById("progressMenu").style.display = "none";
@@ -227,26 +229,25 @@ function switchTab(tab) {
 	document.getElementById("visualization").classList.remove("tab-selected")
 
 	// Display only the selected tab
-	switch(tab.detail.tabType){
-		case "network": 
-			document.getElementById("networkTab").style.display = null; 
-			document.getElementById("network").classList.add("tab-selected");
-			document.getElementById("networkMenu").style.display = null;
-			document.getElementById("networkParamshell").style.display = null;
-			break; 
-		case "progress": 
-			document.getElementById("progressTab").style.display = null; 
-			document.getElementById("progress").classList.add("tab-selected");
-			document.getElementById("progressMenu").style.display = null; 
-			document.getElementById("progressParamshell").style.display = null;
-			break;
-		case "visualization": 
-			document.getElementById("visualizationTab").style.display = null; 
-			document.getElementById("visualization").classList.add("tab-selected");
-			document.getElementById("visualizationMenu").style.display = null; 
-			document.getElementById("visualizationParamshell").style.display = null;			
-			break;
+	document.getElementById(tab.detail.tabType).style.display = null; 
+	document.getElementById(tab.detail.tabType).classList.add("tab-selected")
+	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
+	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
+	
+	// Give border radius to top and bottom neighbors
+	if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
+		document.getElementsByClassName("top_neigbor_tab-selected")[0].classList.remove("top_neigbor_tab-selected")
+		document.getElementsByClassName("bottom_neigbor_tab-selected")[0].classList.remove("bottom_neigbor_tab-selected")
 	}
+
+	let tabMapping = ["blanktab", "network", "progress", "visualization", "bottomblanktab"]
+	let index = tabMapping.indexOf(tab.detail.tabType)
+
+	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected")
+	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected")
+
+
+
 }
 
 function showInformationOverlay() { 
