@@ -22,7 +22,7 @@ const MNIST_LABELS_PATH =
 export class MnistData {
   datasetImages: any
   private static _instance: MnistData;
-
+  private dataLoaded : boolean = false;
   public static get Instance()
   {
       return this._instance || (this._instance = new this());
@@ -30,6 +30,9 @@ export class MnistData {
 
   async load() {
     // Make a request for the MNIST sprited image.
+    if (this.dataLoaded){
+        return;
+    }
     const img = new Image();
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -83,6 +86,8 @@ export class MnistData {
         this.datasetLabels.slice(0, NUM_CLASSES * NUM_TRAIN_ELEMENTS);
     this.testLabels =
         this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS);
+
+    this.dataLoaded = true;
   }
 
   datasetLabels: any
