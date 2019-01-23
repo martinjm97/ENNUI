@@ -286,8 +286,8 @@ function switchTab(tab) {
 	
 	// Give border radius to top and bottom neighbors
 	if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
-		document.getElementsByClassName("top_neigbor_tab-selected")[0].classList.remove("top_neigbor_tab-selected")
-		document.getElementsByClassName("bottom_neigbor_tab-selected")[0].classList.remove("bottom_neigbor_tab-selected")
+		document.getElementsByClassName("top_neighbor_tab-selected")[0].classList.remove("top_neighbor_tab-selected")
+		document.getElementsByClassName("bottom_neighbor_tab-selected")[0].classList.remove("bottom_neighbor_tab-selected")
 	}
 
 	let tabMapping = ["blanktab", "network", "progress", "visualization", "bottomblanktab"]
