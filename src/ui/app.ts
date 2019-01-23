@@ -118,45 +118,47 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 async function trainOnClick() {
-	clearError()
-
-	// Grab hyperparameters
-	let temp : number = 0;
-	let hyperparams = document.getElementsByClassName("hyperparamvalue")
-
-	for (var hp of hyperparams) {
-		let name : string = hp.id; 
-
-		temp = Number((<HTMLInputElement>document.getElementById(name)).value);
-		if (temp > 0) {
-			
-		}
-		else {
-			let error : Error = Error("Hyperparameters should be positive numbers.")
-			displayError(error);
-			return;
-		}
-		switch(name){
-			case "paramlr":
-				model.params.learningRate = temp;
-				break;
-			
-			case "paramepoch":
-				model.params.epochs = Math.trunc(temp);
-				break;
-
-			case "parambaatch":
-				model.params.batchSize = Math.trunc(temp);
-				break;
-
-		};
-
-	}
 
 	// Only train if not already training
 
 	let training = document.getElementById('train'); 
 	if (!training.classList.contains("train-active")){
+		clearError()
+
+		// Grab hyperparameters
+		
+		let temp : number = 0;
+		let hyperparams = document.getElementsByClassName("hyperparamvalue")
+	
+		for (var hp of hyperparams) {
+			let name : string = hp.id; 
+	
+			temp = Number((<HTMLInputElement>document.getElementById(name)).value);
+			if (temp > 0) {
+				
+			}
+			else {
+				let error : Error = Error("Hyperparameters should be positive numbers.")
+				displayError(error);
+				return;
+			}
+			switch(name){
+				case "paramlr":
+					model.params.learningRate = temp;
+					break;
+				
+				case "paramepoch":
+					model.params.epochs = Math.trunc(temp);
+					break;
+	
+				case "parambaatch":
+					model.params.batchSize = Math.trunc(temp);
+					break;
+	
+			};
+			
+		}
+
 		let trainingBox = document.getElementById('ti_training');
 		trainingBox.children[1].innerHTML = 'Yes';
 		training.innerHTML = "Training"; 
