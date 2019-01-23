@@ -1,6 +1,6 @@
 // Adapted from https://github.com/tensorflow/tfjs-examples/tree/master/mnist
 import * as tf from '@tensorflow/tfjs';
-import {plotAccuracy, plotLoss, showPredictions, setupPlots, setupTestResults} from './graphs';
+import {plotAccuracy, plotLoss, showPredictions, setupPlots, setupTestResults, showConfusionMatrix} from './graphs';
 
 import {IMAGE_H, IMAGE_W, MnistData} from './data';
 /**
@@ -16,7 +16,9 @@ export async function train(model, params) {
   setupTestResults();
   let data = new MnistData();
   await data.load();
-  let onIteration = () => showPredictions(model, data)
+  let onIteration = () => {
+      showPredictions(model, data);
+  }
   // TODO: we should make this a thing: const LEARNING_RATE = 0.01; 
   let optimizer : string = params.optimizer
 
@@ -88,6 +90,7 @@ export async function train(model, params) {
               plotLoss(trainBatchCount, logs.val_loss, 'validation');
               plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
               onIteration();
+              showConfusionMatrix(model, data);
               await tf.nextFrame();
           }
       }
