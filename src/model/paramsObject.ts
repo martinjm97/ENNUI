@@ -1,6 +1,8 @@
+import * as tf from '@tensorflow/tfjs';
+
 class NetworkParameters
 {
-    private static _instance: NetworkParameters;
+    // private static _instance: NetworkParameters;
     private paramNames : Set<string> = new Set(['optimizer']);
     learningRate: number;
     batchSize: number;
@@ -9,11 +11,25 @@ class NetworkParameters
     subset: number;
 
 
-    private constructor(){}
+    constructor(){}
 
     public isParam(param){
         return this.paramNames.has(param); 
     }
+
+    // public static get Instance()
+    // {
+    //     return this._instance || (this._instance = new this());
+    // }
+}
+
+class Model
+{
+    private static _instance: Model;
+    params : NetworkParameters = new NetworkParameters();
+    architecture = null;
+
+    private constructor(){}
 
     public static get Instance()
     {
@@ -21,4 +37,4 @@ class NetworkParameters
     }
 }
 
-export const networkParameters = NetworkParameters.Instance;
+export const model = Model.Instance;

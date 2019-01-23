@@ -1,6 +1,7 @@
 import * as tfvis from '@tensorflow/tfjs-vis';
 import * as tf from '@tensorflow/tfjs';
-import { IMAGE_W, IMAGE_H, NUM_CLASSES } from './data';
+import { IMAGE_W, IMAGE_H, data, NUM_CLASSES } from './data';
+import { model } from './paramsObject';
 
 const GRAPH_FONT_SIZE = 14;
 
@@ -19,17 +20,25 @@ const GRAPH_FONT_SIZE = 14;
 const testExamples:number = 50;
 /**
  * Show predictions on a number of test examples.
- *
- * @param {tf.Model} model The model to be used for making the predictions.
  */
-export async function showPredictions(model, data) {
-  const examples = data.getTestData(testExamples);
+export async function showPredictions() {
+  const testExamples = 60;
+
+  let label = null
+  let options = document.getElementsByClassName('visualization-option')
+  for (let option of options){
+      if (option.classList.contains("selected")){
+          label = option.getAttribute('data-classesType')
+          break
+      }
+  }
+  const examples = data.getTestDataWithLabel(testExamples, label);
 
   // Code wrapped in a tf.tidy() function callback will have their tensors freed
   // from GPU memory after execution without having to call dispose().
   // The tf.tidy callback runs synchronously.
   tf.tidy(() => {
-    const output = model.predict(examples.xs);
+    const output = model.architecture.predict(examples.xs);
 
     // tf.argMax() returns the indices of the maximum values in the tensor along
     // a specific axis. Categorical classification tasks like this one often
@@ -51,17 +60,13 @@ export async function showPredictions(model, data) {
   });
 }
 
-export function showConfusionMatrix(model, data) {
+export function showConfusionMatrix() {
   const {xs, labels} = data.getTestData(1000);
   tf.tidy(() => {
-    console.log("BBBBBBBBBBBBBB");
-    console.log(xs, labels);
-    const output = model.predict(xs);
+    const output = model.architecture.predict(xs);
 
-    const fixedLabels = labels.argMax(1);
+    const fixedLabels = <tf.Tensor<tf.Rank.R1>>labels.argMax(1);
     const predictions = output.argMax(1);
-    console.log("AAAAAAAAAAAAAAAAAA");
-    console.log("AAAAAAAAAAAAAAAAAAAAA", fixedLabels, predictions);
 
     tfvis.metrics.confusionMatrix(fixedLabels, predictions, NUM_CLASSES).then(function(confusionValues) {
       const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
