@@ -156,7 +156,7 @@ async function trainOnClick() {
 					break;
 	
 			};
-			
+
 		}
 
 		let trainingBox = document.getElementById('ti_training');
@@ -281,15 +281,15 @@ function switchTab(tab) {
 	document.getElementById("visualization").classList.remove("tab-selected")
 
 	// Display only the selected tab
-	document.getElementById(tab.detail.tabType).style.display = null; 
+	document.getElementById(tab.detail.tabType + "Tab").style.display = null; 
 	document.getElementById(tab.detail.tabType).classList.add("tab-selected")
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
 	
 	// Give border radius to top and bottom neighbors
 	if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
-		document.getElementsByClassName("top_neigbor_tab-selected")[0].classList.remove("top_neigbor_tab-selected")
-		document.getElementsByClassName("bottom_neigbor_tab-selected")[0].classList.remove("bottom_neigbor_tab-selected")
+		document.getElementsByClassName("top_neighbor_tab-selected")[0].classList.remove("top_neighbor_tab-selected")
+		document.getElementsByClassName("bottom_neighbor_tab-selected")[0].classList.remove("bottom_neighbor_tab-selected")
 	}
 
 	let tabMapping = ["blanktab", "network", "progress", "visualization", "bottomblanktab"]
