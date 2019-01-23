@@ -152,7 +152,6 @@ export class MnistData {
    *     `[numTestExamples, 10]`.
    */
   getTestDataWithLabel(numExamples, label) {
-    console.log("MY LABEL", label)
     let xs = tf.tensor4d(
         this.testImages,
         [this.testImages.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
