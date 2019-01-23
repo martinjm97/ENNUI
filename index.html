@@ -20,6 +20,8 @@
 		<div title = 'Visualization' class = 'tab' id = 'visualization' data-tabType = 'visualization'>
 			<svg class = 'icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11 9h2v2h-2V9zm-2 2h2v2H9v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2V9zM7 9h2v2H7V9zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V5h14v6z"/></svg>
 		</div>
+		<div id = 'bottomblanktab' > </div>
+
 		<div title = 'Information' class = 'tab' id = 'information' data-tabType = 'information' style="position: absolute; bottom:15px;">
 			<svg class = 'icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>		 
 		</div>
@@ -90,17 +92,12 @@
 		</div>
 
 		<div id = 'progressTab'>
-			<div id='trainingProgress'></div>
 			
-			<div class="canvases">
-				<label id="loss-label"></label>
-				<div id="loss-canvas"></div>
-			</div>
+			<div id="loss-canvas"></div>
 
-			<div class="canvases">
-				<label id="accuracy-label"></label>
-				<div id="accuracy-canvas"></div>
-			</div>
+			<div id="accuracy-canvas"></div>
+
+			<div id="confusion-matrix-canvas"></div>
 		</div>
 
 		<div id = 'visualizationTab'>
@@ -183,15 +180,15 @@
 				<div class = 'parambox'>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="lr">Learning rate: </div>
-						<input class="paramvalue">
+						<input id="paramlr" class="paramvalue hyperparamvalue" value="1e-3">
 					</div>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="epochs">Epochs: </div>
-						<input class="paramvalue">
+						<input id="paramepoch" class="paramvalue hyperparamvalue" value="6">
 					</div>
 					<div class = 'paramline'>
-						<div class="paramname" data-name="lr">Subset: </div>
-						<input class="paramvalue">
+						<div class="paramname" data-name="lr">Batch Size: </div>
+						<input id="parambatch" class="paramvalue hyperparamvalue" value="64">
 					</div>
 				</div>
 			</div>

@@ -4,11 +4,11 @@ class NetworkParameters
 {
     // private static _instance: NetworkParameters;
     private paramNames : Set<string> = new Set(['optimizer']);
-    learningRate: number;
-    batchSize: number;
+    learningRate: number = 0.001;
+    batchSize: number = 64;
     optimizer: string = 'sgd';
-    epochs: number;
-    subset: number;
+    epochs: number = 6;
+    
 
 
     constructor(){}
@@ -17,10 +17,25 @@ class NetworkParameters
         return this.paramNames.has(param); 
     }
 
-    // public static get Instance()
-    // {
-    //     return this._instance || (this._instance = new this());
-    // }
+    public getOptimizer(){
+        switch(this.optimizer){
+            case 'sgd':
+                return tf.train.sgd(this.learningRate)
+            
+            case 'rmsprop':
+                return tf.train.rmsprop(this.learningRate)
+
+            case 'adagrad':
+                return tf.train.adagrad(this.learningRate)
+
+            case 'adam':
+                return tf.train.adam(this.learningRate)
+
+            default:
+                return tf.train.sgd(this.learningRate)
+        }
+    }
+
 }
 
 class Model
