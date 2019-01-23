@@ -12,6 +12,7 @@ import { Output } from "./shapes/layers/output";
 import { Dense } from "./shapes/layers/dense";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
+import { clearError } from "./error";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -76,8 +77,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById('defaultOptimizer').classList.add('selected')
 
 	document.getElementById('train').onclick = trainOnClick 
-	document.getElementById("informationTab").onclick = (_) => 	document.getElementById("informationTab").style.display = "none";
-	document.getElementById("x").onclick = (_) => 	document.getElementById("error").style.display = "none";
+	document.getElementById("informationTab").onclick = (_) => document.getElementById("informationTab").style.display = "none";
+	document.getElementById("x").onclick = (_) => clearError()
 
 	document.getElementById("svg").addEventListener("click", function(event) {
 		// Only click if there is a selected element, and the clicked element is an SVG Element, and its id is "svg"
