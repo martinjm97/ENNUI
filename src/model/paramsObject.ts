@@ -4,7 +4,7 @@ class NetworkParameters
 {
     // private static _instance: NetworkParameters;
     private paramNames : Set<string> = new Set(['optimizer']);
-    learningRate: number = 0.001;
+    learningRate: number = 0.1;
     batchSize: number = 64;
     optimizer: string = 'sgd';
     epochs: number = 6;
