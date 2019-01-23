@@ -1,5 +1,5 @@
-import { Shape, Point } from "./shape";
-import { Layer, Dense } from "./layer";
+import { Point } from "./shape";
+import { Layer } from "./layer";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
 

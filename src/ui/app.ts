@@ -1,4 +1,3 @@
-import { Dense, Conv2D, Layer, MaxPooling2D, Input, Output } from "./shapes/layer";
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
@@ -8,6 +7,11 @@ import { graphToJson } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots, showPredictions, setupTestResults } from "../model/graphs";
 import { model } from "../model/paramsObject"
+import { Input } from "./shapes/layers/input";
+import { Output } from "./shapes/layers/output";
+import { Dense } from "./shapes/layers/dense";
+import { Conv2D } from "./shapes/layers/convolutional";
+import { MaxPooling2D } from "./shapes/layers/maxpooling";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
