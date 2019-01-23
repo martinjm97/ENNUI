@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 
-import {IMAGE_H, IMAGE_W, MnistData} from './data';
+import {IMAGE_H, IMAGE_W, data} from './data';
 import { SymbolicTensor } from '@tensorflow/tfjs';
 import { Input, Layer, ActivationLayer } from '../ui/shapes/layer';
 import { plotLoss, plotAccuracy } from './graphs';
@@ -38,7 +38,6 @@ export function buildNetwork(input: Input) {
                 params.activation = (<ActivationLayer>current).activation.activationType
             }
             nextLayer = typeToTensor.get(current.layerType)(params).apply(nextLayer)
-            console.log("test2")
         }
         
 		// check each connections of the node
