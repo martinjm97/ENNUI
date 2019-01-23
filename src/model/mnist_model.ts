@@ -1,7 +1,7 @@
 // Adapted from https://github.com/tensorflow/tfjs-examples/tree/master/mnist
 
 import * as tf from '@tensorflow/tfjs';
-import {plotAccuracy, plotLoss, showPredictions, setupPlots, setupTestResults} from './graphs';
+import {plotAccuracy, plotLoss, showPredictions, setupPlots, setupTestResults, showConfusionMatrix} from './graphs';
 
 import {IMAGE_H, IMAGE_W, data} from './data';
 import { model } from './paramsObject';
@@ -91,6 +91,7 @@ export async function train() {
                 plotLoss(trainBatchCount, logs.val_loss, 'validation');
                 plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
                 onIteration();
+                showConfusionMatrix();
                 await tf.nextFrame();
             }
         }

@@ -1,7 +1,9 @@
 import * as tfvis from '@tensorflow/tfjs-vis';
 import * as tf from '@tensorflow/tfjs';
-import { IMAGE_W, IMAGE_H, data } from './data';
+import { IMAGE_W, IMAGE_H, data, NUM_CLASSES } from './data';
 import { model } from './paramsObject';
+
+const GRAPH_FONT_SIZE = 14;
 
 // const statusElement = document.getElementById('status');
 // const messageElement = document.getElementById('message');
@@ -56,6 +58,29 @@ export async function showPredictions() {
 
     showTestResults(examples, predictions, labels);
   });
+}
+
+export function showConfusionMatrix() {
+  const {xs, labels} = data.getTestData(1000);
+  tf.tidy(() => {
+    const output = model.architecture.predict(xs);
+
+    const fixedLabels = <tf.Tensor<tf.Rank.R1>>labels.argMax(1);
+    const predictions = output.argMax(1);
+
+    tfvis.metrics.confusionMatrix(fixedLabels, predictions, NUM_CLASSES).then(function(confusionValues) {
+      const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
+      tfvis.render.confusionMatrix({
+        values: confusionValues ,
+        labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+      }, confusionMatrixElement, {
+        fontSize: GRAPH_FONT_SIZE,
+        shadeDiagonal: false,
+      });
+    });
+    
+  });
+  
 }
 
 export function setupTestResults() {
@@ -129,8 +154,9 @@ export function plotLoss(batch, loss, set) {
       {values: lossValues, series: ['train', 'validation']}, lossContainer, {
         xLabel: 'Batch #',
         yLabel: 'Loss',
-        width: 400,
-        height: 300,
+        width: 400*1.15,
+        height: 300*1.15,
+        fontSize: GRAPH_FONT_SIZE,
       });
   // lossLabelElement.innerText = `last loss: ${loss.toFixed(3)}`;
 }
@@ -145,8 +171,10 @@ export function plotAccuracy(epochs, accuracy, set) {
       accuracyContainer, {
         xLabel: 'Batch #',
         yLabel: 'Accuracy',
-        width: 400,
-        height: 300,
+        width: 400*1.15,
+        height: 300*1.15,
+        yAxisDomain: [0,1],
+        fontSize: GRAPH_FONT_SIZE,
       });
   // accuracyLabelElement.innerText =
       // `last accuracy: ${(accuracy * 100).toFixed(1)}%`;
@@ -155,22 +183,38 @@ export function plotAccuracy(epochs, accuracy, set) {
 export function setupPlots() {
   accuracyValues = [[], []];
   lossValues = [[],[]];
+  let confusionValues = [];
+  for (let i = 0; i < NUM_CLASSES; i++) {
+    let arr = new Array(NUM_CLASSES);
+    arr.fill(0,0,NUM_CLASSES);
+    confusionValues.push(arr);
+  }
   const lossContainer = document.getElementById('loss-canvas');
   const accuracyContainer = document.getElementById('accuracy-canvas');
+  const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
   tfvis.render.linechart(
     {values: lossValues, series: ['train', 'validation']}, lossContainer, {
       xLabel: 'Batch #',
       yLabel: 'Loss',
-      width: 400,
-      height: 300,
+      width: 400*1.15,
+      height: 300*1.15,
+      fontSize: GRAPH_FONT_SIZE,
     });
   tfvis.render.linechart(
     {values: accuracyValues, series: ['train', 'validation']},
     accuracyContainer, {
       xLabel: 'Batch #',
       yLabel: 'Accuracy',
-      width: 400,
-      height: 300,
+      width: 400*1.15,
+      height: 300*1.15,
+      fontSize: GRAPH_FONT_SIZE,
+    });
+    tfvis.render.confusionMatrix({
+      values: confusionValues ,
+      labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    }, confusionMatrixElement, {
+      fontSize: GRAPH_FONT_SIZE,
+      shadeDiagonal: false,
     });
 }
 
