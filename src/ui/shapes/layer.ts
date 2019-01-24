@@ -245,9 +245,14 @@ export abstract class ActivationLayer extends Layer {
 
     public generateTfjsLayer(){
         // TODO change defaults to class level
-        let params = defaults.get(this.layerType) 
+        let parameters = defaults.get(this.layerType)
+        let config = this.getParams()
+        for (let param in config) {
+            parameters[param] = config[param]
+        }
+
         if (this.activation != null) {
-            params.activation = this.activation.activationType
+            parameters.activation = this.activation.activationType
         }
 
         let parents = []
@@ -255,7 +260,7 @@ export abstract class ActivationLayer extends Layer {
             parents.push(parent.getTfjsLayer())
         }
 
-        let x = this.tfjsEmptyLayer(params)
+        let x = this.tfjsEmptyLayer(parameters)
         this.tfjsLayer = x.apply(parents[0])
     }
 }
