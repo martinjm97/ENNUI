@@ -21,49 +21,12 @@ typeToTensor.set("Conv2D", tf.layers.conv2d)
 
 // TODO: change this to classes
 export let defaults: Map<String, any> = new Map()
-defaults.set("Input", {units: 10})
-defaults.set("Dense", {units: 10, activation: 'relu'})
-defaults.set("MaxPooling2D", {poolSize: 2, activation: 'relu'})
-defaults.set("Conv2D", {kernelSize: 3, filters: 32, activation: 'relu'})
+defaults.set("Input", {})
+defaults.set("Dense", {units: 30, activation: 'relu'})
+defaults.set("MaxPooling2D", {poolSize: [2,2], activation: 'relu'})
+defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, stride: [2,2], activation: 'relu'})
 defaults.set("Output", {units: 10, activation: 'softmax'})
 
-
-export function buildNetwork(input: Input) {
-    // Initialize queues, dags, and parents (visited) 
-    let queue: Layer[] = [input]
-    const inputLayer = tf.input({shape: [IMAGE_H, IMAGE_W, 1]})
-    let nextLayer = inputLayer
-    // let children: Map<Layer, any> = new Map()
-	let visited: Set<Layer> = new Set()
-    // let json: {}[] = []
-    console.log("Building graph... ")
-	while (queue.length != 0) {
-        let current = queue.shift()
-        if (current.layerType != "Input" && current.layerType != "Output") {
-            if (nextLayer.shape.length > 2 && current.layerType == "Dense") {
-                nextLayer = <SymbolicTensor> tf.layers.flatten().apply(nextLayer)
-            }
-            let params = defaults.get(current.layerType)
-            if ((<ActivationLayer>current).activation != null) {
-                params.activation = (<ActivationLayer>current).activation.activationType
-            }
-            nextLayer = typeToTensor.get(current.layerType)(params).apply(nextLayer)
-        }
-        
-		// check each connections of the node
-		for (let child of current.children) {
-			if (!visited.has(child)) {
-				queue.push(child)
-				visited.add(child)
-			}
-		}
-    }
-    
-    console.log("Building model... ")
-    nextLayer = <SymbolicTensor>tf.layers.dense({units: 10, activation: 'softmax'}).apply(nextLayer)
-    let test = tf.model({inputs: inputLayer, outputs: <SymbolicTensor> nextLayer})
-    return test
-}
 
 export function buildNetworkDAG(input: Input) {
     try {

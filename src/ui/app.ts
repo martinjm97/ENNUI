@@ -1,7 +1,7 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetwork, buildNetworkDAG } from "../model/build_network";
+import { buildNetworkDAG, buildNetworkDAG2 } from "../model/build_network";
 import { blankTemplate, defaultTemplate } from "./model_templates";
 import { graphToJson } from "../model/export_model";
 import { train } from "../model/mnist_model";
