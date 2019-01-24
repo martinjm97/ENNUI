@@ -121,6 +121,8 @@ function addInExtraLayers(input: Input) {
     let queue: Layer[] = [input]
     let visited: Set<Layer> = new Set()
     console.log("Building graph... ")
+    let toAddFlatten = []
+    let toAddConcatenate: Layer[] = []  
     while (queue.length != 0) {
         let current = queue.shift()
 
@@ -128,14 +130,16 @@ function addInExtraLayers(input: Input) {
         if (current instanceof Dense || current instanceof Output) {
             for (let parent of current.parents){
                 if (parent instanceof MaxPooling2D || parent instanceof Conv2D || parent instanceof Input) {
-                    current.addParentLayerBetween(new Flatten(), parent)
+                    toAddFlatten.push([current, parent])
+                    // current.addParentLayerBetween(new Flatten(), parent)
                 }
             }
         }
         
         // Concatentate parents if necessary
-        if (current.parents.size > 2) {
-            current.addParentLayer(new Concatenate())
+        if (current.parents.size > 1) {
+            toAddConcatenate.push(current)
+            // current.addParentLayer(new Concatenate())
         }
 
         // Continue BFS
@@ -145,6 +149,14 @@ function addInExtraLayers(input: Input) {
                 visited.add(child)
             }
         }
+    }
+
+    for (let [layer, parent] of toAddFlatten){
+        layer.addParentLayerBetween(new Flatten(), parent)
+    }
+
+    for (let layer of toAddConcatenate){
+        layer.addParentLayer(new Concatenate())
     }
 }
 
@@ -202,7 +214,6 @@ function generateTfjsModel(sorted: Layer[]){
 function networkDAG(input: Input){
     addInExtraLayers(input)
     let toposorted = topologicalSort(input)
-    console.log("toposorted", toposorted)
     let model = generateTfjsModel(toposorted)
     console.log(model.summary())
     return model
