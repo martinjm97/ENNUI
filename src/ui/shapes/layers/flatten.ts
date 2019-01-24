@@ -1,8 +1,10 @@
-import { ActivationLayer } from "../layer";
+import * as tf from '@tensorflow/tfjs';
+import { ActivationLayer, Layer } from "../layer";
 import { Point } from "../shape";
 
-export class Flatten extends ActivationLayer {
+export class Flatten extends Layer {
     layerType = "Flatten"
+    readonly tfjsEmptyLayer  = tf.layers.flatten
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([], defaultLocation)

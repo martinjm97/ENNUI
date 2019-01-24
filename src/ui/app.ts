@@ -164,7 +164,7 @@ async function trainOnClick() {
 		training.innerHTML = "Training"; 
 		training.classList.add("train-active");
 		try {
-			model.architecture = buildNetworkDAG(svgData.output)
+			model.architecture = buildNetworkDAG(svgData.input)
 			await train()
 		} 
 		finally {

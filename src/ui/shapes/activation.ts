@@ -117,3 +117,21 @@ export class Tanh extends Activation {
 
     getHoverText(): string { return "tanh" }
 }
+
+export class Softmax extends Activation {
+    activationType = "softmax"
+    
+    constructor(defaultLocation=Point.randomPoint(50, 50, Activation.defaultLocation)) {
+        super("#FFFFFF", defaultLocation)
+
+        // TODO curvature is wrong
+        this.svgComponent.append("path").attr("d", "M -4 26 Q 5 26 5 20 Q 5 14 14 14 ")
+        .style("stroke", "black")
+        .style("stroke-width", 3)
+        .style("fill", "none")
+
+        
+    }
+
+    getHoverText(): string { return "softmax" }
+}

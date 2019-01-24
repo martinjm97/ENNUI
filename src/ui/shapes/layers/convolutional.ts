@@ -1,8 +1,11 @@
+import * as tf from '@tensorflow/tfjs';
 import { ActivationLayer } from "../layer";
 import { Point, PathShape, Rectangle } from "../shape";
 
 export class Conv2D extends ActivationLayer {
     layerType = "Conv2D"
+    protected tfjsEmptyLayer  = tf.layers.conv2d
+
     static readonly blockSize: number = 50;
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
