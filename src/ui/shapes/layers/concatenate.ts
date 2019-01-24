@@ -1,8 +1,10 @@
-import { ActivationLayer } from "../layer";
+import * as tf from '@tensorflow/tfjs';
+import { ActivationLayer, Layer } from "../layer";
 import { Point } from "../shape";
 
-export class Concatenate extends ActivationLayer {
+export class Concatenate extends Layer {
     layerType = "Concatenate"
+    readonly tfjsEmptyLayer = tf.layers.concatenate
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([], defaultLocation)

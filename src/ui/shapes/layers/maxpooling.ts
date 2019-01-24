@@ -1,8 +1,10 @@
+import * as tf from '@tensorflow/tfjs';
 import { ActivationLayer } from "../layer";
 import { Point, Rectangle, PathShape } from "../shape";
 
 export class MaxPooling2D extends ActivationLayer {
     layerType = "MaxPooling2D"
+    readonly tfjsEmptyLayer = tf.layers.maxPool2d;
     static readonly blockSize: number = 30;
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {

@@ -1,10 +1,12 @@
+import * as tf from '@tensorflow/tfjs';
 import { Draggable } from "./draggable";
-import { Rectangle, Point, Shape, Circle, PathShape } from "./shape";
+import { Point, Shape } from "./shape";
 import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
 import { parseString } from "../utils";
+import { defaults } from '../../model/build_network';
 
 export interface layerJson {
     layer_name: string
@@ -20,7 +22,9 @@ export interface layerJson {
 // TODO make transparent holes not terrible
 
 export abstract class Layer extends Draggable {
-    abstract layerType: string;
+    layerType: string = ""; // TODO change this
+    protected tfjsLayer;
+    protected readonly tfjsEmptyLayer;
     paramBox;
     
     block: Array<Shape>;
@@ -129,6 +133,55 @@ export abstract class Layer extends Draggable {
         }
         return params
     }
+
+    /**
+     * Make parent -> this become parent -> layer -> this.  
+     * @param layer a layer that will become the new parent
+     * @param parent a parent of this
+     */
+    public addParentLayerBetween(layer: Layer, parent: Layer) {
+        parent.children.delete(this)
+        parent.children.add(layer)
+
+        layer.parents.add(parent)
+        layer.children.add(this)
+        
+        this.parents.delete(parent)
+        this.parents.add(layer)
+    }
+
+    
+    /**
+     * Make parents -> this become parents -> layer -> this.  
+     * @param parent a parent of this
+     */
+    public addParentLayer(layer: Layer) {
+        for (let parent of this.parents) {
+            parent.children.delete(this)
+            parent.children.add(layer)
+        }
+        
+        layer.parents = new Set([...layer.parents, ...this.parents])
+        layer.children.add(this)
+        
+        this.parents.clear()
+        this.parents.add(layer)
+    }
+    
+    public getTfjsLayer(){
+        return this.tfjsLayer
+    }
+
+    public generateTfjsLayer(){
+        // TODO: don't use defaults
+        let params = defaults.get(this.layerType)
+        let parents = []
+        for (let parent of this.parents){
+            parents.push(parent.getTfjsLayer())
+        }
+        this.tfjsLayer = this.tfjsEmptyLayer(params).apply(parents[0]) // TODO only sequential now
+    }
+    
 }
 
 /**
@@ -188,5 +241,21 @@ export abstract class ActivationLayer extends Layer {
             json.params["activation"] = this.activation.activationType
         }
         return json
+    }
+
+    public generateTfjsLayer(){
+        // TODO change defaults to class level
+        let params = defaults.get(this.layerType) 
+        if (this.activation != null) {
+            params.activation = this.activation.activationType
+        }
+
+        let parents = []
+        for (let parent of this.parents){
+            parents.push(parent.getTfjsLayer())
+        }
+
+        let x = this.tfjsEmptyLayer(params)
+        this.tfjsLayer = x.apply(parents[0])
     }
 }
