@@ -30,4 +30,9 @@ export class MaxPooling2D extends ActivationLayer {
 
     getHoverText(): string { return "maxpool" }
 
+    public lineOfPython(): string {
+        let params = this.getParams();
+        return `MaxPooling2D(pool_size=(${params["poolSize"]}), activation='${this.activation.activationType}')`
+    }
+
 }

@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { Layer } from "../layer";
 import { Point, Rectangle } from "../shape";
 import { defaults } from '../../../model/build_network';
-import { IMAGE_H, IMAGE_W } from '../../../model/data';
+import { IMAGE_H, IMAGE_W, NUM_TRAIN_ELEMENTS } from '../../../model/data';
 
 export class Input extends Layer {
     layerType = "Input"
@@ -21,5 +21,9 @@ export class Input extends Layer {
     public generateTfjsLayer(){ 
         // TODO make this a member variable
         this.tfjsLayer = this.tfjsEmptyLayer({shape: [IMAGE_H, IMAGE_W, 1]})
+    }
+
+    public lineOfPython(): string {
+        return `Input(shape=(${IMAGE_H},${IMAGE_W}, 1))`
     }
 }

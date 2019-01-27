@@ -35,6 +35,7 @@ export abstract class Layer extends Draggable {
     wireCircleSelected: boolean = false;
     static nextID: number = 0;
     uid: number;
+    abstract lineOfPython(): String;
     constructor(block: Array<Shape>, defaultLocation) { 
         super(defaultLocation)
         this.uid = Layer.nextID
