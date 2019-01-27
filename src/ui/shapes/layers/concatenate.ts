@@ -13,4 +13,8 @@ export class Concatenate extends Layer {
     populateParamBox() {}
 
     getHoverText(): string { return "Concatenate" }
+
+    public lineOfPython(): string {
+        return `Concatenate()`
+    }
 }

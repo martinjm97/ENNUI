@@ -1,9 +1,9 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, buildNetworkDAG2 } from "../model/build_network";
+import { buildNetworkDAG, buildNetworkDAG2, topologicalSort, addInExtraLayers, generatePython } from "../model/build_network";
 import { blankTemplate, defaultTemplate } from "./model_templates";
-import { graphToJson } from "../model/export_model";
+import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots, showPredictions, setupTestResults } from "../model/graphs";
 import { model } from "../model/paramsObject"
@@ -13,6 +13,7 @@ import { Dense } from "./shapes/layers/dense";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { clearError, displayError } from "./error";
+import { pythonSkeleton } from "../model/skeleton";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -104,8 +105,9 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 				break;
 			case 'Enter' :
-				// graphToJson();
-				// train(buildNetwork(svgData.input))
+				addInExtraLayers(svgData.input)
+				download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
+
 				break;
 		}
 	};

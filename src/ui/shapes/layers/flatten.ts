@@ -13,4 +13,8 @@ export class Flatten extends Layer {
     populateParamBox() {}
 
     getHoverText(): string { return "Flatten" }
+
+    public lineOfPython(): string {
+        return `Flatten()`
+    }
 }

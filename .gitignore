@@ -5,3 +5,4 @@ built/*
 node_modules/
 *.log
 dist/*
+src/model/test.py

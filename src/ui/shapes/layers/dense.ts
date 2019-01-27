@@ -26,4 +26,9 @@ export class Dense extends ActivationLayer {
     }
 
     getHoverText(): string { return "Dense" }
+
+    public lineOfPython(): string {
+        let params = this.getParams();
+        return `Dense(${params["units"]}, activation='${this.activation.activationType}')`
+    }
 }
