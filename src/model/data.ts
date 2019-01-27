@@ -22,7 +22,7 @@ const MNIST_LABELS_PATH =
 export class MnistData {
   datasetImages: any
   private static _instance: MnistData;
-  private dataLoaded : boolean = false;
+  public dataLoaded : boolean = false;
   public static get Instance()
   {
       return this._instance || (this._instance = new this());

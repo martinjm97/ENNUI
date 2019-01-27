@@ -5,7 +5,7 @@ import { buildNetworkDAG, buildNetworkDAG2, topologicalSort, addInExtraLayers, g
 import { blankTemplate, defaultTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
-import { setupPlots, showPredictions, setupTestResults } from "../model/graphs";
+import { setupPlots, showPredictions, setupTestResults, renderAccuracyPlot, renderLossPlot, showConfusionMatrix } from "../model/graphs";
 import { model } from "../model/paramsObject"
 import { Input } from "./shapes/layers/input";
 import { Output } from "./shapes/layers/output";
@@ -187,6 +187,20 @@ function dispatchSwitchTabOnClick(elmt){
 	});
 }
 
+export function tabSelected(): string {
+	if (document.getElementById("networkTab").style.display != "none") {
+		return "networkTab";
+	} else if (document.getElementById("progressTab").style.display != "none") {
+		return "progressTab";
+	} else if (document.getElementById("visualizationTab").style.display != "none") {
+		return "visualizationTab";
+	} else if (document.getElementById("informationTab").style.display != "none") {
+		return "informationTab";
+	} else {
+		throw new Error("No tab selection found");
+	}
+}
+
 
 function dispatchCreationOnClick(elmt){
 	elmt.addEventListener('click', function(e){
@@ -293,6 +307,11 @@ function switchTab(tab) {
 	document.getElementById(tab.detail.tabType).classList.add("tab-selected")
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
+
+	switch(tab.detail.tabType){
+		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
+		case 'visualization': showPredictions(); break;
+	}
 	
 	// Give border radius to top and bottom neighbors
 	if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
