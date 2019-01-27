@@ -204,6 +204,12 @@ body {
     user-select:none;
 }
 
+.right-option {
+    width:calc(100% - 30px);
+    padding: 10px 0px 0px 10px;
+    margin: 0px 10px 0px 10px;
+}
+
 div.option.selected {
     background-color: #C4B7D1;
 

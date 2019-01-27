@@ -62,4 +62,9 @@ export class Conv2D extends ActivationLayer {
 
     public getHoverText(): string { return "Conv" }
 
+    public lineOfPython(): string {
+        let params = this.getParams();
+        return `Conv2D(${params["filters"]}, (${params["kernel_size"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
+    }
+
 }

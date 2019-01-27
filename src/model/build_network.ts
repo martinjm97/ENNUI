@@ -11,8 +11,9 @@ import { Conv2D } from '../ui/shapes/layers/convolutional';
 import { Flatten } from '../ui/shapes/layers/flatten';
 import { Concatenate } from '../ui/shapes/layers/concatenate';
 import { Output } from '../ui/shapes/layers/output';
+import { pythonSkeleton } from './skeleton';
 
-let typeToTensor: Map<String, any> = new Map()
+let typeToTensor: Map<string, any> = new Map()
 
 typeToTensor.set("Input", tf.input)
 typeToTensor.set("Dense", tf.layers.dense)
@@ -20,7 +21,7 @@ typeToTensor.set("MaxPooling2D", tf.layers.maxPooling2d)
 typeToTensor.set("Conv2D", tf.layers.conv2d)
 
 // TODO: change this to classes
-export let defaults: Map<String, any> = new Map()
+export let defaults: Map<string, any> = new Map()
 defaults.set("Input", {})
 defaults.set("Dense", {units: 30})
 defaults.set("MaxPooling2D", {poolSize: [2,2]})
@@ -116,7 +117,7 @@ function networkDAG2(out: Layer) {
 }
 
 
-function addInExtraLayers(input: Input) {
+export function addInExtraLayers(input: Input) {
     // Initialize queues, dags, and parents (visited) 
     let queue: Layer[] = [input]
     let visited: Set<Layer> = new Set()
@@ -137,7 +138,7 @@ function addInExtraLayers(input: Input) {
         }
         
         // Concatentate parents if necessary
-        if (current.parents.size > 1) {
+        if (current.parents.size > 1 && !(current instanceof Concatenate)) {
             toAddConcatenate.push(current)
             // current.addParentLayer(new Concatenate())
         }
@@ -160,7 +161,7 @@ function addInExtraLayers(input: Input) {
     }
 }
 
-function topologicalSort(input: Input) {
+export function topologicalSort(input: Input): Layer[] {
     // Kahn's algorithm
     let sorted: Layer[] = []
     let visited: Set<Layer> = new Set()
@@ -192,13 +193,22 @@ function topologicalSort(input: Input) {
  * Creates corresponding python code.
  * @param sorted topologically sorted list of layers
  */
-// function generatePython(sorted: Layer[]){
-//     let pythonScript: string = ""
-//     for (let layer of sorted) {
-//         pythonScript += layer.lineOfPython() + "\n"
-//     }
-//     return pythonScript
-// }
+export function generatePython(sorted: Layer[]){
+    let pythonScript: string = ""
+    console.log(sorted)
+    for (let layer of sorted) {
+        let layerstring = layer.lineOfPython();
+        let applystring = ""; // Nothing to apply if no parents (input)
+        if(layer.parents.size == 1) {
+            applystring = `(x${layer.parents.values().next().value.uid})`;
+        } else if (layer.parents.size > 1) {
+            applystring = `([${[...layer.parents].map(p => "x" + p.uid).join(", ")}])`;
+        }
+        pythonScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
+    }
+    pythonScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})\n`
+    return pythonSkeleton(pythonScript)
+}
 
 /**
  * Creates corresponding python code.
