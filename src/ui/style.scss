@@ -2,6 +2,7 @@ $color-menu-bg: #E5E5FC;
 
 body {
    margin: 0px;
+   overflow: hidden;
 }
 
 #main {
@@ -53,6 +54,7 @@ body {
 #bottomblanktab {
     height: 100%;
     width: 100%;
+    
 
     vertical-align: middle;
     background-color: #A8A8BD;
