@@ -64,8 +64,7 @@ export class Conv2D extends ActivationLayer {
 
     public lineOfPython(): string {
         let params = this.getParams();
-        console.log(params);
-        return `Conv2D(${params["filters"]}, (${params["kernel_size"]}), strides=(${params["strides"]}), activation='${this.activation.activationType}')`
+        return `Conv2D(${params["filters"]}, (${params["kernel_size"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
     }
 
 }
