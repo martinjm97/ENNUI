@@ -105,8 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 				break;
 			case 'Enter' :
-				addInExtraLayers(svgData.input)
-				download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
+				
 
 				break;
 		}
@@ -200,6 +199,11 @@ function dispatchCreationOnClick(elmt){
 			}
 			elmt.classList.add("selected");
 			updateNetworkParameters({itemType: itemType, setting : setting});
+		} else if (itemType == "share") {
+			if (elmt.getAttribute('share-option') == "exportPython") {
+				addInExtraLayers(svgData.input)
+				download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
+			}
 		} else if (itemType == "classes") {
 			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {

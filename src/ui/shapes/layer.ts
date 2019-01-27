@@ -35,7 +35,7 @@ export abstract class Layer extends Draggable {
     wireCircleSelected: boolean = false;
     static nextID: number = 0;
     uid: number;
-    abstract lineOfPython(): String;
+    abstract lineOfPython(): string;
     constructor(block: Array<Shape>, defaultLocation) { 
         super(defaultLocation)
         this.uid = Layer.nextID
@@ -233,6 +233,10 @@ export abstract class ActivationLayer extends Layer {
         this.activation = activation
         let p = this.getPosition()
         activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
+    }
+
+    public getActivationText(): string {
+        return this.activation != null ? this.activation.activationType : "relu";
     }
 
     public removeActivation() {

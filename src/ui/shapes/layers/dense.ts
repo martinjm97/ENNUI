@@ -29,6 +29,6 @@ export class Dense extends ActivationLayer {
 
     public lineOfPython(): string {
         let params = this.getParams();
-        return `Dense(${params["units"]}, activation='${this.activation.activationType}')`
+        return `Dense(${params["units"]}, activation='${this.getActivationText()}')`
     }
 }

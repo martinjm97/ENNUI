@@ -138,7 +138,7 @@ export function addInExtraLayers(input: Input) {
         }
         
         // Concatentate parents if necessary
-        if (current.parents.size > 1) {
+        if (current.parents.size > 1 && !(current instanceof Concatenate)) {
             toAddConcatenate.push(current)
             // current.addParentLayer(new Concatenate())
         }
@@ -202,7 +202,7 @@ export function generatePython(sorted: Layer[]){
         if(layer.parents.size == 1) {
             applystring = `(x${layer.parents.values().next().value.uid})`;
         } else if (layer.parents.size > 1) {
-            applystring = `(x${[...layer.parents].map(p => "x" + p.uid).join(", ")})`;
+            applystring = `([${[...layer.parents].map(p => "x" + p.uid).join(", ")}])`;
         }
         pythonScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
     }
