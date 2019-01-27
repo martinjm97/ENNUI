@@ -13,6 +13,7 @@ import { Dense } from "./shapes/layers/dense";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { clearError, displayError } from "./error";
+import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -24,6 +25,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	// This function runs when the DOM is ready, i.e. when the document has been parsed
 	setupPlots();
 	setupTestResults();
+
+	loadStateIfPossible()
 	
 	document.getElementById("all").classList.add("selected")
 
@@ -106,6 +109,11 @@ document.addEventListener("DOMContentLoaded", function() {
 			case 'Enter' :
 				// graphToJson();
 				// train(buildNetwork(svgData.input))
+				console.log("Original svg data", svgData)
+				let state = graphToJson(svgData)
+				storeNetworkInUrl(state)
+				loadStateIfPossible()
+				
 				break;
 		}
 	};

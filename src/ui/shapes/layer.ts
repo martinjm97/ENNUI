@@ -17,9 +17,6 @@ export interface layerJson {
 }
 
 // TODO params for entering things in UI for layer properties
-// TODO make holes transparent
-// TODO make dragging bring item to front
-// TODO make transparent holes not terrible
 
 export abstract class Layer extends Draggable {
     layerType: string = ""; // TODO change this
@@ -132,6 +129,13 @@ export abstract class Layer extends Draggable {
 			params[name] = parseString(value);
         }
         return params
+    }
+
+    public setParams(params: Map<string, any>) {
+        for(let line of this.paramBox.children){
+			let name = line.children[0].getAttribute('data-name');
+			line.children[1].value = params.get(name);
+        }
     }
 
     /**
