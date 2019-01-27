@@ -1,9 +1,9 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, buildNetworkDAG2 } from "../model/build_network";
+import { buildNetworkDAG, buildNetworkDAG2, topologicalSort, addInExtraLayers, generatePython } from "../model/build_network";
 import { blankTemplate, defaultTemplate } from "./model_templates";
-import { graphToJson } from "../model/export_model";
+import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots, showPredictions, setupTestResults } from "../model/graphs";
 import { model } from "../model/paramsObject"
@@ -14,6 +14,7 @@ import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { clearError, displayError } from "./error";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
+import { pythonSkeleton } from "../model/skeleton";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -206,6 +207,11 @@ function dispatchCreationOnClick(elmt){
 			}
 			elmt.classList.add("selected");
 			updateNetworkParameters({itemType: itemType, setting : setting});
+		} else if (itemType == "share") {
+			if (elmt.getAttribute('share-option') == "exportPython") {
+				addInExtraLayers(svgData.input)
+				download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
+			}
 		} else if (itemType == "classes") {
 			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {

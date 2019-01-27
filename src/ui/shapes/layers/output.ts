@@ -20,4 +20,8 @@ export class Output extends ActivationLayer {
     getHoverText(): string { return "Output" }
     
     delete() {}
+
+    public lineOfPython(): string {
+        return `Dense(10, activation='softmax')`
+    }
 }

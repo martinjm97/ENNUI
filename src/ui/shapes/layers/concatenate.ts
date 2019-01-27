@@ -14,6 +14,9 @@ export class Concatenate extends Layer {
 
     getHoverText(): string { return "Concatenate" }
 
+    public lineOfPython(): string {
+        return `Concatenate()`
+    }
     public generateTfjsLayer(){
         // Concatenate layers handle fan-in
         let parents = []
