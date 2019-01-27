@@ -124,12 +124,12 @@ async function trainOnClick() {
 
 	let training = document.getElementById('train'); 
 	if (!training.classList.contains("train-active")){
-		clearError()
+		// clearError()
 
 		// Grab hyperparameters
 		
 		let temp : number = 0;
-		let hyperparams = document.getElementsByClassName("hyperparamvalue")
+		let hyperparams = document.getElementsByClassName("hyperparamvalue");
 	
 		for (var hp of hyperparams) {
 			let name : string = hp.id; 
@@ -139,7 +139,7 @@ async function trainOnClick() {
 				
 			}
 			else {
-				let error : Error = Error("Hyperparameters should be positive numbers.")
+				let error : Error = Error("Hyperparameters should be positive numbers.");
 				displayError(error);
 				return;
 			}
@@ -167,7 +167,9 @@ async function trainOnClick() {
 		try {
 			model.architecture = buildNetworkDAG(svgData.input)
 			await train()
-		} 
+		} catch (error) {
+			displayError(error);
+		}
 		finally {
 			training.innerHTML = "Train";
 			training.classList.remove("train-active");
