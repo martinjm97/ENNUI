@@ -5,6 +5,7 @@ import {plotAccuracy, plotLoss, showPredictions, setupPlots, setupTestResults, s
 
 import {IMAGE_H, IMAGE_W, data} from './data';
 import { model } from './paramsObject';
+import { tabSelected } from '../ui/app';
 
 /**
  * Compile and train the given model.
@@ -20,7 +21,7 @@ export async function train() {
     setupTestResults();
     await data.load();
     
-    let onIteration = () => showPredictions() 
+    let onIteration = () => showPredictions()
     let optimizer = model.params.getOptimizer()
   
     
@@ -90,8 +91,8 @@ export async function train() {
                 vlossBox.children[1].innerHTML = String(Number((valLoss).toFixed(2)))
                 plotLoss(trainBatchCount, logs.val_loss, 'validation');
                 plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
-                onIteration();
                 showConfusionMatrix();
+                onIteration();                
                 await tf.nextFrame();
             }
         }
