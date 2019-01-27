@@ -250,6 +250,7 @@ div.top_neighbor_tab-selected {
 }
 
 #middle {
+    position: relative;
     float: left;
     width : calc(100% - 430px);
     height: 100%;
@@ -316,11 +317,10 @@ div.top_neighbor_tab-selected {
 }
 
 #error {
-    width: 144px;
-    height: 80px;
-    position: fixed;
-    padding: 5px;
-    bottom: 20px;
+    width: 200px;
+    position: absolute;
+    padding: 20px 5px 5px 5px;
+    bottom: 10px;
     right: 20px;
     background-color: #dca7a7;
     border-style: solid;
@@ -329,21 +329,16 @@ div.top_neighbor_tab-selected {
 }
  
 #x  {
-    position: relative;
-    top: -5px;
-    left: 125px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
     cursor: pointer;
 }
 
 #errorMessage  {
-    width: 120px;
     height: 80px;
-    position: absolute;
-    padding-right: 10px;
-    z-index: 9999;
     overflow: hidden;
     text-overflow: ellipsis;
-    top: 5px;
 }
  
 label {
