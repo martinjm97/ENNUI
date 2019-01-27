@@ -228,6 +228,7 @@ export abstract class ActivationLayer extends Layer {
 
     public addActivation(activation: Activation) {
         if (this.activation != null) {
+            this.activation.delete();
             this.activation.layer = null
         } 
         this.activation = activation
