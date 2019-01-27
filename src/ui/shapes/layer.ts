@@ -1,10 +1,12 @@
+import * as tf from '@tensorflow/tfjs';
 import { Draggable } from "./draggable";
-import { Rectangle, Point, Shape, Circle, PathShape } from "./shape";
+import { Point, Shape } from "./shape";
 import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
 import { parseString } from "../utils";
+import { defaults } from '../../model/build_network';
 
 export interface layerJson {
     layer_name: string
@@ -20,7 +22,9 @@ export interface layerJson {
 // TODO make transparent holes not terrible
 
 export abstract class Layer extends Draggable {
-    abstract layerType: string;
+    layerType: string = ""; // TODO change this
+    protected tfjsLayer: tf.SymbolicTensor;
+    protected readonly tfjsEmptyLayer;
     paramBox;
     
     block: Array<Shape>;
@@ -31,6 +35,7 @@ export abstract class Layer extends Draggable {
     wireCircleSelected: boolean = false;
     static nextID: number = 0;
     uid: number;
+    abstract lineOfPython(): string;
     constructor(block: Array<Shape>, defaultLocation) { 
         super(defaultLocation)
         this.uid = Layer.nextID
@@ -129,6 +134,58 @@ export abstract class Layer extends Draggable {
         }
         return params
     }
+
+    /**
+     * Make parent -> this become parent -> layer -> this.  
+     * @param layer a layer that will become the new parent
+     * @param parent a parent of this
+     */
+    public addParentLayerBetween(layer: Layer, parent: Layer) {
+        parent.children.delete(this)
+        parent.children.add(layer)
+
+        layer.parents.add(parent)
+        layer.children.add(this)
+        
+        this.parents.delete(parent)
+        this.parents.add(layer)
+    }
+
+    
+    /**
+     * Make parents -> this become parents -> layer -> this.  
+     * @param parent a parent of this
+     */
+    public addParentLayer(layer: Layer) {
+        for (let parent of this.parents) {
+            parent.children.delete(this)
+            parent.children.add(layer)
+        }
+        
+        layer.parents = new Set([...layer.parents, ...this.parents])
+        layer.children.add(this)
+        
+        this.parents.clear()
+        this.parents.add(layer)
+    }
+    
+    public getTfjsLayer(){
+        return this.tfjsLayer
+    }
+
+    public generateTfjsLayer(){
+        // TODO change defaults to class level
+        let parameters = defaults.get(this.layerType)
+        let config = this.getParams()
+        for (let param in config) {
+            parameters[param] = config[param]
+        }
+        let parent:Layer = null 
+        for (let p of this.parents){ parent = p; break } 
+        // Concatenate layers handle fan-in
+        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
+    }
+    
 }
 
 /**
@@ -178,6 +235,10 @@ export abstract class ActivationLayer extends Layer {
         activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
     }
 
+    public getActivationText(): string {
+        return this.activation != null ? this.activation.activationType : "relu";
+    }
+
     public removeActivation() {
         this.activation = null
     }
@@ -188,5 +249,23 @@ export abstract class ActivationLayer extends Layer {
             json.params["activation"] = this.activation.activationType
         }
         return json
+    }
+
+    public generateTfjsLayer(){
+        // TODO change defaults to class level
+        let parameters = defaults.get(this.layerType)
+        let config = this.getParams()
+        for (let param in config) {
+            parameters[param] = config[param]
+        }
+
+        if (this.activation != null) {
+            parameters.activation = this.activation.activationType
+        }
+
+        let parent:Layer = null 
+        for (let p of this.parents){ parent = p; break } 
+        // Concatenate layers handle fan-in
+        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
 }
