@@ -17,4 +17,12 @@ export class Concatenate extends Layer {
     public lineOfPython(): string {
         return `Concatenate()`
     }
+    public generateTfjsLayer(){
+        // Concatenate layers handle fan-in
+        let parents = []
+        for (let parent of this.parents) {
+            parents.push(parent.getTfjsLayer())
+        }
+        this.tfjsLayer = <tf.SymbolicTensor> this.tfjsEmptyLayer().apply(parents)
+    }
 }

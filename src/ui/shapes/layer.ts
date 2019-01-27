@@ -23,7 +23,7 @@ export interface layerJson {
 
 export abstract class Layer extends Draggable {
     layerType: string = ""; // TODO change this
-    protected tfjsLayer;
+    protected tfjsLayer: tf.SymbolicTensor;
     protected readonly tfjsEmptyLayer;
     paramBox;
     
@@ -174,13 +174,16 @@ export abstract class Layer extends Draggable {
     }
 
     public generateTfjsLayer(){
-        // TODO: don't use defaults
-        let params = defaults.get(this.layerType)
-        let parents = []
-        for (let parent of this.parents){
-            parents.push(parent.getTfjsLayer())
+        // TODO change defaults to class level
+        let parameters = defaults.get(this.layerType)
+        let config = this.getParams()
+        for (let param in config) {
+            parameters[param] = config[param]
         }
-        this.tfjsLayer = this.tfjsEmptyLayer(params).apply(parents[0]) // TODO only sequential now
+        let parent:Layer = null 
+        for (let p of this.parents){ parent = p; break } 
+        // Concatenate layers handle fan-in
+        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
     
 }
@@ -256,12 +259,9 @@ export abstract class ActivationLayer extends Layer {
             parameters.activation = this.activation.activationType
         }
 
-        let parents = []
-        for (let parent of this.parents){
-            parents.push(parent.getTfjsLayer())
-        }
-
-        let x = this.tfjsEmptyLayer(parameters)
-        this.tfjsLayer = x.apply(parents[0])
+        let parent:Layer = null 
+        for (let p of this.parents){ parent = p; break } 
+        // Concatenate layers handle fan-in
+        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
 }
