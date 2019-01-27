@@ -9,13 +9,15 @@ body {
     height:100%;
     background-color: #D3D3DE;
     /* border: solid 3px #555; */
+
 }
 
 #tabselector {
     width: 50px;
     height: 100%;
     float:left;
-    background-color: #A8A8BD;
+    //background-color: #A8A8BD;
+    background-color: $color-menu-bg;
     font-size:22px;
     font-family: Helvetica;
     user-select:none;
@@ -45,16 +47,17 @@ body {
 #blanktab {
     min-height: 140px;
     width: 100%;
+    background-color: #A8A8BD;
 }
 
 #bottomblanktab {
-    min-height: 100px;
+    height: 100%;
     width: 100%;
 
     vertical-align: middle;
-    
-    width: 50px;
-    height: 70px;
+    background-color: #A8A8BD;
+    //width: 50px;
+    //height: 70px;
     float:left;
 }
  
@@ -74,6 +77,7 @@ body {
     font-family: Helvetica;
     cursor:pointer;
     user-select:none;
+    background-color: #A8A8BD;
 }
 
 .tab:hover {
@@ -210,11 +214,11 @@ div.option.selected {
  }
 
 div.top_neighbor_tab-selected {
-    border-bottom-right-radius: 10px; 
+    border-bottom-right-radius: 5px; 
 }
 
  div.bottom_neighbor_tab-selected {
-    border-top-right-radius: 10px;
+    border-top-right-radius: 5px;
  }
  
 .toggle {
