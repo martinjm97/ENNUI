@@ -1,9 +1,3 @@
-// function titleCase(s: string){
-// 	if(s === ''){return ''}
-// 	if(s.length === 1){return s.toUpperCase();}
-// 	{return s.charAt(0).toUpperCase()+s.substring(1);}
-// }
-
 export function parseString(s: string){
 	if(s.indexOf(',')===-1){
 		return parseInt(s);

@@ -6,7 +6,6 @@ import { Softmax } from '../activation';
 export class Output extends ActivationLayer {
     layerType = "Output"
     readonly tfjsEmptyLayer = tf.layers.dense 
-    activation = new Softmax()
 
     defaultLocation = new Point(document.getElementById("svg").clientWidth - 100, document.getElementById("svg").clientHeight/2)
 
