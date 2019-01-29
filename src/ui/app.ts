@@ -15,6 +15,7 @@ import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { clearError, displayError } from "./error";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
 import { pythonSkeleton } from "../model/skeleton";
+import { copyTextToClipboard } from "./utils";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -22,12 +23,16 @@ export interface DraggableData {
 	output: Output
 }
 
+let svgData: DraggableData = {
+	draggable : [],
+	input: null,
+	output: null
+}	
+
 document.addEventListener("DOMContentLoaded", function() { 
 	// This function runs when the DOM is ready, i.e. when the document has been parsed
 	setupPlots();
 	setupTestResults();
-
-	loadStateIfPossible()
 	
 	document.getElementById("all").classList.add("selected")
 
@@ -49,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// Hide the error box
 	document.getElementById("error").style.display = "none";
-	
+
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){
 		dispatchSwitchTabOnClick(elmt);
@@ -108,20 +113,14 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 				break;
 			case 'Enter' :
-				// graphToJson();
-				// train(buildNetwork(svgData.input))
-				console.log("Original svg data", svgData)
-				let state = graphToJson(svgData)
-				storeNetworkInUrl(state)
-				loadStateIfPossible()
 				
 				break;
 		}
 	};
 
-	svgData.input = new Input();
-	svgData.output = new Output();
-	defaultTemplate(svgData)
+
+	svgData = loadStateIfPossible()
+
 });
 
 
@@ -135,38 +134,7 @@ async function trainOnClick() {
 		clearError()
 
 		// Grab hyperparameters
-		
-		let temp : number = 0;
-		let hyperparams = document.getElementsByClassName("hyperparamvalue")
-	
-		for (var hp of hyperparams) {
-			let name : string = hp.id; 
-	
-			temp = Number((<HTMLInputElement>document.getElementById(name)).value);
-			if (temp > 0) {
-				
-			}
-			else {
-				let error : Error = Error("Hyperparameters should be positive numbers.")
-				displayError(error);
-				return;
-			}
-			switch(name){
-				case "paramlr":
-					model.params.learningRate = temp;
-					break;
-				
-				case "paramepoch":
-					model.params.epochs = Math.trunc(temp);
-					break;
-	
-				case "parambaatch":
-					model.params.batchSize = Math.trunc(temp);
-					break;
-	
-			};
-
-		}
+		setModelHyperparameters()
 
 		let trainingBox = document.getElementById('ti_training');
 		trainingBox.children[1].innerHTML = 'Yes';
@@ -182,6 +150,38 @@ async function trainOnClick() {
 			trainingBox.children[1].innerHTML = 'No'
 		}
 	}	
+}
+
+/**
+ * Takes the hyperparemeters from the html and assigns them to the global model
+ */
+function setModelHyperparameters() {
+	let temp : number = 0;
+	let hyperparams = document.getElementsByClassName("hyperparamvalue")
+
+	for (let hp of hyperparams) {
+		let name : string = hp.id; 
+
+		temp = Number((<HTMLInputElement>document.getElementById(name)).value);
+		if (temp < 0 || temp == null) {
+			let error : Error = Error("Hyperparameters should be positive numbers.")
+			displayError(error);
+			return;
+		}
+		switch(name){
+			case "learningRate":
+				model.params.learningRate = temp;
+				break;
+			
+			case "epochs":
+				model.params.epochs = Math.trunc(temp);
+				break;
+
+			case "batchSize":
+				model.params.batchSize = Math.trunc(temp);
+				break;
+		};
+	}
 }
 
 function dispatchSwitchTabOnClick(elmt){
@@ -211,13 +211,20 @@ function dispatchCreationOnClick(elmt){
 			if (elmt.getAttribute('share-option') == "exportPython") {
 				addInExtraLayers(svgData.input)
 				download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
-			}
+			} else if (elmt.getAttribute('share-option') == "copyModel"){
+				let state = graphToJson(svgData)
+				let baseUrl: string = window.location.href
+				if (baseUrl.endsWith("#")) {
+					baseUrl = baseUrl.slice(0, baseUrl.length - 2)
+				}
+				let urlParam: string = storeNetworkInUrl(state)
+				copyTextToClipboard(baseUrl + "#" + urlParam)
+			} 
 		} else if (itemType == "classes") {
 			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {
 				selected[0].classList.remove("selected")
 			}
-
 
 			elmt.classList.add("selected");
 			
@@ -232,6 +239,7 @@ function dispatchCreationOnClick(elmt){
 		}
 	});
 }
+  
 
 function updateNetworkParameters(params){
 	switch(params.itemType){
@@ -323,10 +331,3 @@ function showInformationOverlay() {
 		document.getElementById("informationTab").style.display = "none";
 	}
 }
-
-
-let svgData: DraggableData = {
-	draggable : [],
-	input: null,
-	output: null
-}	

@@ -1,1 +1,0 @@
-var q = {"status": "Trained"}
