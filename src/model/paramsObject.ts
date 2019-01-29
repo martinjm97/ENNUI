@@ -1,8 +1,14 @@
 import * as tf from '@tensorflow/tfjs';
 
+export interface HyperparameterData {
+    learningRate: number
+    batchSize: number
+    optimizer: string
+    epochs: number
+}
+
 class NetworkParameters
 {
-    // private static _instance: NetworkParameters;
     private paramNames : Set<string> = new Set(['optimizer']);
     learningRate: number = 0.1;
     batchSize: number = 64;

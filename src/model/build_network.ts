@@ -23,9 +23,9 @@ typeToTensor.set("Conv2D", tf.layers.conv2d)
 // TODO: change this to classes
 export let defaults: Map<string, any> = new Map()
 defaults.set("Input", {})
-defaults.set("Dense", {units: 30, activation: 'relu'})
-defaults.set("MaxPooling2D", {poolSize: [2,2], activation: 'relu'})
-defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, stride: [2,2], activation: 'relu'})
+defaults.set("Dense", {units: 30})
+defaults.set("MaxPooling2D", {poolSize: [2,2]})
+defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, stride: [2,2]})
 defaults.set("Output", {units: 10, activation: 'softmax'})
 
 

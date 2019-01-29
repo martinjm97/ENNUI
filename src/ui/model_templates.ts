@@ -4,11 +4,15 @@ import { Point } from "./shapes/shape";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { Dense } from "./shapes/layers/dense";
 
-function resetWorkspace(svgData) {
-    // Set input and output locations
-	svgData.input.setPosition(svgData.input.defaultLocation)
-	svgData.input.wires.forEach((w) => w.delete())
-    svgData.output.setPosition(svgData.output.defaultLocation)
+export function resetWorkspace(svgData) {
+	// Set input and output locations
+	if (svgData.input != null){
+		svgData.input.setPosition(svgData.input.defaultLocation)
+		svgData.input.wires.forEach((w) => w.delete())
+	}
+	if (svgData.output != null){
+		svgData.output.setPosition(svgData.output.defaultLocation)
+	}
     
     // Remove all other layers
     for (let layer of svgData.draggable) {
@@ -25,9 +29,9 @@ export function defaultTemplate(svgData) {
 	let convStartingPosition = new Point(canvasWidth/3, canvasHeight/2)
 	let denseStartingPosition = new Point(canvasWidth*2/3, canvasHeight/2)
 	let conv: ActivationLayer = new Conv2D(convStartingPosition)
-	let convRelu: Activation = new Relu(convStartingPosition)
+	let convRelu: Activation = new Relu()
 	let dense: ActivationLayer = new Dense(denseStartingPosition)
-	let denseRelu: Activation = new Relu(denseStartingPosition)
+	let denseRelu: Activation = new Relu()
     
     // Add relationships among layers and activations
 	svgData.input.addChild(conv)
