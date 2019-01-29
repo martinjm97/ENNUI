@@ -8,12 +8,14 @@ import { windowProperties } from "../window";
 import { parseString } from "../utils";
 import { defaults } from '../../model/build_network';
 
-export interface layerJson {
+export interface LayerJson {
     layer_name: string
     id: number
     children_ids: Array<number>
     parent_ids: Array<number>
     params: Map<string, any> 
+    xPosition: number
+    yPosition: number
 }
 
 // TODO params for entering things in UI for layer properties
@@ -106,19 +108,29 @@ export abstract class Layer extends Draggable {
             child.wires.add(newWire)
         }
     }
+    
+    /**
+     * Add a parent layer of this node (predecessor).
+     * @param parent the layer pointed to by the given wire
+     */
+    public addParent(parent: Layer) {
+        parent.addChild(this)
+    }
 
     public delete() {
         super.delete()
         this.wires.forEach((w) => w.delete()) // deleting wires should delete layer connection sets
     }
 
-    public toJson(): layerJson {
+    public toJson(): LayerJson {
         return {
             "layer_name": this.layerType,
             "children_ids": Array.from(this.children, child => child.uid),
             "parent_ids": Array.from(this.parents, parent => parent.uid),
             "params": this.getParams(),
-            "id": this.uid
+            "id": this.uid, 
+            "xPosition": this.getPosition().x, 
+            "yPosition": this.getPosition().y,
         }
     }
 
@@ -134,8 +146,8 @@ export abstract class Layer extends Draggable {
 
     public setParams(params: Map<string, any>) {
         for(let line of this.paramBox.children){
-			let name = line.children[0].getAttribute('data-name');
-			line.children[1].value = params.get(name);
+            let name = line.children[0].getAttribute('data-name');
+			line.children[1].value = params[name];
         }
     }
 
@@ -235,8 +247,10 @@ export abstract class ActivationLayer extends Layer {
             this.activation.layer = null
         } 
         this.activation = activation
-        let p = this.getPosition()
-        activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
+        this.activation.setPosition(this.getPosition())
+        // TODO: Double check the above solution makes sense as a replacement
+        // let p = this.getPosition()
+        // activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
     }
 
     public getActivationText(): string {
@@ -247,7 +261,7 @@ export abstract class ActivationLayer extends Layer {
         this.activation = null
     }
 
-    public toJson(): layerJson {
+    public toJson(): LayerJson {
         let json = super.toJson()
         if (this.activation != null) {
             json.params["activation"] = this.activation.activationType

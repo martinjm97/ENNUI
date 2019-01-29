@@ -54,10 +54,10 @@
 		<div id = 'progressMenu'>
 			<div id = 'optimizers' class = 'category' data-itemType = 'optimizer'>
 				<div class = 'categoryTitle'>Optimizers</div>
-				<div id = "defaultOptimizer" class = 'option' data-trainType = 'sgd'> SGD </div>
-				<div class = 'option train-option' data-trainType = 'rmsprop'> RMSprop </div>	
-				<div class = 'option train-option' data-trainType = 'adagrad'> Adagrad </div>
-				<div class = 'option train-option' data-trainType = 'adam'> Adam </div>
+				<div id = "defaultOptimizer" class = 'option' id = 'sgd' data-trainType = 'sgd'> SGD </div>
+				<div class = 'option train-option' id = 'rmsprop' data-trainType = 'rmsprop'> RMSprop </div>	
+				<div class = 'option train-option' id = 'adagrad' data-trainType = 'adagrad'> Adagrad </div>
+				<div class = 'option train-option' id = 'adam' data-trainType = 'adam'> Adam </div>
 			</div>
 			<!-- <div id = 'hyperparameters' class = 'category' data-itemType = 'hyperparameters'>
 				<div class = 'categoryTitle'>Hyperparams</div>
@@ -164,7 +164,8 @@
 		</div>
 		<div class="category" id="sharebox" data-itemType="share">
 			<div class="categoryTitle">Share</div>			
-			<div class="option right-option" share-option="exportPython">Export to Python</div>
+			<div class="option right-option" share-option="exportPython">Export to python</div>
+			<div class="option right-option" share-option="copyModel">Copy model link</div>
 		</div>
 		<div id = 'networkParamshell'>
 			
@@ -184,15 +185,15 @@
 				<div class = 'parambox'>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="lr">Learning rate: </div>
-						<input id="paramlr" class="paramvalue hyperparamvalue" value="0.1">
+						<input id="learningRate" class="paramvalue hyperparamvalue" value="0.1">
 					</div>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="epochs">Epochs: </div>
-						<input id="paramepoch" class="paramvalue hyperparamvalue" value="6">
+						<input id="epochs" class="paramvalue hyperparamvalue" value="6">
 					</div>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="lr">Batch Size: </div>
-						<input id="parambatch" class="paramvalue hyperparamvalue" value="64">
+						<input id="batchSize" class="paramvalue hyperparamvalue" value="64">
 					</div>
 				</div>
 			</div>
