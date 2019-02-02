@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	
 	document.getElementById('defaultOptimizer').classList.add('selected')
+	document.getElementById('defaultLoss').classList.add('selected')
 
 	document.getElementById('train').onclick = trainOnClick 
 	document.getElementById("informationTab").onclick = (_) => document.getElementById("informationTab").style.display = "none";
@@ -215,11 +216,16 @@ function dispatchCreationOnClick(elmt){
 		let itemType = elmt.parentElement.getAttribute('data-itemType')
 
 		if (model.params.isParam(itemType)){
-			let setting = elmt.getAttribute('data-trainType')
+			let setting; 
+			if (elmt.hasAttribute('data-trainType')) {
+				setting = elmt.getAttribute('data-trainType');
+			} else if (elmt.hasAttribute('data-lossType')) {
+				setting = elmt.getAttribute('data-lossType');
+			}
 			
-			let selected = elmt.parentElement.getElementsByClassName("selected")
+			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {
-				selected[0].classList.remove("selected")
+				selected[0].classList.remove("selected");
 			}
 			elmt.classList.add("selected");
 			updateNetworkParameters({itemType: itemType, setting : setting});
@@ -230,9 +236,6 @@ function dispatchCreationOnClick(elmt){
 			} else if (elmt.getAttribute('share-option') == "copyModel"){
 				let state = graphToJson(svgData)
 				let baseUrl: string = window.location.href
-				if (baseUrl.endsWith("#")) {
-					baseUrl = baseUrl.slice(0, baseUrl.length - 2)
-				}
 				let urlParam: string = storeNetworkInUrl(state)
 				copyTextToClipboard(baseUrl + "#" + urlParam)
 			} 
@@ -261,6 +264,9 @@ function updateNetworkParameters(params){
 	switch(params.itemType){
 		case 'optimizer':
 			model.params.optimizer = params.setting; 
+			break;
+		case 'loss':
+			model.params.loss = params.setting; 
 			break;
 	}
 }

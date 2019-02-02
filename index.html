@@ -55,16 +55,17 @@
 			<div id = 'optimizers' class = 'category' data-itemType = 'optimizer'>
 				<div class = 'categoryTitle'>Optimizers</div>
 				<div id = "defaultOptimizer" class = 'option' id = 'sgd' data-trainType = 'sgd'> SGD </div>
-				<div class = 'option train-option' id = 'rmsprop' data-trainType = 'rmsprop'> RMSprop </div>	
-				<div class = 'option train-option' id = 'adagrad' data-trainType = 'adagrad'> Adagrad </div>
-				<div class = 'option train-option' id = 'adam' data-trainType = 'adam'> Adam </div>
+				<div id = 'rmsprop' class = 'option train-option' data-trainType = 'rmsprop'> RMSprop </div>	
+				<div id = 'adagrad' class = 'option train-option' data-trainType = 'adagrad'> Adagrad </div>
+				<div id = 'adam' class = 'option train-option' data-trainType = 'adam'> Adam </div>
 			</div>
-			<!-- <div id = 'hyperparameters' class = 'category' data-itemType = 'hyperparameters'>
-				<div class = 'categoryTitle'>Hyperparams</div>
-				<div class = 'option' data-activationType = 'lr'> Learning rate </div>
-				<div class = 'option' data-activationType = 'epochs'> Epochs </div>
-				<div class = 'option' data-activationType = 'subset'> Subset </div>
-			</div> -->
+			<div id = 'losses' class = 'category' data-itemType = 'loss'>
+				<div class = 'categoryTitle'>Losses</div>
+				<div id = 'defaultLoss' class = 'option loss-option' data-lossType = 'categoricalCrossEntopy'>CrossEntopy</div>
+				<div id = 'hinge' class = 'option loss-option' data-lossType = 'hinge'> Hinge </div>
+				<div id = 'meanSquaredError' class = 'option loss-option' data-lossType = 'meanSquaredError'> MSE </div>
+				<div id = 'meanAbsoluteError' class = 'option loss-option' data-lossType = 'meanAbsoluteError'> MAE </div>
+			</div>
 		</div>
 
 		<div id = 'visualizationMenu'>
@@ -105,7 +106,7 @@
 			<div id='images'></div>
 		</div>
 
-		<div id = 'informationTab' style="position: absolute;">
+		<div id = 'informationTab'>
 			<div id='information'>Welcome to ENNUI
 				<div id='informationBody'>
 					<ul>
@@ -120,11 +121,14 @@
 						</li>
 						<li>Train an architecture on MNIST data clicking train in the upper right. </li>
 						<li>Click tabs on the left to view training progress and see visualizations. </li>
-						<li>There are template options in the bottom left to help you get started. </li>
-						<li>View this again by clicking the button in the lower left corner. </li>
+						<li>There are template options in the bottom left to help you get started. </li> 
 					</ul>
 				</div>
-				Click to start
+				<div id = 'acknowledgements'>
+					Developed by: Jesse Michel, Zack Holbrook, Stefan Grosser <br>
+					With advising from: <a href="http://hendrik.strobelt.com/">Hendrik Strobelt</a><br>
+					Prototyped at <a href="https://devpost.com/software/ennui">HackMIT</a> by: Rikhav Shah and Jesse Michel
+				</div>
 			</div> 
 		</div>
 

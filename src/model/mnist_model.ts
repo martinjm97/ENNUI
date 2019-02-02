@@ -27,7 +27,7 @@ export async function train() {
     
     model.architecture.compile({
         optimizer,
-        loss: 'categoricalCrossentropy',
+        loss: model.params.loss,
         metrics: ['accuracy'],
     });
     const batchSize = model.params.batchSize;

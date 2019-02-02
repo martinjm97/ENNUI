@@ -3,18 +3,19 @@ import * as tf from '@tensorflow/tfjs';
 export interface HyperparameterData {
     learningRate: number
     batchSize: number
-    optimizer: string
+    optimizer_id: string
     epochs: number
+    loss_id: string
 }
 
 class NetworkParameters
 {
-    private paramNames : Set<string> = new Set(['optimizer']);
+    private paramNames : Set<string> = new Set(['optimizer', 'loss']);
     learningRate: number = 0.1;
     batchSize: number = 64;
     optimizer: string = 'sgd';
     epochs: number = 6;
-    
+    loss: string = 'categoricalCrossentropy';
 
 
     constructor(){}

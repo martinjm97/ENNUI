@@ -22,13 +22,13 @@ export function loadStateIfPossible() {
     try {
         resetWorkspace(svgData)
         if (urlParams.length > 1) {
-            console.log("following if")
+            console.log("loading from URL")
             let network: SerializedNetwork = JSON.parse(decodeURI(urlParams.slice(1,)))
            
             // Serialize the model if it exists
             svgData = stateFromJson(svgData, network)
         } else {
-            console.log("following else")
+            console.log("Creating default network")
             svgData.input = new Input();
             svgData.output = new Output();
             defaultTemplate(svgData)
@@ -41,6 +41,8 @@ export function loadStateIfPossible() {
         defaultTemplate(svgData)
         throw err
     }
-    window.location.hash = ''
+    
+    history.replaceState(null, null, ' ');
+
     return svgData
 }

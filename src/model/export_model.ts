@@ -50,8 +50,9 @@ export function graphToJson(svgData: DraggableData): SerializedNetwork {
 function setHyperparameterData(): HyperparameterData {
 	let learningRate: number;
 	let batchSize: number;
-	let optimizer: string;
+	let optimizer_id: string;
 	let epochs: number;
+	let loss_id: string;
 	let hyperparams = document.getElementsByClassName("hyperparamvalue")
 	for (let hyperparam of hyperparams) {
 		let value = (<HTMLInputElement>document.getElementById(hyperparam.id)).value;
@@ -66,16 +67,23 @@ function setHyperparameterData(): HyperparameterData {
 			
 			case "batchSize":
 				batchSize = parseInt(value);
-				break;
+				break;	
 		};
 	}
-	optimizer = document.getElementsByClassName("selected")[0].id
+	for (let elmt of document.getElementsByClassName("selected")) {
+		if (elmt.hasAttribute("data-trainType")) {
+			optimizer_id = elmt.id
+		} else if (elmt.hasAttribute("data-lossType")){
+			loss_id = elmt.id
+		} 
+	}
 
 	return {
 		"learningRate": learningRate,
 		"batchSize": batchSize,
-		"optimizer": optimizer,
+		"optimizer_id": optimizer_id,
 		"epochs": epochs,
+		"loss_id": loss_id,
 	}
 
 }
@@ -95,7 +103,9 @@ function setHyperparams(hyperparamData: HyperparameterData){
 		paramName.value = hyperparamData[hyperparam.id].toString();
 	}
 	document.getElementById("defaultOptimizer").classList.remove("selected")
-	document.getElementById(hyperparamData.optimizer).classList.add("selected");	
+	document.getElementById(hyperparamData.optimizer_id).classList.add("selected");	
+	document.getElementById("defaultLoss").classList.remove("selected")
+	document.getElementById(hyperparamData.loss_id).classList.add("selected");	
 }
 
 function graphFromJson(svgData: DraggableData, layersJson: Array<LayerJson>): DraggableData {	
