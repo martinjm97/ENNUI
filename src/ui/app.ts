@@ -109,13 +109,12 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 				break;
 			case 'Delete' :
-				if(windowProperties.selectedElement){
-					windowProperties.selectedElement.delete();
-					windowProperties.selectedElement = null;
-				}
+				deleteSelected();		
+				break;
+			case 'Backspace' :
+				deleteSelected();		
 				break;
 			case 'Enter' :
-				
 				break;
 		}
 	};
@@ -125,6 +124,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
+function deleteSelected(){
+	if(windowProperties.selectedElement){
+		windowProperties.selectedElement.delete();
+		windowProperties.selectedElement = null;
+	}
+}
 
 
 async function trainOnClick() {
