@@ -1,3 +1,6 @@
+# Build
+npm run build
+
 # Create the folder if it doesn't exist
 folder="prod"
 if [ ! -d "$folder" ]; then
