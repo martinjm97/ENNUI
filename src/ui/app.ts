@@ -30,6 +30,7 @@ let svgData: DraggableData = {
 }	
 
 document.addEventListener("DOMContentLoaded", function() { 
+	
 	// This function runs when the DOM is ready, i.e. when the document has been parsed
 	setupPlots();
 	setupTestResults();
