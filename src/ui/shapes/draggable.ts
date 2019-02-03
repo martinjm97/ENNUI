@@ -59,10 +59,11 @@ export abstract class Draggable {
                 this.select()                
                 firstDrag = false
             }
-            let canvas = document.getElementById("svg")          
+            let canvasBoundingBox = document.getElementById("svg").getBoundingClientRect()
             // TODO: take into account the width of the object this.svgComponent
-            let tx = Math.min(Math.max(0, d3.event.x - mousePosRelativeToCenter.x), canvas.clientWidth)
-            let ty = Math.min(Math.max(0, d3.event.y - mousePosRelativeToCenter.y), canvas.clientHeight)
+            let tx = Math.min(Math.max(0, d3.event.x - mousePosRelativeToCenter.x), canvasBoundingBox.width)
+            let ty = Math.min(Math.max(0, d3.event.y - mousePosRelativeToCenter.y), canvasBoundingBox.height)
+
             this.svgComponent.attr("transform", "translate(" + (tx) + "," + (ty) + ")")
 
             this.dragAction(d)

@@ -23,11 +23,10 @@ export function resetWorkspace(svgData) {
 export function defaultTemplate(svgData) {
     resetWorkspace(svgData)
 
-    // Initialize each of the layers and activations
-	let canvasWidth = document.getElementById("svg").clientWidth;
-	let canvasHeight = document.getElementById("svg").clientHeight;
-	let convStartingPosition = new Point(canvasWidth/3, canvasHeight/2)
-	let denseStartingPosition = new Point(canvasWidth*2/3, canvasHeight/2)
+	// Initialize each of the layers and activations
+	let canvasBoundingBox = document.getElementById("svg").getBoundingClientRect();
+	let convStartingPosition = new Point(canvasBoundingBox.width/3, canvasBoundingBox.height/2)
+	let denseStartingPosition = new Point(canvasBoundingBox.width*2/3, canvasBoundingBox.height/2)
 	let conv: ActivationLayer = new Conv2D(convStartingPosition)
 	let convRelu: Activation = new Relu(convStartingPosition)
 	let dense: ActivationLayer = new Dense(denseStartingPosition)
