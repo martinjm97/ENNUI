@@ -23,7 +23,6 @@ export abstract class Draggable {
     constructor(defaultLocation=new Point(50,100)) {        
         this.svgComponent = d3.select<SVGGraphicsElement, {}>("#svg")
                               .append<SVGGraphicsElement>("g")
-                              .data([{"x": defaultLocation.x, "y": defaultLocation.y}])
                               .attr('transform','translate('+defaultLocation.x+','+defaultLocation.y+')')
                               .on("click", () => { 
                                   this.select()
@@ -44,7 +43,12 @@ export abstract class Draggable {
     }
 
     public makeDraggable(){
-        var firstDrag = true
+        let firstDrag = true
+        let mousePosRelativeToCenter:Point;
+        this.svgComponent.on("mousedown", function() {
+            let coords = d3.mouse(this)
+            mousePosRelativeToCenter = new Point(coords[0], coords[1])
+        })
 
         var dragThings = (d: any) => {
             clearTimeout(this.moveTimeout)
@@ -52,14 +56,14 @@ export abstract class Draggable {
             if (firstDrag) {
                 // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
                 // instead of after actually dragging a little bit)
-                this.select()
+                this.select()                
                 firstDrag = false
             }
             let canvas = document.getElementById("svg")          
-            // TODO: take into account the width of the object this.svgComponent      
-            let tx = Math.min(Math.max(0, d3.event.x), canvas.clientWidth)
-            let ty = Math.min(Math.max(0, d3.event.y), canvas.clientHeight)
-            this.svgComponent.attr("transform", "translate(" + (d.x = tx) + "," + (d.y = ty) + ")")
+            // TODO: take into account the width of the object this.svgComponent
+            let tx = Math.min(Math.max(0, d3.event.x - mousePosRelativeToCenter.x), canvas.clientWidth)
+            let ty = Math.min(Math.max(0, d3.event.y - mousePosRelativeToCenter.y), canvas.clientHeight)
+            this.svgComponent.attr("transform", "translate(" + (tx) + "," + (ty) + ")")
 
             this.dragAction(d)
         }
@@ -112,7 +116,6 @@ export abstract class Draggable {
     }
     
     setPosition(position: Point) {
-		this.svgComponent.data([{"x": position.x, "y": position.y}])
-                         .attr('transform','translate('+position.x+','+position.y+')')
+		this.svgComponent.attr('transform','translate('+position.x+','+position.y+')')
     }
 }

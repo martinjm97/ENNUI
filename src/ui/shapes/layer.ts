@@ -222,8 +222,7 @@ export abstract class ActivationLayer extends Layer {
         super.dragAction(d)
         if (this.activation != null) {
             let p = this.getPosition()
-            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + ","
-            + (p.y) + ")").data([{"x": p.x, "y": p.y}])
+            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
         }
     }
 
@@ -243,15 +242,12 @@ export abstract class ActivationLayer extends Layer {
     }
 
     public addActivation(activation: Activation) {
-        if (this.activation != null) {
+        if (this.activation != null && this.activation != activation) {
             this.activation.delete();
             this.activation.layer = null
         } 
         this.activation = activation
         this.activation.setPosition(this.getPosition())
-        // TODO: Double check the above solution makes sense as a replacement
-        // let p = this.getPosition()
-        // activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
     }
 
     public getActivationText(): string {
