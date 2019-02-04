@@ -2,7 +2,7 @@ import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
 import { buildNetworkDAG, buildNetworkDAG2, topologicalSort, addInExtraLayers, generatePython } from "../model/build_network";
-import { blankTemplate, defaultTemplate } from "./model_templates";
+import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots, showPredictions, setupTestResults, renderAccuracyPlot, renderLossPlot, showConfusionMatrix } from "../model/graphs";
@@ -109,10 +109,10 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 				break;
 			case 'Delete' :
-				deleteSelected();		
+				deleteSelected();
 				break;
 			case 'Backspace' :
-				deleteSelected();		
+				// deleteSelected();		
 				break;
 			case 'Enter' :
 				break;
@@ -292,8 +292,9 @@ function appendItem(options){
 			case 'tanh': item = new Tanh(); console.log("Created Tanh"); break;
 		}
 		case 'template':  switch(options.detail.templateType) {
-			case 'default': template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
 			case 'blank': template = true; blankTemplate(svgData); console.log("Created Blank Template"); break;
+			case 'default': template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
+			case 'complex': template = true; complexTemplate(svgData); console.log("Created Complex Template"); break;
 		}
 	}
 
