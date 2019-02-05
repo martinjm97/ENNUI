@@ -238,8 +238,9 @@ function dispatchCreationOnClick(elmt){
 			updateNetworkParameters({itemType: itemType, setting : setting});
 		} else if (itemType == "share") {
 			if (elmt.getAttribute('share-option') == "exportPython") {
-				//addInExtraLayers(svgData.input)
-				download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
+				let newInput = svgData.input.clone()
+				addInExtraLayers(svgData.input, newInput)
+				download(generatePython(topologicalSort(newInput)), "mnist_model.py");
 			} else if (elmt.getAttribute('share-option') == "copyModel"){
 				let state = graphToJson(svgData)
 				let baseUrl: string = window.location.href
