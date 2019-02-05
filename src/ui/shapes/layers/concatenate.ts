@@ -25,4 +25,12 @@ export class Concatenate extends Layer {
         }
         this.tfjsLayer = <tf.SymbolicTensor> this.tfjsEmptyLayer().apply(parents)
     }
+
+    public clone() {
+        let newLayer = new Concatenate()
+        // newLayer.paramBox = this.paramBox
+        
+        return newLayer
+
+    }
 }

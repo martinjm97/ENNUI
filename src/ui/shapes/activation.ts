@@ -2,6 +2,7 @@ import { Draggable } from "./draggable";
 import { Point, Rectangle } from "./shape";
 import { ActivationLayer } from "./layer";
 import { windowProperties } from "../window";
+import { clone } from "@tensorflow/tfjs";
 
 export abstract class Activation extends Draggable {
 

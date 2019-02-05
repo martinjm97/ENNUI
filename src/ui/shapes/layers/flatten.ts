@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { ActivationLayer, Layer } from "../layer";
 import { Point } from "../shape";
+import { isDownloadFloatTextureEnabled } from '@tensorflow/tfjs-core/dist/environment_util';
 
 export class Flatten extends Layer {
     layerType = "Flatten"
@@ -16,5 +17,9 @@ export class Flatten extends Layer {
 
     public lineOfPython(): string {
         return `Flatten()`
+    }
+
+    public clone() {
+        return new Flatten()
     }
 }

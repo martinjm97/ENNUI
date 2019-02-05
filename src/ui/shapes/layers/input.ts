@@ -10,8 +10,8 @@ export class Input extends Layer {
 
     defaultLocation = new Point(100, document.getElementById("svg").getBoundingClientRect().height/2)
 
-	constructor(){
-        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, document.getElementById("svg").getBoundingClientRect().height/2))
+	constructor(invisible=false){
+        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, document.getElementById("svg").getBoundingClientRect().height/2), invisible)
     }
     
     getHoverText(): string { return "Input" }
@@ -25,5 +25,11 @@ export class Input extends Layer {
 
     public lineOfPython(): string {
         return `Input(shape=(${IMAGE_H},${IMAGE_W}, 1))`
+    }
+
+    public clone() {
+        let newLayer = new Input(true)
+
+        return newLayer
     }
 }

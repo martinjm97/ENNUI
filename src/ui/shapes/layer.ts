@@ -35,33 +35,46 @@ export abstract class Layer extends Draggable {
     static nextID: number = 0;
     uid: number;
     abstract lineOfPython(): string;
-    constructor(block: Array<Shape>, defaultLocation) { 
+    abstract clone(): Layer;
+    
+    constructor(block: Array<Shape>, defaultLocation, invisible=false) { 
         super(defaultLocation)
         this.uid = Layer.nextID
         Layer.nextID += 1
         this.block = block
-        for (let rect of this.block) {
-            this.svgComponent.call(rect.svgAppender.bind(rect))
-        }
-        this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
-                                           .attr("cx", this.center().x)
-                                           .attr("cy", this.center().y)
-                                           .attr("r", 10)
-                                           .style("fill", "black")
-                                           .style("stroke-width", "4")
-                                           .style("visibility", "hidden")
-        
-        this.wireCircle.on("click", () => {
-            this.wireCircleSelected = true
-            this.wireCircle.style("stroke", "red")
-        })
+        if(!invisible) {
+            for (let rect of this.block) {
+                this.svgComponent.call(rect.svgAppender.bind(rect))
+            }
+            this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
+                                            .attr("cx", this.center().x)
+                                            .attr("cy", this.center().y)
+                                            .attr("r", 10)
+                                            .style("fill", "black")
+                                            .style("stroke-width", "4")
+                                            .style("visibility", "hidden")
+            
+            if(this.layerType == "Output"){
+                this.wireCircle.style("display", "none")
+            }
+            
+            this.wireCircle.on("click", () => {
+                this.wireCircleSelected = true
+                this.wireCircle.style("stroke", "red")
+            })
 
-        this.paramBox = document.createElement('div')
-        this.paramBox.className = 'parambox'
-        this.paramBox.style.visibility = 'hidden'
+            this.paramBox = document.createElement('div')
+            this.paramBox.className = 'parambox'
+            this.paramBox.style.visibility = 'hidden'
+            this.paramBox.style.position = 'absolute'	
 	    this.paramBox.style.position = 'absolute'	
-        document.getElementById("paramtruck").appendChild(this.paramBox);
-        this.populateParamBox()
+            this.paramBox.style.position = 'absolute'	
+            document.getElementById("paramtruck").appendChild(this.paramBox);
+
+            this.populateParamBox()
+
+        }
+
     }
 
     populateParamBox() {}
@@ -98,14 +111,16 @@ export abstract class Layer extends Draggable {
      * Add a child layer of this node (successor).
      * @param child the layer pointed to by the given wire
      */
-    public addChild(child: Layer) {
+    public addChild(child: Layer, visible=true) {
         if (!this.children.has(child) && !child.children.has(this)) {
             this.children.add(child)
             child.parents.add(this)
 
-            let newWire = new Wire(this, child)
-            this.wires.add(newWire)
-            child.wires.add(newWire)
+            if(visible){
+                let newWire = new Wire(this, child)
+                this.wires.add(newWire)
+                child.wires.add(newWire)
+            }
         }
     }
     
@@ -210,8 +225,8 @@ export abstract class Layer extends Draggable {
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
     static defaultInitialLocation = new Point(100,100)
-    constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) { 
-        super(block, defaultLocation)
+    constructor(block: Array<Shape>, defaultLocation=new Point(100,100), invisible=false) { 
+        super(block, defaultLocation, invisible)
         
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this)

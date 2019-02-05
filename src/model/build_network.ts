@@ -36,102 +36,47 @@ export function buildNetworkDAG(input: Input) {
         displayError(err)
     }
 }
-export function buildNetworkDAG2(out: Layer) {
-    try {
-        return networkDAG2(out);
-    } catch(err) {
-        displayError(err)
-    }
-}
 
-function networkDAG2(out: Layer) {
-    let input = null
-    let cache: Map<Layer, any> = new Map()
-    function dfs(out: Layer) {
-        console.log("Entering DAG... ")
-        console.log(out)
-        // Check the memo
-        if (cache.has(out)) {
-            return cache.get(out)
-        }
-
-        // When we reach the input
-        if (out.layerType == "Input") {
-            console.log("Should be input... ")
-            console.log(out)
-            input = tf.input({shape: [IMAGE_H, IMAGE_W, 1]})
-            cache.set(out, input)
-            return input
-        }
-    
-        let parents = out.parents
-        let preds: SymbolicTensor[] = []
-        for (let parent of parents) {
-            preds.push(<SymbolicTensor> dfs(parent))
-        }
-        let prevLayer: SymbolicTensor = null 
-        if (preds.length > 1) {  // multiple layers coming in are concatentated
-            console.log("Should be output... ")
-            console.log(out)
-            let l = []
-            for (let pred of preds) {
-                if (pred.shape.length > 2) {
-                    pred = <SymbolicTensor> tf.layers.flatten().apply(pred)
-                }
-                l.push(pred)
-            }
-            prevLayer = <SymbolicTensor> tf.layers.concatenate().apply(l)
-            if (prevLayer.shape.length > 2) {
-                prevLayer = <SymbolicTensor> tf.layers.flatten().apply(prevLayer)
-            }
-        } else {  // a single layer
-            prevLayer = preds[0]
-            console.log("Single layer... ")
-            console.log(prevLayer)
-            if (prevLayer.shape.length > 2 && out.layerType == "Dense") {  // ensure input dimensions
-                prevLayer = <SymbolicTensor> tf.layers.flatten().apply(prevLayer)
-            }
-        }
-
-        // We want to add the node to the graph and memoize         
-        if (out.layerType != "Output"){
-            let parameters = defaults.get(out.layerType)
-            let config = out.toJson().params
-            for (let param in config) {
-                parameters[param] = config[param]
-            }
-            console.log(parameters)
-            let layer = typeToTensor.get(out.layerType)(parameters).apply(prevLayer)
-            cache.set(out, layer)
-            return layer
-        }
-
-        // When it's output we make an extra dense with a softmax to output something of the right dimensions
-        if (prevLayer.shape.length > 2) {
-            prevLayer = <SymbolicTensor> tf.layers.flatten().apply(prevLayer)
-        }
-        prevLayer = <SymbolicTensor> tf.layers.dense({units: 10, activation: 'softmax'}).apply(prevLayer)
-        return tf.model({inputs: input, outputs: <SymbolicTensor> prevLayer})
-    }
-    return dfs(out)
-}
-
-
-export function addInExtraLayers(input: Input) {
+export function addInExtraLayers(input: Input, newInput: Input) {
     // Initialize queues, dags, and parents (visited) 
+
+    // TODO: Add dictionary of old layer id to clone layer
+    let oldId2Clone = {}
+    oldId2Clone[input.uid] = newInput
+
     let queue: Layer[] = [input]
     let visited: Set<Layer> = new Set()
     console.log("Building graph... ")
     let toAddFlatten = []
     let toAddConcatenate: Layer[] = []  
+    let newLayer : Layer
     while (queue.length != 0) {
         let current = queue.shift()
+
+        // Clone layer
+        if (current != input) {
+            newLayer = current.clone()
+            oldId2Clone[current.uid] = newLayer
+        
+            // Add in cloned parent/child relations
+
+            for (let p of current.parents) {
+                let newParent = oldId2Clone[p.uid]
+                newParent.addChild(newLayer, false)
+                newLayer.addParent(newParent)
+            }
+        }
+
+        else {
+            newLayer = newInput
+        }
 
         // Dense takes in 1D input so flatten if necessary
         if (current instanceof Dense || current instanceof Output) {
             for (let parent of current.parents){
+                
                 if (parent instanceof MaxPooling2D || parent instanceof Conv2D || parent instanceof Input) {
-                    toAddFlatten.push([current, parent])
+                    toAddFlatten.push([newLayer, oldId2Clone[parent.uid]])
                     // current.addParentLayerBetween(new Flatten(), parent)
                 }
             }
@@ -139,12 +84,13 @@ export function addInExtraLayers(input: Input) {
         
         // Concatentate parents if necessary
         if (current.parents.size > 1 && !(current instanceof Concatenate)) {
-            toAddConcatenate.push(current)
+            toAddConcatenate.push(newLayer)
             // current.addParentLayer(new Concatenate())
         }
 
         // Continue BFS
         for (let child of current.children) {
+            
             if (!visited.has(child)) {
                 queue.push(child)
                 visited.add(child)
@@ -222,8 +168,9 @@ function generateTfjsModel(sorted: Layer[]){
 }
 
 function networkDAG(input: Input){
-    addInExtraLayers(input)
-    let toposorted = topologicalSort(input)
+    let newInput = <Input> input.clone()
+    addInExtraLayers(input, newInput)
+    let toposorted = topologicalSort(newInput)
     let model = generateTfjsModel(toposorted)
     console.log(model.summary())
     return model
