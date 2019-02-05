@@ -325,6 +325,23 @@ a {
     font-family: Helvetica;
 }
 
+#loadingDataTab {
+    position: fixed;
+    padding: 5%;
+    text-align: center;
+    color: $color-menu-bg;
+    font-size: 48;
+    width: 90%;
+    height: 85%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.8);
+    cursor: pointer;
+    font-family: Helvetica;
+}
+
 #acknowledgements {
     text-align: left;
     font-size: 18;
