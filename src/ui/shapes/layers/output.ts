@@ -9,12 +9,11 @@ export class Output extends ActivationLayer {
 
     defaultLocation = new Point(document.getElementById("svg").getBoundingClientRect().width - 100, document.getElementById("svg").getBoundingClientRect().height/2)
 
-    constructor(){
+    constructor(invisible=false){
         super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')],
-               new Point(document.getElementById("svg").getBoundingClientRect().width - 100, document.getElementById("svg").getBoundingClientRect().height/2))
+               new Point(document.getElementById("svg").getBoundingClientRect().width - 100, 
+               document.getElementById("svg").getBoundingClientRect().height/2), invisible)
         
-        this.wireCircle.style("display", "none")
-
     }
 
     getHoverText(): string { return "Output" }
@@ -23,5 +22,11 @@ export class Output extends ActivationLayer {
 
     public lineOfPython(): string {
         return `Dense(10, activation='softmax')`
+    }
+
+    public clone() {
+        let newLayer = new Output(true)
+        newLayer.paramBox = this.paramBox
+        return newLayer
     }
 }
