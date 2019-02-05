@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("progressTab").style.display = "none"
 	document.getElementById("visualizationTab").style.display = "none"
 	document.getElementById("informationTab").style.display = "none"
+	document.getElementById("loadingDataTab").style.display = "none"
 
 	// Hide the progress and visualization menus
 	document.getElementById("progressMenu").style.display = "none";

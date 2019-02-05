@@ -33,6 +33,9 @@ export class MnistData {
     if (this.dataLoaded){
         return;
     }
+
+    showLoadingOverlay()
+
     const img = new Image();
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -88,6 +91,8 @@ export class MnistData {
         this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS);
 
     this.dataLoaded = true;
+
+    document.getElementById("loadingDataTab").style.display = "none"
   }
 
   datasetLabels: any
@@ -197,3 +202,11 @@ export class MnistData {
 
 
 export const data = MnistData.Instance;
+
+function showLoadingOverlay() {
+	if (document.getElementById("loadingDataTab").style.display == "none") {
+		document.getElementById("loadingDataTab").style.display = "block";
+	} else {
+		document.getElementById("loadingDataTab").style.display = "none";
+	}
+}
