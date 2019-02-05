@@ -1,7 +1,7 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, topologicalSort, addInExtraLayers, generatePython } from "../model/build_network";
+import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
@@ -239,7 +239,8 @@ function dispatchCreationOnClick(elmt){
 		} else if (itemType == "share") {
 			if (elmt.getAttribute('share-option') == "exportPython") {
 				let newInput = svgData.input.clone()
-				addInExtraLayers(svgData.input, newInput)
+				cloneNetwork(svgData.input, newInput)
+				addInExtraLayers(newInput)
 				download(generatePython(topologicalSort(newInput)), "mnist_model.py");
 			} else if (elmt.getAttribute('share-option') == "copyModel"){
 				let state = graphToJson(svgData)

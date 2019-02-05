@@ -37,7 +37,7 @@ export function buildNetworkDAG(input: Input) {
     }
 }
 
-export function addInExtraLayers(input: Input, newInput: Input) {
+export function cloneNetwork(input: Input, newInput: Input) {
     // Initialize queues, dags, and parents (visited) 
 
     let oldId2Clone = {}
@@ -45,9 +45,7 @@ export function addInExtraLayers(input: Input, newInput: Input) {
 
     let queue: Layer[] = [input]
     let visited: Set<Layer> = new Set()
-    console.log("Building graph... ")
-    let toAddFlatten = []
-    let toAddConcatenate: Layer[] = []  
+
     let newLayer : Layer
     while (queue.length != 0) {
         let current = queue.shift()
@@ -81,12 +79,35 @@ export function addInExtraLayers(input: Input, newInput: Input) {
             newLayer = newInput
         }
 
+        // Continue BFS
+        for (let child of current.children) {
+            
+            if (!visited.has(child)) {
+                queue.push(child)
+                visited.add(child)
+            }
+        }
+    }
+}
+
+export function addInExtraLayers(input: Input) {
+    // Initialize queues, dags, and parents (visited) 
+
+    let queue: Layer[] = [input]
+    let visited: Set<Layer> = new Set()
+    console.log("Building graph... ")
+    let toAddFlatten = []
+    let toAddConcatenate: Layer[] = []  
+
+    while (queue.length != 0) {
+        let current = queue.shift()
+
         // Dense takes in 1D input so flatten if necessary
         if (current instanceof Dense || current instanceof Output) {
             for (let parent of current.parents){
                 
                 if (parent instanceof MaxPooling2D || parent instanceof Conv2D || parent instanceof Input) {
-                    toAddFlatten.push([newLayer, oldId2Clone[parent.uid]])
+                    toAddFlatten.push([current, parent])
                     // current.addParentLayerBetween(new Flatten(), parent)
                 }
             }
@@ -94,7 +115,7 @@ export function addInExtraLayers(input: Input, newInput: Input) {
         
         // Concatentate parents if necessary
         if (current.parents.size > 1 && !(current instanceof Concatenate)) {
-            toAddConcatenate.push(newLayer)
+            toAddConcatenate.push(current)
             // current.addParentLayer(new Concatenate())
         }
 
@@ -179,7 +200,8 @@ function generateTfjsModel(sorted: Layer[]){
 
 function networkDAG(input: Input){
     let newInput = <Input> input.clone()
-    addInExtraLayers(input, newInput)
+    cloneNetwork(input, newInput)
+    addInExtraLayers(newInput)
     let toposorted = topologicalSort(newInput)
     let model = generateTfjsModel(toposorted)
     console.log(model.summary())
