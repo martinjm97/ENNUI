@@ -40,7 +40,6 @@ export function buildNetworkDAG(input: Input) {
 export function addInExtraLayers(input: Input, newInput: Input) {
     // Initialize queues, dags, and parents (visited) 
 
-    // TODO: Add dictionary of old layer id to clone layer
     let oldId2Clone = {}
     oldId2Clone[input.uid] = newInput
 
@@ -55,12 +54,23 @@ export function addInExtraLayers(input: Input, newInput: Input) {
 
         // Clone layer
         if (current != input) {
-            newLayer = current.clone()
-            oldId2Clone[current.uid] = newLayer
+            if (!(current.uid in oldId2Clone)) {
+                newLayer = current.clone()
+                oldId2Clone[current.uid] = newLayer
+            }
+            else {
+                newLayer = oldId2Clone[current.uid]
+            }
+            
         
             // Add in cloned parent/child relations
 
             for (let p of current.parents) {
+                
+                if(!(p.uid in oldId2Clone)) {
+                    oldId2Clone[p.uid] = p.clone()
+                    
+                }
                 let newParent = oldId2Clone[p.uid]
                 newParent.addChild(newLayer, false)
                 newLayer.addParent(newParent)
