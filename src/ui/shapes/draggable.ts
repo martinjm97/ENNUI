@@ -46,6 +46,7 @@ export abstract class Draggable {
 
     public makeDraggable(){
         let firstDrag = true
+        // Fix the offset from the mouse by calculating the distance from the mouse to the center of the object upon mousedown
         let mousePosRelativeToCenter:Point;
         this.svgComponent.on("mousedown", function() {
             let coords = d3.mouse(this)
@@ -56,6 +57,11 @@ export abstract class Draggable {
             clearTimeout(this.moveTimeout)
             this.hoverText.style("visibility", "hidden")
             if (firstDrag) {
+                // Since touch drags don't activate the mousedown event, catch touch drags here, even though there might be a slight offset
+                if (mousePosRelativeToCenter == null) {
+                    let coords = d3.mouse(this.svgComponent.node())
+                    mousePosRelativeToCenter = new Point(coords[0], coords[1])
+                }
                 // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
                 // instead of after actually dragging a little bit)
                 this.select()                
@@ -73,7 +79,7 @@ export abstract class Draggable {
 
         let dragHandler = d3.drag().touchable(true).clickDistance(4)
             .on("drag", dragThings) 
-            .on("end", () => {firstDrag = true})
+            .on("end", () => {firstDrag = true; mousePosRelativeToCenter = null;})
 
         this.svgComponent.call(dragHandler)
     }
