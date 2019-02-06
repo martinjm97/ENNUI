@@ -14,9 +14,9 @@ export class Input extends Layer {
         super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, document.getElementById("svg").getBoundingClientRect().height/2), invisible)
     }
     
-    getHoverText(): string { return "Input" }
+    getHoverText(): string { return "Input"; }
 
-    delete() {}
+    delete() { this.unselect(); }
 
     public generateTfjsLayer(){ 
         // TODO make this a member variable
