@@ -1,7 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
-import { ActivationLayer } from "../layer";
+import { ActivationLayer, Layer } from "../layer";
 import { Point, Rectangle } from "../shape";
 import { Softmax } from '../activation';
+import { displayError } from '../../error';
 
 export class Output extends ActivationLayer {
     layerType = "Output";
@@ -28,5 +29,9 @@ export class Output extends ActivationLayer {
         let newLayer = new Output(true);
         newLayer.paramBox = this.paramBox;
         return newLayer;
+    }
+
+    public addChild(child: Layer) {
+        displayError(new Error("Output cannot have children. "))
     }
 }
