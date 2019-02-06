@@ -203,9 +203,6 @@ function networkDAG(input: Input){
     cloneNetwork(input, newInput);
     addInExtraLayers(newInput);
     let toposorted = topologicalSort(newInput);
-    if (toposorted[toposorted.length - 1].children.size > 0 || toposorted[toposorted.length - 1].layerType != "Output") {
-        throw new Error("The ouput layer should only have incoming edges")
-    }
     let model = generateTfjsModel(toposorted);
     console.log(model.summary());
     return model;
