@@ -1,5 +1,8 @@
+import { model } from "./paramsObject";
+import { setModelHyperparameters } from "../ui/app";
 
 export function pythonSkeleton(model_code): string {
+    setModelHyperparameters();
     return `from __future__ import print_function
 import keras
 from keras.datasets import mnist
@@ -8,9 +11,9 @@ from keras.layers import Dense, Dropout, Flatten, Input, Concatenate
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 
-batch_size = 128
+batch_size = ${model.params.batchSize}
 num_classes = 10
-epochs = 12
+epochs = ${model.params.epochs}
 
 # input image dimensions
 img_rows, img_cols = 28, 28
@@ -43,8 +46,8 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 ${model_code}
 #############################
 
-model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.Adadelta(),
+model.compile(loss=keras.losses.${model.params.getPythonLoss()},
+              optimizer=keras.optimizers.${model.params.getPythonOptimizer()}(lr=${model.params.learningRate}),
               metrics=['accuracy'])
 
 model.fit(x_train, y_train,
