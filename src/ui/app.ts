@@ -139,7 +139,7 @@ async function trainOnClick() {
 
 	let training = document.getElementById('train'); 
 	if (!training.classList.contains("train-active")){
-		// clearError()
+		clearError()
 
 		// Grab hyperparameters
 		setModelHyperparameters()
@@ -165,7 +165,7 @@ async function trainOnClick() {
 /**
  * Takes the hyperparemeters from the html and assigns them to the global model
  */
-function setModelHyperparameters() {
+export function setModelHyperparameters() {
 	let temp : number = 0;
 	let hyperparams = document.getElementsByClassName("hyperparamvalue")
 
