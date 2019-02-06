@@ -321,6 +321,7 @@ a {
     right: 0;
     bottom: 0;
     background-color: rgba(0,0,0,0.8);
+    
     cursor: pointer;
     font-family: Helvetica;
     z-index: 9999;
@@ -347,13 +348,14 @@ a {
 #acknowledgements {
     text-align: left;
     font-size: 18;
-    float: right;
+    display: inline-block;
     width: 50%;
     position: absolute;
-    bottom: 10%;
-    right: -15%;
+    bottom: 15%;
+    right: 15%;
     cursor: pointer;
     vertical-align : bottom;
+
     font-family: Helvetica;
 }
 
