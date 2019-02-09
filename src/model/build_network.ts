@@ -11,7 +11,7 @@ import { Conv2D } from '../ui/shapes/layers/convolutional';
 import { Flatten } from '../ui/shapes/layers/flatten';
 import { Concatenate } from '../ui/shapes/layers/concatenate';
 import { Output } from '../ui/shapes/layers/output';
-import { pythonSkeleton } from './skeleton';
+import { pythonSkeleton } from './python_skeleton';
 
 let typeToTensor: Map<string, any> = new Map()
 
@@ -167,12 +167,11 @@ export function topologicalSort(input: Input): Layer[] {
 }
 
 /**
- * Creates corresponding python code.
+ * Creates corresponding Python code.
  * @param sorted topologically sorted list of layers
  */
 export function generatePython(sorted: Layer[]){
     let pythonScript: string = ""
-    console.log(sorted)
     for (let layer of sorted) {
         let layerstring = layer.lineOfPython();
         let applystring = ""; // Nothing to apply if no parents (input)
@@ -188,6 +187,26 @@ export function generatePython(sorted: Layer[]){
 }
 
 /**
+ * Creates corresponding Julia code.
+ * @param sorted topologically sorted list of layers
+ */
+export function generateJulia(sorted: Layer[]){
+    let juliaScript: string = ""
+    for (let layer of sorted) {
+        let layerstring = layer.lineOfPython();
+        let applystring = ""; // Nothing to apply if no parents (input)
+        if(layer.parents.size == 1) {
+            applystring = `(x${layer.parents.values().next().value.uid})`;
+        } else if (layer.parents.size > 1) {
+            applystring = `([${[...layer.parents].map(p => "x" + p.uid).join(", ")}])`;
+        }
+        juliaScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
+    }
+    juliaScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})\n`
+    return pythonSkeleton(juliaScript)
+}
+
+/**
  * Creates corresponding python code.
  * @param sorted topologically sorted list of layers
  */
@@ -199,11 +218,11 @@ function generateTfjsModel(sorted: Layer[]){
 }
 
 function networkDAG(input: Input){
-    let newInput = <Input> input.clone()
-    cloneNetwork(input, newInput)
-    addInExtraLayers(newInput)
-    let toposorted = topologicalSort(newInput)
-    let model = generateTfjsModel(toposorted)
-    console.log(model.summary())
-    return model
+    let newInput = <Input> input.clone();
+    cloneNetwork(input, newInput);
+    addInExtraLayers(newInput);
+    let toposorted = topologicalSort(newInput);
+    let model = generateTfjsModel(toposorted);
+    console.log(model.summary());
+    return model;
 }

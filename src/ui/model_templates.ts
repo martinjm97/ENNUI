@@ -106,6 +106,7 @@ export function complexTemplate(svgData) {
 	svgData.draggable.push(conv2);
 	svgData.draggable.push(conv3);
 	svgData.draggable.push(dense);
+	svgData.draggable.push(maxpooling)
 	svgData.draggable.push(convRelu);
 	svgData.draggable.push(convRelu2);
 	svgData.draggable.push(convRelu3);
