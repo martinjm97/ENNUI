@@ -14,7 +14,7 @@ import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { clearError, displayError } from "./error";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
-import { pythonSkeleton } from "../model/skeleton";
+import { pythonSkeleton } from "../model/python_skeleton";
 import { copyTextToClipboard } from "./utils";
 
 export interface DraggableData {
@@ -27,19 +27,19 @@ let svgData: DraggableData = {
 	draggable : [],
 	input: null,
 	output: null
-}	
+}
 
-document.addEventListener("DOMContentLoaded", function() { 
-	
+document.addEventListener("DOMContentLoaded", function() {
+
 	// This function runs when the DOM is ready, i.e. when the document has been parsed
 	setupPlots();
 	setupTestResults();
-	
+
 	document.getElementById("all").classList.add("selected")
 
 	// Initialize the network tab to selected
 	document.getElementById("network").classList.add("tab-selected");
-	
+
 	// Hide the progress and visualization tabs
 	document.getElementById("progressTab").style.display = "none"
 	document.getElementById("visualizationTab").style.display = "none"
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	for(let elmt of elmts){
 		dispatchSwitchTabOnClick(elmt);
 	}
-	
+
 	var elmts = document.getElementsByClassName('option');
 	for(let elmt of elmts){
 		dispatchCreationOnClick(elmt);
@@ -91,11 +91,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 	bindMenuExpander();
-	
+
 	document.getElementById('defaultOptimizer').classList.add('selected')
 	document.getElementById('defaultLoss').classList.add('selected')
 
-	document.getElementById('train').onclick = trainOnClick 
+	document.getElementById('train').onclick = trainOnClick
 	document.getElementById("informationTab").onclick = (_) => document.getElementById("informationTab").style.display = "none";
 	document.getElementById("x").onclick = (_) => clearError()
 
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				deleteSelected();
 				break;
 			case 'Backspace' :
-				// deleteSelected();		
+				// deleteSelected();
 				break;
 			case 'Enter' :
 				break;
@@ -144,7 +144,7 @@ async function trainOnClick() {
 
 	// Only train if not already training
 
-	let training = document.getElementById('train'); 
+	let training = document.getElementById('train');
 	if (!training.classList.contains("train-active")){
 		clearError()
 
@@ -153,7 +153,7 @@ async function trainOnClick() {
 
 		let trainingBox = document.getElementById('ti_training');
 		trainingBox.children[1].innerHTML = 'Yes';
-		training.innerHTML = "Training"; 
+		training.innerHTML = "Training";
 		training.classList.add("train-active");
 		try {
 			model.architecture = buildNetworkDAG(svgData.input)
@@ -166,7 +166,7 @@ async function trainOnClick() {
 			training.classList.remove("train-active");
 			trainingBox.children[1].innerHTML = 'No'
 		}
-	}	
+	}
 }
 
 function bindMenuExpander(){
@@ -224,7 +224,7 @@ export function setModelHyperparameters() {
 	let hyperparams = document.getElementsByClassName("hyperparamvalue")
 
 	for (let hp of hyperparams) {
-		let name : string = hp.id; 
+		let name : string = hp.id;
 
 		temp = Number((<HTMLInputElement>document.getElementById(name)).value);
 		if (temp < 0 || temp == null) {
@@ -236,7 +236,7 @@ export function setModelHyperparameters() {
 			case "learningRate":
 				model.params.learningRate = temp;
 				break;
-			
+
 			case "epochs":
 				model.params.epochs = Math.trunc(temp);
 				break;
@@ -277,13 +277,13 @@ function dispatchCreationOnClick(elmt){
 		let itemType = elmt.parentElement.getAttribute('data-itemType')
 
 		if (model.params.isParam(itemType)){
-			let setting; 
+			let setting;
 			if (elmt.hasAttribute('data-trainType')) {
 				setting = elmt.getAttribute('data-trainType');
 			} else if (elmt.hasAttribute('data-lossType')) {
 				setting = elmt.getAttribute('data-lossType');
 			}
-			
+
 			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {
 				selected[0].classList.remove("selected");
@@ -301,7 +301,7 @@ function dispatchCreationOnClick(elmt){
 				let baseUrl: string = window.location.href
 				let urlParam: string = storeNetworkInUrl(state)
 				copyTextToClipboard(baseUrl + "#" + urlParam)
-			} 
+			}
 		} else if (itemType == "classes") {
 			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {
@@ -309,7 +309,7 @@ function dispatchCreationOnClick(elmt){
 			}
 
 			elmt.classList.add("selected");
-			
+
 			if (model.architecture != null){
 				showPredictions()
 			}
@@ -321,15 +321,15 @@ function dispatchCreationOnClick(elmt){
 		}
 	});
 }
-  
+
 
 function updateNetworkParameters(params){
 	switch(params.itemType){
 		case 'optimizer':
-			model.params.optimizer = params.setting; 
+			model.params.optimizer = params.setting;
 			break;
 		case 'loss':
-			model.params.loss = params.setting; 
+			model.params.loss = params.setting;
 			break;
 	}
 }
@@ -362,7 +362,7 @@ function appendItem(options){
 }
 
 function switchClassExamples(options){
-	// showPredictions()	
+	// showPredictions()
 }
 
 
@@ -372,7 +372,7 @@ function switchTab(tab) {
     document.getElementById("progressTab").style.display = "none"
 	document.getElementById("visualizationTab").style.display = "none"
 	document.getElementById("informationTab").style.display = "none";
-	
+
 	// Hide all menus
 	document.getElementById("networkMenu").style.display = "none";
 	document.getElementById("progressMenu").style.display = "none";
@@ -381,7 +381,7 @@ function switchTab(tab) {
 	// Hide all paramshells
 	document.getElementById("networkParamshell").style.display = "none";
 	document.getElementById("progressParamshell").style.display = "none";
-	document.getElementById("visualizationParamshell").style.display = "none";	
+	document.getElementById("visualizationParamshell").style.display = "none";
 
 	// Unselect all tabs
 	document.getElementById("network").classList.remove("tab-selected")
@@ -389,7 +389,7 @@ function switchTab(tab) {
 	document.getElementById("visualization").classList.remove("tab-selected")
 
 	// Display only the selected tab
-	document.getElementById(tab.detail.tabType + "Tab").style.display = null; 
+	document.getElementById(tab.detail.tabType + "Tab").style.display = null;
 	document.getElementById(tab.detail.tabType).classList.add("tab-selected")
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
@@ -398,7 +398,7 @@ function switchTab(tab) {
 		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
 		case 'visualization': showPredictions(); break;
 	}
-	
+
 	// Give border radius to top and bottom neighbors
 	if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
 		document.getElementsByClassName("top_neighbor_tab-selected")[0].classList.remove("top_neighbor_tab-selected")
@@ -415,7 +415,7 @@ function switchTab(tab) {
 
 }
 
-function showInformationOverlay() { 
+function showInformationOverlay() {
 	if (document.getElementById("informationTab").style.display == "none") {
 		document.getElementById("informationTab").style.display = "block";
 	} else {
