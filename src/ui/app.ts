@@ -69,10 +69,12 @@ document.addEventListener("DOMContentLoaded", function() {
 			console.log("clicked on information")
 			showInformationOverlay()
 		} else {
-			console.log("switching tabs")
+			console.log("switching tabs!")
 			switchTab(e);
 		}
 	});
+
+	bindMenuExpander();
 	
 	document.getElementById('defaultOptimizer').classList.add('selected')
 
@@ -173,6 +175,23 @@ async function trainOnClick() {
 			trainingBox.children[1].innerHTML = 'No'
 		}
 	}	
+}
+
+function bindMenuExpander(){
+	document.getElementById('menu_expander').addEventListener('click',function(e){
+		if(document.getElementById('menu').style.display == 'none'){
+
+			document.getElementById('menu').style.display = 'block'
+			document.getElementById('expander_triangle').setAttribute('points',"0,15 10,30 10,0");
+
+		} else {
+
+			document.getElementById('menu').style.display = 'none'
+			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
+
+		}
+
+	});
 }
 
 function dispatchSwitchTabOnClick(elmt){
