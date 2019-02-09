@@ -50,6 +50,11 @@ body {
   cursor: pointer;
 }
 
+#this_will_be_a_triangle > svg {
+    height: 30px;
+    width: 10px;
+}
+
 #paramshell {
     width: 200px;
     height: 100%;
@@ -118,6 +123,8 @@ body {
     color: #eee;
     font-size:22px;
     font-family: Helvetica;
+
+    cursor: pointer;
 }
  
 .trainbox {
@@ -275,6 +282,7 @@ div.top_neighbor_tab-selected {
 #svg {
     width: 100%;
     height: 100%; 
+    overflow: scroll;
 }
 
 
