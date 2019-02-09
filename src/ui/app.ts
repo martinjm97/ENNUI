@@ -120,12 +120,8 @@ document.addEventListener("DOMContentLoaded", function() {
 				deleteSelected();
 				break;
 			case 'Backspace' :
-<<<<<<< HEAD
 				if (document.getElementsByClassName('focusParam').length == 0)
-					deleteSelected();	 	
-=======
-				// deleteSelected();
->>>>>>> 783f81988127a57414ea7421928b3658158f7777
+					deleteSelected();
 				break;
 			case 'Enter' :
 				break;
