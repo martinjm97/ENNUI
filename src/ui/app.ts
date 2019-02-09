@@ -113,7 +113,8 @@ document.addEventListener("DOMContentLoaded", function() {
 				deleteSelected();
 				break;
 			case 'Backspace' :
-				// deleteSelected();		
+				if (document.getElementsByClassName('focusParam').length == 0)
+					deleteSelected();	 	
 				break;
 			case 'Enter' :
 				break;
