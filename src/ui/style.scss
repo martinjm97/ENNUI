@@ -32,6 +32,21 @@ body {
     padding: 7.5px 10px;
 }
 
+#menu_expander {
+  width:10px;
+  height:100%;
+  float:left;
+  margin-left: -10px;
+}
+
+#this_will_be_a_triangle {
+  width: 200%;
+  height:30px;
+  margin-top:calc(50vh - 15px);
+  margin-left: -30%;
+  cursor: pointer;
+}
+
 #paramshell {
     width: 200px;
     height: 100%;
@@ -43,7 +58,7 @@ body {
 }
 
 #blanktab {
-    min-height: 140px;
+    min-height: 80px;
     width: 100%;
 }
 
