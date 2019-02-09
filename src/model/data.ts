@@ -7,7 +7,7 @@ const IMAGE_SIZE = IMAGE_H * IMAGE_W;
 export const NUM_CLASSES = 10;
 const NUM_DATASET_ELEMENTS = 65000;
 
-const NUM_TRAIN_ELEMENTS = 55000;
+export const NUM_TRAIN_ELEMENTS = 55000;
 const NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
 
 const MNIST_IMAGES_SPRITE_PATH =
@@ -22,7 +22,7 @@ const MNIST_LABELS_PATH =
 export class MnistData {
   datasetImages: any
   private static _instance: MnistData;
-  private dataLoaded : boolean = false;
+  public dataLoaded : boolean = false;
   public static get Instance()
   {
       return this._instance || (this._instance = new this());
@@ -33,6 +33,9 @@ export class MnistData {
     if (this.dataLoaded){
         return;
     }
+
+    showLoadingOverlay()
+
     const img = new Image();
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -88,6 +91,8 @@ export class MnistData {
         this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS);
 
     this.dataLoaded = true;
+
+    document.getElementById("loadingDataTab").style.display = "none"
   }
 
   datasetLabels: any
@@ -111,7 +116,7 @@ export class MnistData {
         [this.trainImages.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
     let labels = tf.tensor2d(
         this.trainLabels, [this.trainLabels.length / NUM_CLASSES, NUM_CLASSES]);
-
+    // numExamples = 100
     if (numExamples != null) {
         xs = xs.slice([0, 0, 0, 0], [numExamples, IMAGE_H, IMAGE_W, 1]);
         labels = labels.slice([0, 0], [numExamples, NUM_CLASSES]);
@@ -137,7 +142,7 @@ export class MnistData {
         [this.testImages.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
     let labels = tf.tensor2d(
         this.testLabels, [this.testLabels.length / NUM_CLASSES, NUM_CLASSES]);
-
+    // numExamples = 100
     if (numExamples != null) {
       xs = xs.slice([0, 0, 0, 0], [numExamples, IMAGE_H, IMAGE_W, 1]);
       labels = labels.slice([0, 0], [numExamples, NUM_CLASSES]);
@@ -197,3 +202,11 @@ export class MnistData {
 
 
 export const data = MnistData.Instance;
+
+function showLoadingOverlay() {
+	if (document.getElementById("loadingDataTab").style.display == "none") {
+		document.getElementById("loadingDataTab").style.display = "block";
+	} else {
+		document.getElementById("loadingDataTab").style.display = "none";
+	}
+}

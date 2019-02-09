@@ -20,53 +20,66 @@ export abstract class Draggable {
                        .text(this.getHoverText());
     moveTimeout: any;
     
-    constructor(defaultLocation=new Point(50,100)) {        
-        this.svgComponent = d3.select<SVGGraphicsElement, {}>("#svg")
-                              .append<SVGGraphicsElement>("g")
-                              .data([{"x": defaultLocation.x, "y": defaultLocation.y}])
-                              .attr('transform','translate('+defaultLocation.x+','+defaultLocation.y+')')
-                              .on("click", () => { 
-                                  this.select()
-                                  window.clearTimeout(this.moveTimeout)
-                                  this.hoverText.style("visibility", "hidden") 
-                                })
-                              .on("contextmenu", () => {
-                                window.clearTimeout(this.moveTimeout)
-                                this.hoverText.style("visibility", "hidden") 
-                                })
-                              .on("mousemove", () => {
-                                  this.hoverText.style("visibility", "hidden")
-                                  clearTimeout(this.moveTimeout);
-                                  this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 1000);
-                                  this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
-                              .on("mouseout", () => {clearTimeout(this.moveTimeout)})
-        this.makeDraggable()
+    constructor(defaultLocation=new Point(50,100), invisible=false) {        
+        if(!invisible) {
+            this.svgComponent = d3.select<SVGGraphicsElement, {}>("#svg")
+                                .append<SVGGraphicsElement>("g")
+                                .attr('transform','translate('+defaultLocation.x+','+defaultLocation.y+')')
+                                .on("click", () => { 
+                                    this.select()
+                                    window.clearTimeout(this.moveTimeout)
+                                    this.hoverText.style("visibility", "hidden") 
+                                    })
+                                .on("contextmenu", () => {
+                                    window.clearTimeout(this.moveTimeout)
+                                    this.hoverText.style("visibility", "hidden") 
+                                    })
+                                .on("mousemove", () => {
+                                    this.hoverText.style("visibility", "hidden")
+                                    clearTimeout(this.moveTimeout);
+                                    this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 1000);
+                                    this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
+                                .on("mouseout", () => {clearTimeout(this.moveTimeout)})
+            this.makeDraggable()
+        }
     }
 
     public makeDraggable(){
-        var firstDrag = true
+        let firstDrag = true
+        // Fix the offset from the mouse by calculating the distance from the mouse to the center of the object upon mousedown
+        let mousePosRelativeToCenter:Point;
+        this.svgComponent.on("mousedown", function() {
+            let coords = d3.mouse(this)
+            mousePosRelativeToCenter = new Point(coords[0], coords[1])
+        })
 
         var dragThings = (d: any) => {
             clearTimeout(this.moveTimeout)
             this.hoverText.style("visibility", "hidden")
             if (firstDrag) {
+                // Since touch drags don't activate the mousedown event, catch touch drags here, even though there might be a slight offset
+                if (mousePosRelativeToCenter == null) {
+                    let coords = d3.mouse(this.svgComponent.node())
+                    mousePosRelativeToCenter = new Point(coords[0], coords[1])
+                }
                 // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
                 // instead of after actually dragging a little bit)
-                this.select()
+                this.select()                
                 firstDrag = false
             }
-            let canvas = document.getElementById("svg")          
-            // TODO: take into account the width of the object this.svgComponent      
-            let tx = Math.min(Math.max(0, d3.event.x), canvas.clientWidth)
-            let ty = Math.min(Math.max(0, d3.event.y), canvas.clientHeight)
-            this.svgComponent.attr("transform", "translate(" + (d.x = tx) + "," + (d.y = ty) + ")")
+            let canvasBoundingBox = document.getElementById("svg").getBoundingClientRect()
+            // TODO: take into account the width of the object this.svgComponent
+            let tx = Math.min(Math.max(0, d3.event.x - mousePosRelativeToCenter.x), canvasBoundingBox.width)
+            let ty = Math.min(Math.max(0, d3.event.y - mousePosRelativeToCenter.y), canvasBoundingBox.height)
+
+            this.svgComponent.attr("transform", "translate(" + (tx) + "," + (ty) + ")")
 
             this.dragAction(d)
         }
 
         let dragHandler = d3.drag().touchable(true).clickDistance(4)
             .on("drag", dragThings) 
-            .on("end", () => {firstDrag = true})
+            .on("end", () => {firstDrag = true; mousePosRelativeToCenter = null;})
 
         this.svgComponent.call(dragHandler)
     }
@@ -112,7 +125,6 @@ export abstract class Draggable {
     }
     
     setPosition(position: Point) {
-		this.svgComponent.data([{"x": position.x, "y": position.y}])
-                         .attr('transform','translate('+position.x+','+position.y+')')
+		this.svgComponent.attr('transform','translate('+position.x+','+position.y+')')
     }
 }

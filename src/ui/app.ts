@@ -1,11 +1,11 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetwork, buildNetworkDAG } from "../model/build_network";
-import { blankTemplate, defaultTemplate } from "./model_templates";
-import { graphToJson } from "../model/export_model";
+import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython } from "../model/build_network";
+import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
+import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
-import { setupPlots, showPredictions, setupTestResults } from "../model/graphs";
+import { setupPlots, showPredictions, setupTestResults, renderAccuracyPlot, renderLossPlot, showConfusionMatrix } from "../model/graphs";
 import { model } from "../model/paramsObject"
 import { Input } from "./shapes/layers/input";
 import { Output } from "./shapes/layers/output";
@@ -13,6 +13,9 @@ import { Dense } from "./shapes/layers/dense";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { clearError, displayError } from "./error";
+import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
+import { pythonSkeleton } from "../model/skeleton";
+import { copyTextToClipboard } from "./utils";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -20,7 +23,14 @@ export interface DraggableData {
 	output: Output
 }
 
+let svgData: DraggableData = {
+	draggable : [],
+	input: null,
+	output: null
+}	
+
 document.addEventListener("DOMContentLoaded", function() { 
+	
 	// This function runs when the DOM is ready, i.e. when the document has been parsed
 	setupPlots();
 	setupTestResults();
@@ -34,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("progressTab").style.display = "none"
 	document.getElementById("visualizationTab").style.display = "none"
 	document.getElementById("informationTab").style.display = "none"
+	document.getElementById("loadingDataTab").style.display = "none"
 
 	// Hide the progress and visualization menus
 	document.getElementById("progressMenu").style.display = "none";
@@ -45,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// Hide the error box
 	document.getElementById("error").style.display = "none";
-	
+
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){
 		dispatchSwitchTabOnClick(elmt);
@@ -77,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	bindMenuExpander();
 	
 	document.getElementById('defaultOptimizer').classList.add('selected')
+	document.getElementById('defaultLoss').classList.add('selected')
 
 	document.getElementById('train').onclick = trainOnClick 
 	document.getElementById("informationTab").onclick = (_) => document.getElementById("informationTab").style.display = "none";
@@ -100,23 +112,27 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 				break;
 			case 'Delete' :
-				if(windowProperties.selectedElement){
-					windowProperties.selectedElement.delete();
-					windowProperties.selectedElement = null;
-				}
+				deleteSelected();
+				break;
+			case 'Backspace' :
+				// deleteSelected();		
 				break;
 			case 'Enter' :
-				// graphToJson();
-				// train(buildNetwork(svgData.input))
 				break;
 		}
 	};
 
-	svgData.input = new Input();
-	svgData.output = new Output();
-	defaultTemplate(svgData)
+
+	svgData = loadStateIfPossible()
+
 });
 
+function deleteSelected(){
+	if(windowProperties.selectedElement){
+		windowProperties.selectedElement.delete();
+		windowProperties.selectedElement = null;
+	}
+}
 
 
 async function trainOnClick() {
@@ -128,47 +144,18 @@ async function trainOnClick() {
 		clearError()
 
 		// Grab hyperparameters
-		
-		let temp : number = 0;
-		let hyperparams = document.getElementsByClassName("hyperparamvalue")
-	
-		for (var hp of hyperparams) {
-			let name : string = hp.id; 
-	
-			temp = Number((<HTMLInputElement>document.getElementById(name)).value);
-			if (temp > 0) {
-				
-			}
-			else {
-				let error : Error = Error("Hyperparameters should be positive numbers.")
-				displayError(error);
-				return;
-			}
-			switch(name){
-				case "paramlr":
-					model.params.learningRate = temp;
-					break;
-				
-				case "paramepoch":
-					model.params.epochs = Math.trunc(temp);
-					break;
-	
-				case "parambaatch":
-					model.params.batchSize = Math.trunc(temp);
-					break;
-	
-			};
-
-		}
+		setModelHyperparameters()
 
 		let trainingBox = document.getElementById('ti_training');
 		trainingBox.children[1].innerHTML = 'Yes';
 		training.innerHTML = "Training"; 
 		training.classList.add("train-active");
 		try {
-			model.architecture = buildNetworkDAG(svgData.output)
+			model.architecture = buildNetworkDAG(svgData.input)
 			await train()
-		} 
+		} catch (error) {
+			displayError(error);
+		}
 		finally {
 			training.innerHTML = "Train";
 			training.classList.remove("train-active");
@@ -194,6 +181,38 @@ function bindMenuExpander(){
 	});
 }
 
+/**
+ * Takes the hyperparemeters from the html and assigns them to the global model
+ */
+export function setModelHyperparameters() {
+	let temp : number = 0;
+	let hyperparams = document.getElementsByClassName("hyperparamvalue")
+
+	for (let hp of hyperparams) {
+		let name : string = hp.id; 
+
+		temp = Number((<HTMLInputElement>document.getElementById(name)).value);
+		if (temp < 0 || temp == null) {
+			let error : Error = Error("Hyperparameters should be positive numbers.")
+			displayError(error);
+			return;
+		}
+		switch(name){
+			case "learningRate":
+				model.params.learningRate = temp;
+				break;
+			
+			case "epochs":
+				model.params.epochs = Math.trunc(temp);
+				break;
+
+			case "batchSize":
+				model.params.batchSize = Math.trunc(temp);
+				break;
+		};
+	}
+}
+
 function dispatchSwitchTabOnClick(elmt){
 	elmt.addEventListener('click', function(e){
         let tabType = elmt.getAttribute('data-tabType')
@@ -203,26 +222,56 @@ function dispatchSwitchTabOnClick(elmt){
 	});
 }
 
+export function tabSelected(): string {
+	if (document.getElementById("networkTab").style.display != "none") {
+		return "networkTab";
+	} else if (document.getElementById("progressTab").style.display != "none") {
+		return "progressTab";
+	} else if (document.getElementById("visualizationTab").style.display != "none") {
+		return "visualizationTab";
+	} else if (document.getElementById("informationTab").style.display != "none") {
+		return "informationTab";
+	} else {
+		throw new Error("No tab selection found");
+	}
+}
+
 
 function dispatchCreationOnClick(elmt){
 	elmt.addEventListener('click', function(e){
 		let itemType = elmt.parentElement.getAttribute('data-itemType')
 
 		if (model.params.isParam(itemType)){
-			let setting = elmt.getAttribute('data-trainType')
+			let setting; 
+			if (elmt.hasAttribute('data-trainType')) {
+				setting = elmt.getAttribute('data-trainType');
+			} else if (elmt.hasAttribute('data-lossType')) {
+				setting = elmt.getAttribute('data-lossType');
+			}
 			
-			let selected = elmt.parentElement.getElementsByClassName("selected")
+			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {
-				selected[0].classList.remove("selected")
+				selected[0].classList.remove("selected");
 			}
 			elmt.classList.add("selected");
 			updateNetworkParameters({itemType: itemType, setting : setting});
+		} else if (itemType == "share") {
+			if (elmt.getAttribute('share-option') == "exportPython") {
+				let newInput = svgData.input.clone()
+				cloneNetwork(svgData.input, newInput)
+				addInExtraLayers(newInput)
+				download(generatePython(topologicalSort(newInput)), "mnist_model.py");
+			} else if (elmt.getAttribute('share-option') == "copyModel"){
+				let state = graphToJson(svgData)
+				let baseUrl: string = window.location.href
+				let urlParam: string = storeNetworkInUrl(state)
+				copyTextToClipboard(baseUrl + "#" + urlParam)
+			} 
 		} else if (itemType == "classes") {
 			let selected = elmt.parentElement.getElementsByClassName("selected");
 			if (selected.length > 0) {
 				selected[0].classList.remove("selected")
 			}
-
 
 			elmt.classList.add("selected");
 			
@@ -237,11 +286,15 @@ function dispatchCreationOnClick(elmt){
 		}
 	});
 }
+  
 
 function updateNetworkParameters(params){
 	switch(params.itemType){
 		case 'optimizer':
 			model.params.optimizer = params.setting; 
+			break;
+		case 'loss':
+			model.params.loss = params.setting; 
 			break;
 	}
 }
@@ -261,8 +314,9 @@ function appendItem(options){
 			case 'tanh': item = new Tanh(); console.log("Created Tanh"); break;
 		}
 		case 'template':  switch(options.detail.templateType) {
-			case 'default': template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
 			case 'blank': template = true; blankTemplate(svgData); console.log("Created Blank Template"); break;
+			case 'default': template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
+			case 'complex': template = true; complexTemplate(svgData); console.log("Created Complex Template"); break;
 		}
 	}
 
@@ -304,6 +358,11 @@ function switchTab(tab) {
 	document.getElementById(tab.detail.tabType).classList.add("tab-selected")
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
+
+	switch(tab.detail.tabType){
+		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
+		case 'visualization': showPredictions(); break;
+	}
 	
 	// Give border radius to top and bottom neighbors
 	if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
@@ -328,10 +387,3 @@ function showInformationOverlay() {
 		document.getElementById("informationTab").style.display = "none";
 	}
 }
-
-
-let svgData: DraggableData = {
-	draggable : [],
-	input: null,
-	output: null
-}	

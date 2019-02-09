@@ -2,6 +2,7 @@ $color-menu-bg: #E5E5FC;
 
 body {
    margin: 0px;
+   overflow: hidden;
 }
 
 #main {
@@ -9,13 +10,15 @@ body {
     height:100%;
     background-color: #D3D3DE;
     /* border: solid 3px #555; */
+
 }
 
 #tabselector {
     width: 50px;
     height: 100%;
     float:left;
-    background-color: #A8A8BD;
+    //background-color: #A8A8BD;
+    background-color: $color-menu-bg;
     font-size:22px;
     font-family: Helvetica;
     user-select:none;
@@ -60,16 +63,18 @@ body {
 #blanktab {
     min-height: 80px;
     width: 100%;
+    background-color: #A8A8BD;
 }
 
 #bottomblanktab {
-    min-height: 100px;
+    height: 100%;
     width: 100%;
+    
 
     vertical-align: middle;
-    
-    width: 50px;
-    height: 70px;
+    background-color: #A8A8BD;
+    //width: 50px;
+    //height: 70px;
     float:left;
 }
  
@@ -89,6 +94,7 @@ body {
     font-family: Helvetica;
     cursor:pointer;
     user-select:none;
+    background-color: #A8A8BD;
 }
 
 .tab:hover {
@@ -219,17 +225,23 @@ body {
     user-select:none;
 }
 
+.right-option {
+    width:calc(100% - 30px);
+    padding: 10px 0px 0px 10px;
+    margin: 0px 10px 0px 10px;
+}
+
 div.option.selected {
     background-color: #C4B7D1;
 
  }
 
 div.top_neighbor_tab-selected {
-    border-bottom-right-radius: 10px; 
+    border-bottom-right-radius: 5px; 
 }
 
  div.bottom_neighbor_tab-selected {
-    border-top-right-radius: 10px;
+    border-top-right-radius: 5px;
  }
  
 .toggle {
@@ -253,6 +265,7 @@ div.top_neighbor_tab-selected {
 }
 
 #middle {
+    position: relative;
     float: left;
     width : calc(100% - 430px);
     height: 100%;
@@ -295,20 +308,69 @@ div.top_neighbor_tab-selected {
 //    flex-wrap: wrap;
 //    justify-content: space-around;
 }
+
+a {
+    color: lightblue;
+}
+
+#embeddedYoutube {
+    width: 50%;
+    height: 50%; 
+    padding: 10px;
+    position: absolute;
+    top: 0; right: 0;
+    bottom: 0; left: 0;
+    margin: auto;
+}
+
 #informationTab {
+    position: fixed;
     padding: 5%;
     text-align: center;
     color: $color-menu-bg;
     font-size: 48;
     width: 90%;
     height: 85%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.8);
+    
+    cursor: pointer;
+    font-family: Helvetica;
+    z-index: 9999;
+}
+
+#loadingDataTab {
     position: fixed;
+    padding: 5%;
+    text-align: center;
+    color: $color-menu-bg;
+    font-size: 48;
+    width: 90%;
+    height: 85%;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(0,0,0,0.8);
     cursor: pointer;
+    font-family: Helvetica;
+    z-index: 9999;
+}
+
+#acknowledgements {
+    text-align: left;
+    font-size: 18;
+    display: inline-block;
+    width: 50%;
+    position: absolute;
+    bottom: 15%;
+    right: 15%;
+    cursor: pointer;
+    vertical-align : bottom;
+
     font-family: Helvetica;
 }
 
@@ -319,11 +381,10 @@ div.top_neighbor_tab-selected {
 }
 
 #error {
-    width: 144px;
-    height: 80px;
-    position: fixed;
-    padding: 5px;
-    bottom: 20px;
+    width: 200px;
+    position: absolute;
+    padding: 20px 5px 5px 5px;
+    bottom: 10px;
     right: 20px;
     background-color: #dca7a7;
     border-style: solid;
@@ -332,21 +393,16 @@ div.top_neighbor_tab-selected {
 }
  
 #x  {
-    position: relative;
-    top: -5px;
-    left: 125px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
     cursor: pointer;
 }
 
 #errorMessage  {
-    width: 120px;
     height: 80px;
-    position: absolute;
-    padding-right: 10px;
-    z-index: 9999;
     overflow: hidden;
     text-overflow: ellipsis;
-    top: 5px;
 }
  
 label {
