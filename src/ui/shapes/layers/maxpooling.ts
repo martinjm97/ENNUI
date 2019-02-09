@@ -26,6 +26,7 @@ export class MaxPooling2D extends Layer {
         line.appendChild(name);
         line.appendChild(value);
         this.paramBox.append(line);
+        this.focusing();
     }
 
     getHoverText(): string { return "maxpool" }

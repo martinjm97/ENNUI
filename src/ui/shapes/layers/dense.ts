@@ -23,6 +23,7 @@ export class Dense extends ActivationLayer {
         line.appendChild(name);
         line.appendChild(value);
         this.paramBox.append(line);
+        this.focusing()
     }
 
     getHoverText(): string { return "Dense" }

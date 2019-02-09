@@ -58,6 +58,7 @@ export class Conv2D extends ActivationLayer {
         line3.appendChild(name3);
         line3.appendChild(value3);
         this.paramBox.append(line3);
+        this.focusing()
     }
 
     public getHoverText(): string { return "Conv" }
