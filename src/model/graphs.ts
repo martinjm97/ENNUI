@@ -2,6 +2,7 @@ import * as tfvis from '@tensorflow/tfjs-vis';
 import * as tf from '@tensorflow/tfjs';
 import { IMAGE_W, IMAGE_H, data, NUM_CLASSES } from './data';
 import { model } from './paramsObject';
+import { tabSelected } from '../ui/app';
 
 const GRAPH_FONT_SIZE = 14;
 
@@ -22,64 +23,68 @@ const testExamples:number = 50;
  * Show predictions on a number of test examples.
  */
 export async function showPredictions() {
-  const testExamples = 60;
+  if (tabSelected() == "visualizationTab" && data.dataLoaded) {
+    const testExamples = 60;
 
-  let label = null
-  let options = document.getElementsByClassName('visualization-option')
-  for (let option of options){
-      if (option.classList.contains("selected")){
-          label = option.getAttribute('data-classesType')
-          break
-      }
+    let label = null
+    let options = document.getElementsByClassName('visualization-option')
+    for (let option of options){
+        if (option.classList.contains("selected")){
+            label = option.getAttribute('data-classesType')
+            break
+        }
+    }
+    const examples = data.getTestDataWithLabel(testExamples, label);
+
+    // Code wrapped in a tf.tidy() function callback will have their tensors freed
+    // from GPU memory after execution without having to call dispose().
+    // The tf.tidy callback runs synchronously.
+    tf.tidy(() => {
+      const output = model.architecture.predict(examples.xs);
+
+      // tf.argMax() returns the indices of the maximum values in the tensor along
+      // a specific axis. Categorical classification tasks like this one often
+      // represent classes as one-hot vectors. One-hot vectors are 1D vectors with
+      // one element for each output class. All values in the vector are 0
+      // except for one, which has a value of 1 (e.g. [0, 0, 0, 1, 0]). The
+      // output from model.predict() will be a probability distribution, so we use
+      // argMax to get the index of the vector element that has the highest
+      // probability. This is our prediction.
+      // (e.g. argmax([0.07, 0.1, 0.03, 0.75, 0.05]) == 3)
+      // dataSync() synchronously downloads the tf.tensor values from the GPU so
+      // that we can use them in our normal CPU JavaScript code
+      // (for a non-blocking version of this function, use data()).
+      const axis = 1;
+      const labels = Array.from(examples.labels.argMax(axis).dataSync());
+      const predictions = Array.from(output.argMax(axis).dataSync());
+
+      showTestResults(examples, predictions, labels);
+    });
   }
-  const examples = data.getTestDataWithLabel(testExamples, label);
-
-  // Code wrapped in a tf.tidy() function callback will have their tensors freed
-  // from GPU memory after execution without having to call dispose().
-  // The tf.tidy callback runs synchronously.
-  tf.tidy(() => {
-    const output = model.architecture.predict(examples.xs);
-
-    // tf.argMax() returns the indices of the maximum values in the tensor along
-    // a specific axis. Categorical classification tasks like this one often
-    // represent classes as one-hot vectors. One-hot vectors are 1D vectors with
-    // one element for each output class. All values in the vector are 0
-    // except for one, which has a value of 1 (e.g. [0, 0, 0, 1, 0]). The
-    // output from model.predict() will be a probability distribution, so we use
-    // argMax to get the index of the vector element that has the highest
-    // probability. This is our prediction.
-    // (e.g. argmax([0.07, 0.1, 0.03, 0.75, 0.05]) == 3)
-    // dataSync() synchronously downloads the tf.tensor values from the GPU so
-    // that we can use them in our normal CPU JavaScript code
-    // (for a non-blocking version of this function, use data()).
-    const axis = 1;
-    const labels = Array.from(examples.labels.argMax(axis).dataSync());
-    const predictions = Array.from(output.argMax(axis).dataSync());
-
-    showTestResults(examples, predictions, labels);
-  });
 }
 
 export function showConfusionMatrix() {
-  const {xs, labels} = data.getTestData(1000);
-  tf.tidy(() => {
-    const output = model.architecture.predict(xs);
+  if (tabSelected() == "progressTab" && data.dataLoaded) {
+    const {xs, labels} = data.getTestData(1000);
+    tf.tidy(() => {
+      const output = model.architecture.predict(xs);
 
-    const fixedLabels = <tf.Tensor<tf.Rank.R1>>labels.argMax(1);
-    const predictions = output.argMax(1);
+      const fixedLabels = <tf.Tensor<tf.Rank.R1>>labels.argMax(1);
+      const predictions = output.argMax(1);
 
-    tfvis.metrics.confusionMatrix(fixedLabels, predictions, NUM_CLASSES).then(function(confusionValues) {
-      const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
-      tfvis.render.confusionMatrix({
-        values: confusionValues ,
-        labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-      }, confusionMatrixElement, {
-        fontSize: GRAPH_FONT_SIZE,
-        shadeDiagonal: false,
+      tfvis.metrics.confusionMatrix(fixedLabels, predictions, NUM_CLASSES).then(function(confusionValues) {
+        const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
+        tfvis.render.confusionMatrix({
+          values: confusionValues ,
+          labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        }, confusionMatrixElement, {
+          fontSize: GRAPH_FONT_SIZE,
+          shadeDiagonal: false,
+        });
       });
+      
     });
-    
-  });
+  }
   
 }
 
@@ -149,6 +154,13 @@ let lossValues = [[], []];
 export function plotLoss(batch, loss, set) {
   const series = set === 'train' ? 0 : 1;
   lossValues[series].push({x: batch, y: loss});
+  if (tabSelected() == "progressTab") {
+    renderLossPlot();
+  }
+  // lossLabelElement.innerText = `last loss: ${loss.toFixed(3)}`;
+}
+
+export function renderLossPlot() {
   const lossContainer = document.getElementById('loss-canvas');
   tfvis.render.linechart(
       {values: lossValues, series: ['train', 'validation']}, lossContainer, {
@@ -158,14 +170,19 @@ export function plotLoss(batch, loss, set) {
         height: 300*1.15,
         fontSize: GRAPH_FONT_SIZE,
       });
-  // lossLabelElement.innerText = `last loss: ${loss.toFixed(3)}`;
 }
 
 let accuracyValues = [[], []];
 export function plotAccuracy(epochs, accuracy, set) {
-  const accuracyContainer = document.getElementById('accuracy-canvas');
   const series = set === 'train' ? 0 : 1;
   accuracyValues[series].push({x: epochs, y: accuracy});
+  if (tabSelected() == "progressTab") {
+    renderAccuracyPlot();
+  }
+}
+
+export function renderAccuracyPlot() {
+  const accuracyContainer = document.getElementById('accuracy-canvas');
   tfvis.render.linechart(
       {values: accuracyValues, series: ['train', 'validation']},
       accuracyContainer, {
@@ -176,8 +193,6 @@ export function plotAccuracy(epochs, accuracy, set) {
         yAxisDomain: [0,1],
         fontSize: GRAPH_FONT_SIZE,
       });
-  // accuracyLabelElement.innerText =
-      // `last accuracy: ${(accuracy * 100).toFixed(1)}%`;
 }
 
 export function setupPlots() {

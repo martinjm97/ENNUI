@@ -1,15 +1,18 @@
+import * as tf from '@tensorflow/tfjs';
 import { ActivationLayer } from "../layer";
 import { Point, PathShape, Rectangle } from "../shape";
 
 export class Conv2D extends ActivationLayer {
     layerType = "Conv2D"
+    protected tfjsEmptyLayer  = tf.layers.conv2d
+
     static readonly blockSize: number = 50;
 
-    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), invisible=false) {
         super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#3B6B88'),
                new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#3B7B88'),
                new PathShape("M-20 -40 h50 v50 h-20 v-10 h-10 v10 h-20 v-50 Z", '#3B8B88')],
-               defaultLocation)
+               defaultLocation,invisible)
     }
 
     populateParamBox() {
@@ -38,7 +41,7 @@ export class Conv2D extends ActivationLayer {
         name2.setAttribute('data-name','kernel_size')
         let value2 = document.createElement('input')
         value2.className = 'paramvalue'
-        value2.value = '(5, 5)'
+        value2.value = '5, 5'
         line2.appendChild(name2);
         line2.appendChild(value2);
         this.paramBox.append(line2);
@@ -51,12 +54,26 @@ export class Conv2D extends ActivationLayer {
         name3.setAttribute('data-name','strides')
         let value3 = document.createElement('input')
         value3.className = 'paramvalue'
-        value3.value = '(2, 2)'
+        value3.value = '2, 2'
         line3.appendChild(name3);
         line3.appendChild(value3);
         this.paramBox.append(line3);
     }
 
     public getHoverText(): string { return "Conv" }
+
+    public lineOfPython(): string {
+        let params = this.getParams();
+        return `Conv2D(${params["filters"]}, (${params["kernel_size"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
+    }
+
+    public clone() {
+        let newConv : Conv2D = new Conv2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation),true)
+        newConv.activation = this.activation
+        newConv.paramBox = this.paramBox
+        
+        return newConv
+
+    }
 
 }

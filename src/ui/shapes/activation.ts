@@ -2,11 +2,12 @@ import { Draggable } from "./draggable";
 import { Point, Rectangle } from "./shape";
 import { ActivationLayer } from "./layer";
 import { windowProperties } from "../window";
+import { clone } from "@tensorflow/tfjs";
 
 export abstract class Activation extends Draggable {
 
     layer: ActivationLayer = null;
-    abstract activationType: String;
+    abstract activationType: string;
     static defaultLocation: Point = new Point(50, 150);
     body: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     
@@ -116,4 +117,22 @@ export class Tanh extends Activation {
     }
 
     getHoverText(): string { return "tanh" }
+}
+
+export class Softmax extends Activation {
+    activationType = "softmax"
+    
+    constructor(defaultLocation=Point.randomPoint(50, 50, Activation.defaultLocation)) {
+        super("#FFFFFF", defaultLocation)
+
+        // TODO: curvature and color are wrong
+        this.svgComponent.append("path").attr("d", "M -4 26 Q 5 26 5 20 Q 5 14 14 14 ")
+        .style("stroke", "black")
+        .style("stroke-width", 3)
+        .style("fill", "none")
+
+        
+    }
+
+    getHoverText(): string { return "softmax" }
 }

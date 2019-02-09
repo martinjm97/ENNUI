@@ -1,6 +1,15 @@
 <meta charset="utf-8"/>
 <html>
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-133726432-1"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'UA-133726432-1');
+	</script>
+
 	<link rel='stylesheet' href='src/ui/style.css'>
 	<script src='dist/bundle.js'></script>
 </head>
@@ -10,11 +19,11 @@
 		
 	<!-- The leftmost strip to select tabs -->
 	<div id = 'tabselector'>
-		<div id = 'blanktab'> </div>
+		<div id = 'blanktab' class='top_neighbor_tab-selected'> </div>
 		<div title = 'Network' class = 'tab' id = 'network' data-tabType = 'network'>
 			<svg class = 'icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"/></svg>
 		</div>
-		<div title = 'Progress' class = 'tab' id = 'progress' data-tabType = 'progress'>
+		<div title = 'Progress' class = 'tab bottom_neighbor_tab-selected' id = 'progress' data-tabType = 'progress'>
 			<svg class = 'icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M13.5 13.48l-4-4L2 16.99l1.5 1.5 6-6.01 4 4L22 6.92l-1.41-1.41z"/></svg>
 		</div>
 		<div title = 'Visualization' class = 'tab' id = 'visualization' data-tabType = 'visualization'>
@@ -48,23 +57,25 @@
 				<div class = 'categoryTitle'>Templates</div>
 				<div class = 'option' data-templateType = 'blank'> Blank </div>
 				<div class = 'option' data-templateType = 'default'> Default </div>
+				<div class = 'option' data-templateType = 'complex'> Complex </div>
 			</div>
 		</div>
 
 		<div id = 'progressMenu'>
 			<div id = 'optimizers' class = 'category' data-itemType = 'optimizer'>
 				<div class = 'categoryTitle'>Optimizers</div>
-				<div id = "defaultOptimizer" class = 'option' data-trainType = 'sgd'> SGD </div>
-				<div class = 'option train-option' data-trainType = 'rmsprop'> RMSprop </div>	
-				<div class = 'option train-option' data-trainType = 'adagrad'> Adagrad </div>
-				<div class = 'option train-option' data-trainType = 'adam'> Adam </div>
+				<div id = "defaultOptimizer" class = 'option' id = 'sgd' data-trainType = 'sgd'> SGD </div>
+				<div id = 'rmsprop' class = 'option train-option' data-trainType = 'rmsprop'> RMSprop </div>	
+				<div id = 'adagrad' class = 'option train-option' data-trainType = 'adagrad'> Adagrad </div>
+				<div id = 'adam' class = 'option train-option' data-trainType = 'adam'> Adam </div>
 			</div>
-			<!-- <div id = 'hyperparameters' class = 'category' data-itemType = 'hyperparameters'>
-				<div class = 'categoryTitle'>Hyperparams</div>
-				<div class = 'option' data-activationType = 'lr'> Learning rate </div>
-				<div class = 'option' data-activationType = 'epochs'> Epochs </div>
-				<div class = 'option' data-activationType = 'subset'> Subset </div>
-			</div> -->
+			<div id = 'losses' class = 'category' data-itemType = 'loss'>
+				<div class = 'categoryTitle'>Losses</div>
+				<div id = 'defaultLoss' class = 'option loss-option' data-lossType = 'categoricalCrossEntopy'>CrossEntopy</div>
+				<div id = 'hinge' class = 'option loss-option' data-lossType = 'hinge'> Hinge </div>
+				<div id = 'meanSquaredError' class = 'option loss-option' data-lossType = 'meanSquaredError'> MSE </div>
+				<div id = 'meanAbsoluteError' class = 'option loss-option' data-lossType = 'meanAbsoluteError'> MAE </div>
+			</div>
 		</div>
 
 		<div id = 'visualizationMenu'>
@@ -115,27 +126,29 @@
 			<div id='images'></div>
 		</div>
 
-		<div id = 'informationTab' style="position: absolute;">
+		<div id = 'informationTab'>
 			<div id='information'>Welcome to ENNUI
-				<div id='informationBody'>
-					<ul>
-						
-						<li>To build a neural network: 
-							<ul>
-								<li>Create layers and activations. </li>
-								<li>Snap activations into the hole at the bottom of the layer. </li>
-								<li>Change parameters of a selected layer in the right panel. </li>
-								<li>Connect layers by clicking the black dot on a selected layer then click on another layer.</li>
-							</ul>
-						</li>
-						<li>Train an architecture on MNIST data clicking train in the upper right. </li>
-						<li>Click tabs on the left to view training progress and see visualizations. </li>
-						<li>There are template options in the bottom left to help you get started. </li>
-						<li>View this again by clicking the button in the lower left corner. </li>
-					</ul>
+				<div id = 'embeddedYoutube'>
+					<iframe width="100%" height="100%" src="https://www.youtube.com/embed/cr-iD9877Lg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 				</div>
-				Click to start
+				<div id = 'acknowledgements'>
+					Developed by: Jesse Michel, Zack Holbrook, Stefan Grosser <br>
+					With advising from: <a href="http://hendrik.strobelt.com/" target="_blank">Hendrik Strobelt</a><br>
+					Prototyped at <a href="https://devpost.com/software/ennui" target="_blank">HackMIT</a> by: Rikhav Shah and Jesse Michel
+				</div>
 			</div> 
+		</div>
+
+		<div id = 'loadingDataTab'>
+			<div id='loadingMNIST'>
+				Loading MNIST dataset
+			</div>
+		</div>
+
+		<!-- Error popup -->
+		<div id = 'error'>
+			<svg id = 'x' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+			<div id = 'errorMessage'> </div>
 		</div>
 		
 	</div>
@@ -172,6 +185,11 @@
 				</div>
 			</div>
 		</div>
+		<div class="category" id="sharebox" data-itemType="share">
+			<div class="categoryTitle">Share</div>			
+			<div class="option right-option" share-option="exportPython">Export to python</div>
+			<div class="option right-option" share-option="copyModel">Copy model link</div>
+		</div>
 		<div id = 'networkParamshell'>
 			
 			<div class = 'category' id='paramtruck'>
@@ -190,15 +208,15 @@
 				<div class = 'parambox'>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="lr">Learning rate: </div>
-						<input id="paramlr" class="paramvalue hyperparamvalue" value="0.1">
+						<input id="learningRate" class="paramvalue hyperparamvalue" value="0.1">
 					</div>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="epochs">Epochs: </div>
-						<input id="paramepoch" class="paramvalue hyperparamvalue" value="6">
+						<input id="epochs" class="paramvalue hyperparamvalue" value="6">
 					</div>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="lr">Batch Size: </div>
-						<input id="parambatch" class="paramvalue hyperparamvalue" value="64">
+						<input id="batchSize" class="paramvalue hyperparamvalue" value="64">
 					</div>
 				</div>
 			</div>
@@ -207,12 +225,6 @@
 		<div id = 'visualizationParamshell'>
 		</div>
 		
-	</div>
-
-	<!-- Error popup -->
-	<div id = 'error'>
-		<svg id = 'x' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-		<div id = 'errorMessage'> </div>
 	</div>
 </div>
 </body>

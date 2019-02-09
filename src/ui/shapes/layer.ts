@@ -1,26 +1,29 @@
+import * as tf from '@tensorflow/tfjs';
 import { Draggable } from "./draggable";
-import { Rectangle, Point, Shape, Circle, PathShape } from "./shape";
+import { Point, Shape } from "./shape";
 import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
 import { parseString } from "../utils";
+import { defaults } from '../../model/build_network';
 
-export interface layerJson {
+export interface LayerJson {
     layer_name: string
     id: number
     children_ids: Array<number>
     parent_ids: Array<number>
     params: Map<string, any> 
+    xPosition: number
+    yPosition: number
 }
 
 // TODO params for entering things in UI for layer properties
-// TODO make holes transparent
-// TODO make dragging bring item to front
-// TODO make transparent holes not terrible
 
 export abstract class Layer extends Draggable {
-    abstract layerType: string;
+    layerType: string = ""; // TODO change this
+    protected tfjsLayer: tf.SymbolicTensor;
+    protected readonly tfjsEmptyLayer;
     paramBox;
     
     block: Array<Shape>;
@@ -31,33 +34,47 @@ export abstract class Layer extends Draggable {
     wireCircleSelected: boolean = false;
     static nextID: number = 0;
     uid: number;
-    constructor(block: Array<Shape>, defaultLocation) { 
+    abstract lineOfPython(): string;
+    abstract clone(): Layer;
+    
+    constructor(block: Array<Shape>, defaultLocation, invisible=false) { 
         super(defaultLocation)
         this.uid = Layer.nextID
         Layer.nextID += 1
         this.block = block
-        for (let rect of this.block) {
-            this.svgComponent.call(rect.svgAppender.bind(rect))
-        }
-        this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
-                                           .attr("cx", this.center().x)
-                                           .attr("cy", this.center().y)
-                                           .attr("r", 10)
-                                           .style("fill", "black")
-                                           .style("stroke-width", "4")
-                                           .style("visibility", "hidden")
-        
-        this.wireCircle.on("click", () => {
-            this.wireCircleSelected = true
-            this.wireCircle.style("stroke", "red")
-        })
+        if(!invisible) {
+            for (let rect of this.block) {
+                this.svgComponent.call(rect.svgAppender.bind(rect))
+            }
+            this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
+                                            .attr("cx", this.center().x)
+                                            .attr("cy", this.center().y)
+                                            .attr("r", 10)
+                                            .style("fill", "black")
+                                            .style("stroke-width", "4")
+                                            .style("visibility", "hidden")
+            
+            if(this.layerType == "Output"){
+                this.wireCircle.style("display", "none")
+            }
+            
+            this.wireCircle.on("click", () => {
+                this.wireCircleSelected = true
+                this.wireCircle.style("stroke", "red")
+            })
 
-        this.paramBox = document.createElement('div')
-        this.paramBox.className = 'parambox'
-        this.paramBox.style.visibility = 'hidden'
+            this.paramBox = document.createElement('div')
+            this.paramBox.className = 'parambox'
+            this.paramBox.style.visibility = 'hidden'
+            this.paramBox.style.position = 'absolute'	
 	    this.paramBox.style.position = 'absolute'	
-        document.getElementById("paramtruck").appendChild(this.paramBox);
-        this.populateParamBox()
+            this.paramBox.style.position = 'absolute'	
+            document.getElementById("paramtruck").appendChild(this.paramBox);
+
+            this.populateParamBox()
+
+        }
+
     }
 
     populateParamBox() {}
@@ -94,15 +111,25 @@ export abstract class Layer extends Draggable {
      * Add a child layer of this node (successor).
      * @param child the layer pointed to by the given wire
      */
-    public addChild(child: Layer) {
+    public addChild(child: Layer, visible=true) {
         if (!this.children.has(child) && !child.children.has(this)) {
             this.children.add(child)
             child.parents.add(this)
 
-            let newWire = new Wire(this, child)
-            this.wires.add(newWire)
-            child.wires.add(newWire)
+            if(visible){
+                let newWire = new Wire(this, child)
+                this.wires.add(newWire)
+                child.wires.add(newWire)
+            }
         }
+    }
+    
+    /**
+     * Add a parent layer of this node (predecessor).
+     * @param parent the layer pointed to by the given wire
+     */
+    public addParent(parent: Layer) {
+        parent.addChild(this)
     }
 
     public delete() {
@@ -110,13 +137,15 @@ export abstract class Layer extends Draggable {
         this.wires.forEach((w) => w.delete()) // deleting wires should delete layer connection sets
     }
 
-    public toJson(): layerJson {
+    public toJson(): LayerJson {
         return {
             "layer_name": this.layerType,
             "children_ids": Array.from(this.children, child => child.uid),
             "parent_ids": Array.from(this.parents, parent => parent.uid),
             "params": this.getParams(),
-            "id": this.uid
+            "id": this.uid, 
+            "xPosition": this.getPosition().x, 
+            "yPosition": this.getPosition().y,
         }
     }
 
@@ -129,6 +158,65 @@ export abstract class Layer extends Draggable {
         }
         return params
     }
+
+    public setParams(params: Map<string, any>) {
+        for(let line of this.paramBox.children){
+            let name = line.children[0].getAttribute('data-name');
+			line.children[1].value = params[name];
+        }
+    }
+
+    /**
+     * Make parent -> this become parent -> layer -> this.  
+     * @param layer a layer that will become the new parent
+     * @param parent a parent of this
+     */
+    public addParentLayerBetween(layer: Layer, parent: Layer) {
+        parent.children.delete(this)
+        parent.children.add(layer)
+
+        layer.parents.add(parent)
+        layer.children.add(this)
+        
+        this.parents.delete(parent)
+        this.parents.add(layer)
+    }
+
+    
+    /**
+     * Make parents -> this become parents -> layer -> this.  
+     * @param parent a parent of this
+     */
+    public addParentLayer(layer: Layer) {
+        for (let parent of this.parents) {
+            parent.children.delete(this)
+            parent.children.add(layer)
+        }
+        
+        layer.parents = new Set([...layer.parents, ...this.parents])
+        layer.children.add(this)
+        
+        this.parents.clear()
+        this.parents.add(layer)
+    }
+    
+    public getTfjsLayer(){
+        return this.tfjsLayer
+    }
+
+    public generateTfjsLayer(){
+        // TODO change defaults to class level
+        let parameters = defaults.get(this.layerType)
+        let config = this.getParams()
+        for (let param in config) {
+            parameters[param] = config[param]
+        }
+        let parent:Layer = null 
+        for (let p of this.parents){ parent = p; break } 
+        // Concatenate layers handle fan-in
+        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
+    }
+    
 }
 
 /**
@@ -137,8 +225,8 @@ export abstract class Layer extends Draggable {
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
     static defaultInitialLocation = new Point(100,100)
-    constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) { 
-        super(block, defaultLocation)
+    constructor(block: Array<Shape>, defaultLocation=new Point(100,100), invisible=false) { 
+        super(block, defaultLocation, invisible)
         
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this)
@@ -149,8 +237,7 @@ export abstract class ActivationLayer extends Layer {
         super.dragAction(d)
         if (this.activation != null) {
             let p = this.getPosition()
-            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + ","
-            + (p.y) + ")").data([{"x": p.x, "y": p.y}])
+            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
         }
     }
 
@@ -170,23 +257,45 @@ export abstract class ActivationLayer extends Layer {
     }
 
     public addActivation(activation: Activation) {
-        if (this.activation != null) {
+        if (this.activation != null && this.activation != activation) {
+            this.activation.delete();
             this.activation.layer = null
         } 
         this.activation = activation
-        let p = this.getPosition()
-        activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
+        this.activation.setPosition(this.getPosition())
+    }
+
+    public getActivationText(): string {
+        return this.activation != null ? this.activation.activationType : "relu";
     }
 
     public removeActivation() {
         this.activation = null
     }
 
-    public toJson(): layerJson {
+    public toJson(): LayerJson {
         let json = super.toJson()
         if (this.activation != null) {
             json.params["activation"] = this.activation.activationType
         }
         return json
+    }
+
+    public generateTfjsLayer(){
+        // TODO change defaults to class level
+        let parameters = defaults.get(this.layerType)
+        let config = this.getParams()
+        for (let param in config) {
+            parameters[param] = config[param]
+        }
+
+        if (this.activation != null) {
+            parameters.activation = this.activation.activationType
+        }
+
+        let parent:Layer = null 
+        for (let p of this.parents){ parent = p; break } 
+        // Concatenate layers handle fan-in
+        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
 }
