@@ -18,21 +18,21 @@ export class Conv2D extends ActivationLayer {
     populateParamBox() {
         let line1 = document.createElement('div')
         line1.className = 'paramline'
-    
+
         let name1 = document.createElement('div')
         name1.className = 'paramname'
         name1.innerHTML = 'Filters:'
         name1.setAttribute('data-name','filters')
-    
+
         let value1 = document.createElement('input')
         value1.className = 'paramvalue'
         value1.value = '10'
-    
+
         line1.appendChild(name1);
         line1.appendChild(value1);
-    
+
         this.paramBox.append(line1);
-    
+
         let line2 = document.createElement('div')
         line2.className = 'paramline'
         let name2 = document.createElement('div')
@@ -45,7 +45,7 @@ export class Conv2D extends ActivationLayer {
         line2.appendChild(name2);
         line2.appendChild(value2);
         this.paramBox.append(line2);
-    
+
         let line3 = document.createElement('div')
         line3.className = 'paramline'
         let name3 = document.createElement('div')
@@ -68,11 +68,17 @@ export class Conv2D extends ActivationLayer {
         return `Conv2D(${params["filters"]}, (${params["kernel_size"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
     }
 
+    public lineOfJulia(): string {
+        let params = this.getParams();
+        let prev_id = this.parents.values().next().value.uid;
+        return `Conv((${params["kernel_size"]}), size(x${prev_id}, 3)=>${params["filters"]}, ${this.getActivationText()}, stride=(${params["strides"]}))(x${prev_id})`
+    }
+
     public clone() {
         let newConv : Conv2D = new Conv2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation),true)
         newConv.activation = this.activation
         newConv.paramBox = this.paramBox
-        
+
         return newConv
 
     }

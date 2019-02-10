@@ -19,6 +19,11 @@ export class Flatten extends Layer {
         return `Flatten()`
     }
 
+    public lineOfJulia(): string {
+        let prev_id = this.parents.values().next().value.uid;
+        return `reshape(x${prev_id}, :, size(x${prev_id}, 4))`
+    }
+
     public clone() {
         return new Flatten()
     }

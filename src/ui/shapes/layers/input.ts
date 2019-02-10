@@ -13,18 +13,22 @@ export class Input extends Layer {
 	constructor(invisible=false){
         super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, document.getElementById("svg").getBoundingClientRect().height/2), invisible)
     }
-    
+
     getHoverText(): string { return "Input"; }
 
     delete() { this.unselect(); }
 
-    public generateTfjsLayer(){ 
+    public generateTfjsLayer(){
         // TODO make this a member variable
         this.tfjsLayer = this.tfjsEmptyLayer({shape: [IMAGE_H, IMAGE_W, 1]})
     }
 
     public lineOfPython(): string {
         return `Input(shape=(${IMAGE_H},${IMAGE_W}, 1))`
+    }
+
+    public lineOfJulia(): string {
+        return `input`
     }
 
     public clone() {
