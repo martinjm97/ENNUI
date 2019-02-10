@@ -1,7 +1,7 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython } from "../model/build_network";
+import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
@@ -129,6 +129,10 @@ document.addEventListener("DOMContentLoaded", function() {
 					deleteSelected();
 				break;
 			case 'Enter' :
+				let newInput = svgData.input.clone()
+				cloneNetwork(svgData.input, newInput)
+				addInExtraLayers(newInput)
+				download(generateJulia(topologicalSort(newInput)), "mnist_model.jl");
 				break;
 		}
 	};

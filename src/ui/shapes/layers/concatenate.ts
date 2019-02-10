@@ -17,6 +17,11 @@ export class Concatenate extends Layer {
     public lineOfPython(): string {
         return `Concatenate()`
     }
+
+    public lineOfJulia(): string {
+        return `vcat(${[...this.parents].map(p => "x" + p.uid).join(", ")})`
+    }
+
     public generateTfjsLayer(){
         // Concatenate layers handle fan-in
         let parents = []
@@ -29,7 +34,7 @@ export class Concatenate extends Layer {
     public clone() {
         let newLayer = new Concatenate()
         // newLayer.paramBox = this.paramBox
-        
+
         return newLayer
 
     }

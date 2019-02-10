@@ -12,6 +12,7 @@ import { Flatten } from '../ui/shapes/layers/flatten';
 import { Concatenate } from '../ui/shapes/layers/concatenate';
 import { Output } from '../ui/shapes/layers/output';
 import { pythonSkeleton } from './python_skeleton';
+import { juliaSkeleton } from './julia_skeleton';
 
 let typeToTensor: Map<string, any> = new Map()
 
@@ -38,7 +39,7 @@ export function buildNetworkDAG(input: Input) {
 }
 
 export function cloneNetwork(input: Input, newInput: Input) {
-    // Initialize queues, dags, and parents (visited) 
+    // Initialize queues, dags, and parents (visited)
 
     let oldId2Clone = {}
     oldId2Clone[input.uid] = newInput
@@ -59,15 +60,15 @@ export function cloneNetwork(input: Input, newInput: Input) {
             else {
                 newLayer = oldId2Clone[current.uid]
             }
-            
-        
+
+
             // Add in cloned parent/child relations
 
             for (let p of current.parents) {
-                
+
                 if(!(p.uid in oldId2Clone)) {
                     oldId2Clone[p.uid] = p.clone()
-                    
+
                 }
                 let newParent = oldId2Clone[p.uid]
                 newParent.addChild(newLayer, false)
@@ -81,7 +82,7 @@ export function cloneNetwork(input: Input, newInput: Input) {
 
         // Continue BFS
         for (let child of current.children) {
-            
+
             if (!visited.has(child)) {
                 queue.push(child)
                 visited.add(child)
@@ -91,13 +92,13 @@ export function cloneNetwork(input: Input, newInput: Input) {
 }
 
 export function addInExtraLayers(input: Input) {
-    // Initialize queues, dags, and parents (visited) 
+    // Initialize queues, dags, and parents (visited)
 
     let queue: Layer[] = [input]
     let visited: Set<Layer> = new Set()
     console.log("Building graph... ")
     let toAddFlatten = []
-    let toAddConcatenate: Layer[] = []  
+    let toAddConcatenate: Layer[] = []
 
     while (queue.length != 0) {
         let current = queue.shift()
@@ -105,14 +106,14 @@ export function addInExtraLayers(input: Input) {
         // Dense takes in 1D input so flatten if necessary
         if (current instanceof Dense || current instanceof Output) {
             for (let parent of current.parents){
-                
+
                 if (parent instanceof MaxPooling2D || parent instanceof Conv2D || parent instanceof Input) {
                     toAddFlatten.push([current, parent])
                     // current.addParentLayerBetween(new Flatten(), parent)
                 }
             }
         }
-        
+
         // Concatentate parents if necessary
         if (current.parents.size > 1 && !(current instanceof Concatenate)) {
             toAddConcatenate.push(current)
@@ -121,7 +122,7 @@ export function addInExtraLayers(input: Input) {
 
         // Continue BFS
         for (let child of current.children) {
-            
+
             if (!visited.has(child)) {
                 queue.push(child)
                 visited.add(child)
@@ -193,17 +194,10 @@ export function generatePython(sorted: Layer[]){
 export function generateJulia(sorted: Layer[]){
     let juliaScript: string = ""
     for (let layer of sorted) {
-        let layerstring = layer.lineOfPython();
-        let applystring = ""; // Nothing to apply if no parents (input)
-        if(layer.parents.size == 1) {
-            applystring = `(x${layer.parents.values().next().value.uid})`;
-        } else if (layer.parents.size > 1) {
-            applystring = `([${[...layer.parents].map(p => "x" + p.uid).join(", ")}])`;
-        }
-        juliaScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
+        let layerstring = layer.lineOfJulia();
+        juliaScript += `\tx${layer.uid} = ${layerstring}\n`;
     }
-    juliaScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})\n`
-    return pythonSkeleton(juliaScript)
+    return juliaSkeleton(juliaScript)
 }
 
 /**
@@ -214,7 +208,7 @@ function generateTfjsModel(sorted: Layer[]){
     sorted.forEach(layer => layer.generateTfjsLayer())
     let input = sorted[0].getTfjsLayer()
     let output = sorted[sorted.length - 1].getTfjsLayer()
-    return tf.model({inputs: input, outputs: output})    
+    return tf.model({inputs: input, outputs: output})
 }
 
 function networkDAG(input: Input){
