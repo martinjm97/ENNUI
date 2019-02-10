@@ -33,6 +33,12 @@ export class Dense extends ActivationLayer {
         return `Dense(${params["units"]}, activation='${this.getActivationText()}')`
     }
 
+    public lineOfJulia(): string {
+        let params = this.getParams();
+        let prev_id = this.parents.values().next().value.uid;
+        return `Dense(size(x${prev_id}, 1) , ${params["units"]}, ${this.getActivationText()})(x${prev_id})`
+    }
+
     public clone() {
         let newLayer = new Dense(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation),true)
         newLayer.paramBox = this.paramBox

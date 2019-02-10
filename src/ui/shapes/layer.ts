@@ -13,7 +13,7 @@ export interface LayerJson {
     id: number
     children_ids: Array<number>
     parent_ids: Array<number>
-    params: Map<string, any> 
+    params: Map<string, any>
     xPosition: number
     yPosition: number
 }
@@ -25,7 +25,7 @@ export abstract class Layer extends Draggable {
     protected tfjsLayer: tf.SymbolicTensor;
     protected readonly tfjsEmptyLayer;
     paramBox;
-    
+
     block: Array<Shape>;
     children: Set<Layer> = new Set();
     parents: Set<Layer> = new Set();
@@ -35,9 +35,10 @@ export abstract class Layer extends Draggable {
     static nextID: number = 0;
     uid: number;
     abstract lineOfPython(): string;
+    abstract lineOfJulia(): string;
     abstract clone(): Layer;
-    
-    constructor(block: Array<Shape>, defaultLocation, invisible=false) { 
+
+    constructor(block: Array<Shape>, defaultLocation, invisible=false) {
         super(defaultLocation)
         this.uid = Layer.nextID
         Layer.nextID += 1
@@ -53,11 +54,11 @@ export abstract class Layer extends Draggable {
                                             .style("fill", "black")
                                             .style("stroke-width", "4")
                                             .style("visibility", "hidden")
-            
+
             if(this.layerType == "Output"){
                 this.wireCircle.style("display", "none")
             }
-            
+
             this.wireCircle.on("click", () => {
                 this.wireCircleSelected = true
                 this.wireCircle.style("stroke", "red")
@@ -66,9 +67,9 @@ export abstract class Layer extends Draggable {
             this.paramBox = document.createElement('div')
             this.paramBox.className = 'parambox'
             this.paramBox.style.visibility = 'hidden'
-            this.paramBox.style.position = 'absolute'	
-	    this.paramBox.style.position = 'absolute'	
-            this.paramBox.style.position = 'absolute'	
+            this.paramBox.style.position = 'absolute'
+	    this.paramBox.style.position = 'absolute'
+            this.paramBox.style.position = 'absolute'
             document.getElementById("paramtruck").appendChild(this.paramBox);
 
             this.populateParamBox()
@@ -79,7 +80,7 @@ export abstract class Layer extends Draggable {
 
     populateParamBox() {}
 
-    public dragAction(d) { 
+    public dragAction(d) {
         for (let wire of this.wires) {
             wire.updatePosition()
         }
@@ -123,7 +124,7 @@ export abstract class Layer extends Draggable {
             }
         }
     }
-    
+
     /**
      * Add a parent layer of this node (predecessor).
      * @param parent the layer pointed to by the given wire
@@ -143,8 +144,8 @@ export abstract class Layer extends Draggable {
             "children_ids": Array.from(this.children, child => child.uid),
             "parent_ids": Array.from(this.parents, parent => parent.uid),
             "params": this.getParams(),
-            "id": this.uid, 
-            "xPosition": this.getPosition().x, 
+            "id": this.uid,
+            "xPosition": this.getPosition().x,
             "yPosition": this.getPosition().y,
         }
     }
@@ -177,7 +178,7 @@ export abstract class Layer extends Draggable {
         textField.target.classList.toggle("focusParam");
     }
     /**
-     * Make parent -> this become parent -> layer -> this.  
+     * Make parent -> this become parent -> layer -> this.
      * @param layer a layer that will become the new parent
      * @param parent a parent of this
      */
@@ -187,14 +188,14 @@ export abstract class Layer extends Draggable {
 
         layer.parents.add(parent)
         layer.children.add(this)
-        
+
         this.parents.delete(parent)
         this.parents.add(layer)
     }
 
-    
+
     /**
-     * Make parents -> this become parents -> layer -> this.  
+     * Make parents -> this become parents -> layer -> this.
      * @param parent a parent of this
      */
     public addParentLayer(layer: Layer) {
@@ -202,14 +203,14 @@ export abstract class Layer extends Draggable {
             parent.children.delete(this)
             parent.children.add(layer)
         }
-        
+
         layer.parents = new Set([...layer.parents, ...this.parents])
         layer.children.add(this)
-        
+
         this.parents.clear()
         this.parents.add(layer)
     }
-    
+
     public getTfjsLayer(){
         return this.tfjsLayer
     }
@@ -221,12 +222,12 @@ export abstract class Layer extends Draggable {
         for (let param in config) {
             parameters[param] = config[param]
         }
-        let parent:Layer = null 
-        for (let p of this.parents){ parent = p; break } 
+        let parent:Layer = null
+        for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
-    
+
 }
 
 /**
@@ -235,9 +236,9 @@ export abstract class Layer extends Draggable {
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
     static defaultInitialLocation = new Point(100,100)
-    constructor(block: Array<Shape>, defaultLocation=new Point(100,100), invisible=false) { 
+    constructor(block: Array<Shape>, defaultLocation=new Point(100,100), invisible=false) {
         super(block, defaultLocation, invisible)
-        
+
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this)
     }
@@ -263,14 +264,14 @@ export abstract class ActivationLayer extends Layer {
         windowProperties.activationLayers.delete(this)
         if (this.activation != null) {
             this.activation.delete()
-        } 
+        }
     }
 
     public addActivation(activation: Activation) {
         if (this.activation != null && this.activation != activation) {
             this.activation.delete();
             this.activation.layer = null
-        } 
+        }
         this.activation = activation
         this.activation.setPosition(this.getPosition())
     }
@@ -303,8 +304,8 @@ export abstract class ActivationLayer extends Layer {
             parameters.activation = this.activation.activationType
         }
 
-        let parent:Layer = null 
-        for (let p of this.parents){ parent = p; break } 
+        let parent:Layer = null
+        for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
