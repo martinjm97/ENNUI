@@ -95,6 +95,15 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	});
 
+	window.addEventListener('resize',function(){
+
+		let ratio = document.getElementById('middle').clientWidth/800;
+
+		console.log('resize',ratio)
+
+		document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
+	})
+
 	bindMenuExpander();
 
 	document.getElementById('defaultOptimizer').classList.add('selected')
@@ -182,14 +191,14 @@ function bindMenuExpander(){
 			document.getElementById('menu').style.display = 'block'
 			document.getElementById('expander_triangle').setAttribute('points',"0,15 10,30 10,0");
 
-			document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			document.getElementById('middle').style.width = 'calc(100% - 440px)'
 
 		} else {
 
 			document.getElementById('menu').style.display = 'none'
 			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
 
-			document.getElementById('middle').style.width = 'calc(100% - 270px)'
+			document.getElementById('middle').style.width = 'calc(100% - 280px)'
 
 		}
 
