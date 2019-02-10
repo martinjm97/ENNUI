@@ -55,6 +55,26 @@ body {
     width: 10px;
 }
 
+#right_menu_expander {
+  width:10px;
+  height:100%;
+  float:right;
+  background: #E5E5FC;
+}
+
+#right_this_will_be_a_triangle {
+  width: 200%;
+  height:30px;
+  margin-top:calc(50vh - 15px);
+  cursor: pointer;
+}
+
+#right_this_will_be_a_triangle > svg {
+    height: 30px;
+    width: 10px;
+}
+
+
 #paramshell {
     width: 200px;
     height: 100%;
@@ -274,7 +294,7 @@ div.top_neighbor_tab-selected {
 #middle {
     position: relative;
     float: left;
-    width : calc(100% - 430px);
+    width : calc(100% - 440px);
     height: 100%;
 }
 
@@ -287,7 +307,7 @@ div.top_neighbor_tab-selected {
 #networkTab {
     width: 100%;
     height: 100%; 
-    overflow-x: scroll;
+    overflow: hidden;
 }
 
 #progressTab {
