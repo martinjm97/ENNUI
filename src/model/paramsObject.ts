@@ -63,7 +63,9 @@ class NetworkParameters
 
         default:
             throw new Error('Undefined optimizer!');
+
         }
+        
     }
 }
 

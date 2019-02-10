@@ -166,6 +166,16 @@ export abstract class Layer extends Draggable {
         }
     }
 
+    public focusing() {
+        for(let line of this.paramBox.children){
+            line.children[1].onfocus = this.toggleFocus.bind(line.children[1]);
+            line.children[1].onblur = this.toggleFocus.bind(line.children[1]);
+        }
+    }
+
+    public toggleFocus(textField) {
+        textField.target.classList.toggle("focusParam");
+    }
     /**
      * Make parent -> this become parent -> layer -> this.  
      * @param layer a layer that will become the new parent
