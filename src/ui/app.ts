@@ -95,14 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	});
 
-	window.addEventListener('resize',function(){
-
-		let ratio = document.getElementById('middle').clientWidth/800;
-
-		console.log('resize',ratio)
-
-		document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
-	})
+	window.addEventListener('resize',resizeMiddleSVG);
 
 	bindMenuExpander();
 
@@ -202,7 +195,14 @@ function bindMenuExpander(){
 
 		}
 
+		resizeMiddleSVG();
+
 	});
+}
+
+function resizeMiddleSVG(){
+	let ratio = document.getElementById('middle').clientWidth/800;
+	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
 }
 
 function makeCollapsable(elmt){
