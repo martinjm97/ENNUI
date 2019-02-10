@@ -129,10 +129,6 @@ document.addEventListener("DOMContentLoaded", function() {
 					deleteSelected();
 				break;
 			case 'Enter' :
-				let newInput = svgData.input.clone()
-				cloneNetwork(svgData.input, newInput)
-				addInExtraLayers(newInput)
-				download(generateJulia(topologicalSort(newInput)), "mnist_model.jl");
 				break;
 		}
 	};
@@ -310,6 +306,11 @@ function dispatchCreationOnClick(elmt){
 				cloneNetwork(svgData.input, newInput)
 				addInExtraLayers(newInput)
 				download(generatePython(topologicalSort(newInput)), "mnist_model.py");
+			} else if (elmt.getAttribute('share-option') == "exportJulia") {
+				let newInput = svgData.input.clone()
+				cloneNetwork(svgData.input, newInput)
+				addInExtraLayers(newInput)
+				download(generateJulia(topologicalSort(newInput)), "mnist_model.jl");
 			} else if (elmt.getAttribute('share-option') == "copyModel"){
 				let state = graphToJson(svgData)
 				let baseUrl: string = window.location.href
