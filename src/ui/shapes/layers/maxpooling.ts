@@ -36,6 +36,12 @@ export class MaxPooling2D extends Layer {
         return `MaxPooling2D(pool_size=(${params["poolSize"]}))`
     }
 
+    public lineOfJulia(): string {
+        let params = this.getParams();
+        let prev_id = this.parents.values().next().value.uid;
+        return `maxpool(x${prev_id}, (${params["poolSize"]}))`;
+    }
+
     public clone() {
         let newLayer = new MaxPooling2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), true)
 
