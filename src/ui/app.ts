@@ -57,6 +57,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Hide the error box
 	document.getElementById("error").style.display = "none";
 
+	// let svg = document.getElementById('svg');
+	// if(parseInt(svg.style.width) < window.screen.width - 430){
+	// 	svg.style.width = String(window.screen.width - 430);
+	// }
+
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){
 		dispatchSwitchTabOnClick(elmt);
@@ -85,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			console.log("clicked on information")
 			showInformationOverlay()
 		} else {
-			console.log("switching tabs!")
+			console.log("switching tabs")
 			switchTab(e);
 		}
 	});
@@ -176,10 +181,14 @@ function bindMenuExpander(){
 			document.getElementById('menu').style.display = 'block'
 			document.getElementById('expander_triangle').setAttribute('points',"0,15 10,30 10,0");
 
+			document.getElementById('middle').style.width = 'calc(100% - 430px)'
+
 		} else {
 
 			document.getElementById('menu').style.display = 'none'
 			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
+
+			document.getElementById('middle').style.width = 'calc(100% - 270px)'
 
 		}
 
