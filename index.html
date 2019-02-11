@@ -3,16 +3,19 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="description" content="Welcome to ENNUI - An elegant neural network user interface which allows you to easily design, train, and visualize neural networks.">
-	<title>Ennui ~ Elegant Neural Network User Interface ~</title>
+	<title>ENNUI ~ Elegant Neural Network User Interface ~</title>
+
+
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-133726432-1"></script>
 	<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'UA-133726432-1');
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-133726432-1');
 	</script>
 
+	<link rel="icon" type="image/x-icon" sizes="16x16" href="favicon.ico">
 	<link rel='stylesheet' href='src/ui/style.css'>
 	<script src='dist/bundle.js'></script>
 </head>
@@ -75,7 +78,6 @@
 			<div id = 'losses' class = 'category' data-itemType = 'loss'>
 				<div class = 'categoryTitle'>Losses</div>
 				<div id = 'defaultLoss' class = 'option loss-option' data-lossType = 'categoricalCrossentropy'>CrossEntropy</div>
-				<div id = 'hinge' class = 'option loss-option' data-lossType = 'hinge'> Hinge </div>
 				<div id = 'meanSquaredError' class = 'option loss-option' data-lossType = 'meanSquaredError'> MSE </div>
 				<div id = 'meanAbsoluteError' class = 'option loss-option' data-lossType = 'meanAbsoluteError'> MAE </div>
 			</div>
@@ -99,14 +101,14 @@
 
 	</div>
 
-	<div id = 'menu_expander'>
+	<!-- <div id = 'menu_expander'>
 		<div id = 'this_will_be_a_triangle'>
 			<svg>
 			  <polygon id='expander_triangle' points="0,15 10,30 10,0" style="fill:#555;" />
 			</svg>
 
 		</div>
-	</div>
+	</div> -->
 
 	<!-- The middle canvas -->
 	<div id = 'middle'>
@@ -232,14 +234,14 @@
 	</div>
 
 
-	<div id = 'right_menu_expander'>
+	<!-- <div id = 'right_menu_expander'>
 		<div id = 'right_this_will_be_a_triangle'>
 			<svg>
 			  <polygon id='right_expander_triangle' points="0,15 10,30 10,0" style="fill:#555;" />
 			</svg>
 
 		</div>
-	</div>
+	</div> -->
 
 </div>
 </body>

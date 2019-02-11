@@ -3,8 +3,7 @@ import { setModelHyperparameters } from "../ui/app";
 
 export function juliaSkeleton(model_code): string {
     setModelHyperparameters();
-    return `
-using Flux, Flux.Data.MNIST, Statistics
+    return `using Flux, Flux.Data.MNIST, Statistics
 using Flux: onehotbatch, onecold, crossentropy, mse, throttle
 using Base.Iterators: repeated, partition
 
