@@ -97,6 +97,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// window.addEventListener('resize',resizeMiddleSVG);
 
+	// resizeMiddleSVG();
+
 	// bindMenuExpander();
 
 	document.getElementById('defaultOptimizer').classList.add('selected')
@@ -202,6 +204,9 @@ function bindMenuExpander(){
 
 // function resizeMiddleSVG(){
 // 	let ratio = document.getElementById('middle').clientWidth/800;
+
+// 	console.log('ratio',ratio)
+
 // 	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
 // }
 
