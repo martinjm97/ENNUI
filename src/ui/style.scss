@@ -55,6 +55,8 @@ body {
     width: 10px;
 }
 
+  
+
 // #right_menu_expander {
 //   width:10px;
 //   height:100%;
@@ -250,6 +252,8 @@ body {
 
     background-color: transparent;
     user-select:none;
+
+    
 }
 
 .right-option {
@@ -270,6 +274,31 @@ div.top_neighbor_tab-selected {
  div.bottom_neighbor_tab-selected {
     border-top-right-radius: 5px;
  }
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}  
+  
+.dropdown-content { 
+    border-radius: 6px;
+    float: right;
+    display: none;
+    position: fixed;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    background-color: $color-menu-bg;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    
+}
+.left {
+    left: 218px;
+    margin-top: -40.5px;
+}
+
+
+.dropdown:hover .dropdown-content {display: block;}
 
 .toggle {
     width: calc(100% - 10px);
