@@ -19,8 +19,27 @@ export interface SerializedNetwork {
 	hyperparameters: HyperparameterData
 }
 
+export function hasPathToOutput(svgData: DraggableData): boolean {
+	let queue: Layer[] = [svgData.input]
+	let visited: Set<Layer> = new Set()
+	let layersFromInput: Set<Layer> = new Set()
+	while (queue.length != 0) {
+		let current = queue.shift()
+		layersFromInput.add(current)
+		// check each connections of the node
+		for (let child of current.children) {
+			if (!visited.has(child)) {
+				queue.push(child)
+				visited.add(child)
+			}
+		}
+	}
+
+	return layersFromInput.has(svgData.output)
+}
+
 export function graphToJson(svgData: DraggableData): SerializedNetwork {
-	// Initialize queues, dags, and parents (visited) 
+	// Initialize queues, dags, and parents (visited)
 	let queue: Layer[] = [svgData.input]
 	let visited: Set<Layer> = new Set()
 	let layersjson: Array<LayerJson> = new Array()
@@ -36,8 +55,8 @@ export function graphToJson(svgData: DraggableData): SerializedNetwork {
 		}
 	}
 
-	let serializedNet: SerializedNetwork = { 
-		"graph": layersjson, 
+	let serializedNet: SerializedNetwork = {
+		"graph": layersjson,
 		"hyperparameters": setHyperparameterData(),
 	}
 
@@ -60,14 +79,14 @@ function setHyperparameterData(): HyperparameterData {
 			case "learningRate":
 				learningRate = Number(value);
 				break;
-			
+
 			case "epochs":
 				epochs = parseInt(value);
 				break;
-			
+
 			case "batchSize":
 				batchSize = parseInt(value);
-				break;	
+				break;
 		};
 	}
 	for (let elmt of document.getElementsByClassName("selected")) {
@@ -75,7 +94,7 @@ function setHyperparameterData(): HyperparameterData {
 			optimizer_id = elmt.id
 		} else if (elmt.hasAttribute("data-lossType")){
 			loss_id = elmt.id
-		} 
+		}
 	}
 
 	return {
@@ -103,12 +122,12 @@ function setHyperparams(hyperparamData: HyperparameterData){
 		paramName.value = hyperparamData[hyperparam.id].toString();
 	}
 	document.getElementById("defaultOptimizer").classList.remove("selected")
-	document.getElementById(hyperparamData.optimizer_id).classList.add("selected");	
+	document.getElementById(hyperparamData.optimizer_id).classList.add("selected");
 	document.getElementById("defaultLoss").classList.remove("selected")
-	document.getElementById(hyperparamData.loss_id).classList.add("selected");	
+	document.getElementById(hyperparamData.loss_id).classList.add("selected");
 }
 
-function graphFromJson(svgData: DraggableData, layersJson: Array<LayerJson>): DraggableData {	
+function graphFromJson(svgData: DraggableData, layersJson: Array<LayerJson>): DraggableData {
 
 	// Make each of the objects without parents and children
 	let uidToObject: Map<Number, Layer> = new Map();
@@ -157,17 +176,17 @@ function createActivationInstanceFromName(svgData: DraggableData, layer: Activat
 
 function createLayerInstanceFromName(svgData: DraggableData, lj: LayerJson): Layer {
 
-	// Create an instance from the instance name. 
+	// Create an instance from the instance name.
 	let layer: Layer;
 	let location = new Point(lj.xPosition, lj.yPosition)
 	switch (lj.layer_name){
 		case "Input":
-			layer = new Input(); 
+			layer = new Input();
 			layer.setPosition(location)
 			svgData.input = <Input> layer;
 			break;
-		case "Output": 
-			layer = new Output(); 
+		case "Output":
+			layer = new Output();
 			layer.setPosition(location)
 			svgData.output = <Output> layer;
 			break;
@@ -198,4 +217,4 @@ export function download(content: string, filename: string) {
 	 type: "text/plain;charset=utf-8"
 	});
 	saveAs(blob, filename);
-} 
+}
