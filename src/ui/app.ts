@@ -17,6 +17,8 @@ import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url"
 import { pythonSkeleton } from "../model/python_skeleton";
 import { copyTextToClipboard } from "./utils";
 
+import { Cifar10Data } from "../model/data";
+
 export interface DraggableData {
 	draggable: Array<Draggable>
 	input: Input
@@ -124,6 +126,10 @@ document.addEventListener("DOMContentLoaded", function() {
 					deleteSelected();
 				break;
 			case 'Enter' :
+				Cifar10Data.Instance.load().then(function() {
+					Cifar10Data.Instance.getTrainData()
+				})
+				
 				break;
 		}
 	};

@@ -3,7 +3,7 @@
 import * as tf from '@tensorflow/tfjs';
 import {plotAccuracy, plotLoss, showPredictions, setupPlots, setupTestResults, showConfusionMatrix} from './graphs';
 
-import {IMAGE_H, IMAGE_W, data} from './data';
+import {mnistData} from './data';
 import { model } from './paramsObject';
 import { tabSelected } from '../ui/app';
 
@@ -19,7 +19,7 @@ export async function train() {
     // TODO: This is where we should do caching.
     setupPlots();
     setupTestResults();
-    await data.load();
+    await mnistData.load();
     
     let onIteration = () => showPredictions()
     let optimizer = model.params.getOptimizer()
@@ -43,8 +43,8 @@ export async function train() {
     let totalAccuracy: number = 0;
     let plotLossFrequency: number = 25;
   
-    const trainData = data.getTrainData();
-    const testData = data.getTestData();
+    const trainData = mnistData.getTrainData();
+    const testData = mnistData.getTestData();
     const totalNumBatches =
         Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / batchSize) *
         trainEpochs;

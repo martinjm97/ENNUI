@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { Layer } from "../layer";
 import { Point, Rectangle } from "../shape";
 import { defaults } from '../../../model/build_network';
-import { IMAGE_H, IMAGE_W, NUM_TRAIN_ELEMENTS } from '../../../model/data';
+import { mnistData } from '../../../model/data';
 
 export class Input extends Layer {
     layerType = "Input"
@@ -20,11 +20,11 @@ export class Input extends Layer {
 
     public generateTfjsLayer(){ 
         // TODO make this a member variable
-        this.tfjsLayer = this.tfjsEmptyLayer({shape: [IMAGE_H, IMAGE_W, 1]})
+        this.tfjsLayer = this.tfjsEmptyLayer({shape: [mnistData.IMAGE_HEIGHT, mnistData.IMAGE_WIDTH, mnistData.IMAGE_CHANNELS]})
     }
 
     public lineOfPython(): string {
-        return `Input(shape=(${IMAGE_H},${IMAGE_W}, 1))`
+        return `Input(shape=(${mnistData.IMAGE_HEIGHT},${mnistData.IMAGE_WIDTH}, ${mnistData.IMAGE_CHANNELS}))`
     }
 
     public clone() {
