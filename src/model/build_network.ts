@@ -1,6 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
 
-import { IMAGE_H, IMAGE_W } from './data';
 import { SymbolicTensor } from '@tensorflow/tfjs';
 import { Layer, ActivationLayer } from '../ui/shapes/layer';
 import { Input } from '../ui/shapes/layers/input';
