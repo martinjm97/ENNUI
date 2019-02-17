@@ -1,9 +1,9 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
+import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
-import { graphToJson, download, hasPathToOutput } from "../model/export_model";
+import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots, showPredictions, setupTestResults, renderAccuracyPlot, renderLossPlot, showConfusionMatrix } from "../model/graphs";
 import { model } from "../model/paramsObject"
@@ -57,11 +57,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Hide the error box
 	document.getElementById("error").style.display = "none";
 
-	// let svg = document.getElementById('svg');
-	// if(parseInt(svg.style.width) < window.screen.width - 430){
-	// 	svg.style.width = String(window.screen.width - 430);
-	// }
-
 	var elmts = document.getElementsByClassName('tab');
 	for(let elmt of elmts){
 		dispatchSwitchTabOnClick(elmt);
@@ -90,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			console.log("clicked on information")
 			showInformationOverlay()
 		} else {
-			console.log("switching tabs")
+			console.log("switching tabs!")
 			switchTab(e);
 		}
 	});
@@ -296,63 +291,60 @@ export function tabSelected(): string {
 }
 
 
-function dispatchCreationOnClick(elmt){
-	elmt.addEventListener('click', function(e){
-		let itemType = elmt.parentElement.getAttribute('data-itemType')
-
-		if (model.params.isParam(itemType)){
-			let setting;
-			if (elmt.hasAttribute('data-trainType')) {
-				setting = elmt.getAttribute('data-trainType');
-			} else if (elmt.hasAttribute('data-lossType')) {
-				setting = elmt.getAttribute('data-lossType');
+function  dispatchCreationOnClick(elmt){
+	if (!elmt.classList.contains('dropdown'))
+		elmt.addEventListener('click', function(e){
+			let itemType
+			if (elmt.parentElement.classList.contains('dropdown-content')) {
+				itemType = elmt.parentElement.parentElement.parentElement.getAttribute('data-itemType')
 			}
-
-			let selected = elmt.parentElement.getElementsByClassName("selected");
-			if (selected.length > 0) {
-				selected[0].classList.remove("selected");
+			else {
+				itemType = elmt.parentElement.getAttribute('data-itemType')
 			}
-			elmt.classList.add("selected");
-			updateNetworkParameters({itemType: itemType, setting : setting});
-		} else if (itemType == "share") {
-			if (elmt.getAttribute('share-option') == "exportPython") {
-				let newInput = svgData.input.clone()
-				cloneNetwork(svgData.input, newInput)
-				addInExtraLayers(newInput)
-				download(generatePython(topologicalSort(newInput)), "mnist_model.py");
-			} else if (elmt.getAttribute('share-option') == "exportJulia") {
-				let newInput = svgData.input.clone()
-				cloneNetwork(svgData.input, newInput)
-				addInExtraLayers(newInput)
-				download(generateJulia(topologicalSort(newInput)), "mnist_model.jl");
-			} else if (elmt.getAttribute('share-option') == "copyModel"){
-				if(hasPathToOutput(svgData)){
+			if (model.params.isParam(itemType)){
+				let setting;
+				if (elmt.hasAttribute('data-trainType')) {
+					setting = elmt.getAttribute('data-trainType');
+				} else if (elmt.hasAttribute('data-lossType')) {
+					setting = elmt.getAttribute('data-lossType');
+				}
+
+				let selected = elmt.parentElement.getElementsByClassName("selected");
+				if (selected.length > 0) {
+					selected[0].classList.remove("selected");
+				}
+				elmt.classList.add("selected");
+				updateNetworkParameters({itemType: itemType, setting : setting});
+			} else if (itemType == "share") {
+				if (elmt.getAttribute('share-option') == "exportPython") {
+					let newInput = svgData.input.clone()
+					cloneNetwork(svgData.input, newInput)
+					addInExtraLayers(newInput)
+					download(generatePython(topologicalSort(newInput)), "mnist_model.py");
+				} else if (elmt.getAttribute('share-option') == "copyModel"){
 					let state = graphToJson(svgData)
 					let baseUrl: string = window.location.href
 					let urlParam: string = storeNetworkInUrl(state)
 					copyTextToClipboard(baseUrl + "#" + urlParam)
-				} else {
-					displayError(new Error("Cannot export models without a path from input to output. "))
 				}
-			}
-		} else if (itemType == "classes") {
-			let selected = elmt.parentElement.getElementsByClassName("selected");
-			if (selected.length > 0) {
-				selected[0].classList.remove("selected")
-			}
+			} else if (itemType == "classes") {
+				let selected = elmt.parentElement.getElementsByClassName("selected");
+				if (selected.length > 0) {
+					selected[0].classList.remove("selected")
+				}
 
-			elmt.classList.add("selected");
+				elmt.classList.add("selected");
 
-			if (model.architecture != null){
-				showPredictions()
+				if (model.architecture != null){
+					showPredictions()
+				}
+			} else {
+				let detail = { itemType : itemType}
+				detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
+				let event = new CustomEvent('create', { detail : detail } );
+				window.dispatchEvent(event);
 			}
-		} else {
-			let detail = { itemType : itemType}
-			detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
-			let event = new CustomEvent('create', { detail : detail } );
-			window.dispatchEvent(event);
-		}
-	});
+		});
 }
 
 
