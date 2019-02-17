@@ -72,6 +72,9 @@ class NetworkParameters
             case 'categoricalCrossentropy':
                 return 'crossentropy';
 
+            case 'hinge':
+                displayError(new Error("Hinge loss is not yet implemented in Julia. "))
+
             case 'meanSquaredError':
                 return 'mse';
 
