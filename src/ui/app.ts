@@ -3,7 +3,7 @@ import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
 import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
-import { graphToJson, download } from "../model/export_model";
+import { graphToJson, download, hasPathToOutput } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots, showPredictions, setupTestResults, renderAccuracyPlot, renderLossPlot, showConfusionMatrix } from "../model/graphs";
 import { model } from "../model/paramsObject"
@@ -326,10 +326,14 @@ function dispatchCreationOnClick(elmt){
 				addInExtraLayers(newInput)
 				download(generateJulia(topologicalSort(newInput)), "mnist_model.jl");
 			} else if (elmt.getAttribute('share-option') == "copyModel"){
-				let state = graphToJson(svgData)
-				let baseUrl: string = window.location.href
-				let urlParam: string = storeNetworkInUrl(state)
-				copyTextToClipboard(baseUrl + "#" + urlParam)
+				if(hasPathToOutput(svgData)){
+					let state = graphToJson(svgData)
+					let baseUrl: string = window.location.href
+					let urlParam: string = storeNetworkInUrl(state)
+					copyTextToClipboard(baseUrl + "#" + urlParam)
+				} else {
+					displayError(new Error("Cannot export models without a path from input to output. "))
+				}
 			}
 		} else if (itemType == "classes") {
 			let selected = elmt.parentElement.getElementsByClassName("selected");
