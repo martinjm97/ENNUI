@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import { ActivationLayer, Layer } from "../layer";
-import { Point } from "../shape";
+import { Point, PathShape } from "../shape";
 import { isDownloadFloatTextureEnabled } from '@tensorflow/tfjs-core/dist/environment_util';
 
 export class Flatten extends Layer {
@@ -8,7 +8,7 @@ export class Flatten extends Layer {
     readonly tfjsEmptyLayer  = tf.layers.flatten
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
-        super([], defaultLocation)
+        super([new PathShape("M-90 -90 h15 v-30 h15 v100 h-15 v-30 h-15 v-40 Z", '#AA222F')], defaultLocation)
     }
 
     populateParamBox() {}

@@ -7,6 +7,7 @@ import * as d3 from "d3";
 import { windowProperties } from "../window";
 import { parseString } from "../utils";
 import { defaults } from '../../model/build_network';
+import { displayError } from '../error';
 
 export interface LayerJson {
     layer_name: string
@@ -38,43 +39,43 @@ export abstract class Layer extends Draggable {
     abstract lineOfJulia(): string;
     abstract clone(): Layer;
 
-    constructor(block: Array<Shape>, defaultLocation, invisible=false) {
+    constructor(block: Array<Shape>, defaultLocation) {
         super(defaultLocation)
         this.uid = Layer.nextID
         Layer.nextID += 1
         this.block = block
-        if(!invisible) {
-            for (let rect of this.block) {
-                this.svgComponent.call(rect.svgAppender.bind(rect))
-            }
-            this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
-                                            .attr("cx", this.center().x)
-                                            .attr("cy", this.center().y)
-                                            .attr("r", 10)
-                                            .style("fill", "black")
-                                            .style("stroke-width", "4")
-                                            .style("visibility", "hidden")
-
-            if(this.layerType == "Output"){
-                this.wireCircle.style("display", "none")
-            }
-
-            this.wireCircle.on("click", () => {
-                this.wireCircleSelected = true
-                this.wireCircle.style("stroke", "red")
-            })
-
-            this.paramBox = document.createElement('div')
-            this.paramBox.className = 'parambox'
-            this.paramBox.style.visibility = 'hidden'
-            this.paramBox.style.position = 'absolute'
-	        this.paramBox.style.position = 'absolute'
-            this.paramBox.style.position = 'absolute'
-            document.getElementById("paramtruck").appendChild(this.paramBox);
-
-            this.populateParamBox()
-
+        
+        for (let rect of this.block) {
+            this.svgComponent.call(rect.svgAppender.bind(rect))
         }
+        this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
+                                        .attr("cx", this.center().x)
+                                        .attr("cy", this.center().y)
+                                        .attr("r", 10)
+                                        .style("fill", "black")
+                                        .style("stroke-width", "4")
+                                        .style("visibility", "hidden")
+
+        if(this.layerType == "Output"){
+            this.wireCircle.style("display", "none")
+        }
+
+        this.wireCircle.on("click", () => {
+            this.wireCircleSelected = true
+            this.wireCircle.style("stroke", "red")
+        })
+
+        this.paramBox = document.createElement('div')
+        this.paramBox.className = 'parambox'
+        this.paramBox.style.visibility = 'hidden'
+        this.paramBox.style.position = 'absolute'
+        this.paramBox.style.position = 'absolute'
+        this.paramBox.style.position = 'absolute'
+        document.getElementById("paramtruck").appendChild(this.paramBox);
+
+        this.populateParamBox()
+
+        
 
     }
 
@@ -112,16 +113,15 @@ export abstract class Layer extends Draggable {
      * Add a child layer of this node (successor).
      * @param child the layer pointed to by the given wire
      */
-    public addChild(child: Layer, visible=true) {
+    public addChild(child: Layer) {
         if (!this.children.has(child) && !child.children.has(this)) {
             this.children.add(child)
             child.parents.add(this)
 
-            if(visible){
-                let newWire = new Wire(this, child)
-                this.wires.add(newWire)
-                child.wires.add(newWire)
-            }
+            let newWire = new Wire(this, child)
+            this.wires.add(newWire)
+            child.wires.add(newWire)
+            
         }
     }
 
@@ -239,7 +239,11 @@ export abstract class Layer extends Draggable {
         let parent:Layer = null
         for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
-        console.log('here')
+
+        if (this.parents.size > 1) {
+            displayError(new Error("Must use a concatenate when a layer has multiple parents"));
+        }
+        
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
 
@@ -263,8 +267,8 @@ export abstract class ActivationLayer extends Layer {
     static defaultInitialLocation = new Point(100,100)
 
     // Note: The activation will snap to the 0,0 point of an ActivationLayer
-    constructor(block: Array<Shape>, defaultLocation=new Point(100,100), invisible=false) {
-        super(block, defaultLocation, invisible)
+    constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) {
+        super(block, defaultLocation)
 
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this)
@@ -332,8 +336,15 @@ export abstract class ActivationLayer extends Layer {
         }
 
         let parent:Layer = null
+
+        if (this.parents.size > 1) {
+            displayError(new Error("Must use a concatenate when a layer has multiple parents"));
+        }
+
         for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
-        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
+
+        
+        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer());
     }
 }

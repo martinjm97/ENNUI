@@ -37,7 +37,7 @@ export abstract class Draggable {
                                 .on("mousemove", () => {
                                     this.hoverText.style("visibility", "hidden")
                                     clearTimeout(this.moveTimeout);
-                                    this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 1000);
+                                    this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 100);
                                     this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
                                 .on("mouseout", () => {clearTimeout(this.moveTimeout)})
             this.makeDraggable()
