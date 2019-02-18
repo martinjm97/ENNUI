@@ -194,8 +194,9 @@ export function generatePython(sorted: Layer[]){
         }
         pythonScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
 
-        if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).getActivationText() == "relu") {
-            pythonScript += `x${layer.uid} = ` + "ReLu()" + `(x${layer.uid})`  + "\n";
+        // TODO: Move this to BatchNorm and generalize layerstring to an array
+        if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).activation != null) {
+            pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";
             
         }
     }
