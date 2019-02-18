@@ -10,9 +10,7 @@ export class BatchNorm extends ActivationLayer {
     static readonly blockSize: number = 50;
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), invisible=false) {
-        super([new Rectangle(new Point(-54, -80), BatchNorm.blockSize, BatchNorm.blockSize, '#B36B88'),
-               new Rectangle(new Point(-37, -60), BatchNorm.blockSize, BatchNorm.blockSize, '#B37B88'),
-               new PathShape("M-20 -40 h50 v50 h-20 v-10 h-10 v10 h-20 v-50 Z", '#B38B88')],
+        super([new PathShape("M-10 -90 L 20 -60 v70 h-10 v-10 h-10 v10 h-10 v-100 Z", '#CFB53B')],
                defaultLocation, invisible)
     }
 

@@ -261,6 +261,8 @@ export abstract class Layer extends Draggable {
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
     static defaultInitialLocation = new Point(100,100)
+
+    // Note: The activation will snap to the 0,0 point of an ActivationLayer
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100), invisible=false) {
         super(block, defaultLocation, invisible)
 
