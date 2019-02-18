@@ -10,7 +10,6 @@ import { Conv2D } from "../ui/shapes/layers/convolutional";
 import { Concatenate } from "../ui/shapes/layers/concatenate";
 import { Flatten } from "../ui/shapes/layers/flatten";
 import { Activation, Relu, Sigmoid, Tanh } from "../ui/shapes/activation";
-import { layer } from "@tensorflow/tfjs-vis/dist/show/model";
 import { HyperparameterData, model } from "./paramsObject";
 import { displayError } from "../ui/error";
 import { BatchNorm } from "../ui/shapes/layers/batchnorm";
@@ -201,9 +200,9 @@ function createLayerInstanceFromName(svgData: DraggableData, lj: LayerJson): Lay
 				case "Conv2D":
 					layer = new Conv2D(location); break;
 				case "Concatenate":
-					layer = new Concatenate(); break;
+					layer = new Concatenate(location); break;
 				case "Flatten":
-					layer = new Flatten(); break;
+					layer = new Flatten(location); break;
 				case "BatchNorm":
 					layer = new BatchNorm(location); break;
 				case "Dropout":
