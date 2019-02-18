@@ -165,7 +165,6 @@ export abstract class Layer extends Draggable {
 
             else {
                 params[name] = parseString(value);
-
             }
             
         }
