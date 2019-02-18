@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { ActivationLayer, Layer } from "../layer";
 import { Point, PathShape, Rectangle } from "../shape";
 import { SymbolicTensor } from '@tensorflow/tfjs';
+import { displayError } from '../../error';
 
 export class BatchNorm extends ActivationLayer {
     layerType = "BatchNorm"
@@ -43,9 +44,8 @@ export class BatchNorm extends ActivationLayer {
     }
 
     public lineOfJulia(): string {
-        let params = this.getParams();
-        let prev_id = this.parents.values().next().value.uid;
-        return ``
+        displayError(new Error('Batch Normalization is not yet supported for Julia.'))
+        return '';
     }
 
     public clone() {
@@ -58,7 +58,6 @@ export class BatchNorm extends ActivationLayer {
     }
 
     public generateTfjsLayer(){
-        // TODO change defaults to class level
         let parameters = {momentum: 0.99}
         let config = this.getParams()
         for (let param in config) {
