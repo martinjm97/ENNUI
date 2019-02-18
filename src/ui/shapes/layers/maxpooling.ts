@@ -7,10 +7,10 @@ export class MaxPooling2D extends Layer {
     readonly tfjsEmptyLayer = tf.layers.maxPool2d;
     static readonly blockSize: number = 30;
 
-    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), invisible=false) {
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([new Rectangle(new Point(-44, -60), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F76034'),
                new Rectangle(new Point(-27, -40), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F77134'),
-               new Rectangle(new Point(-10, -20), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78234')], defaultLocation, invisible)
+               new Rectangle(new Point(-10, -20), MaxPooling2D.blockSize, MaxPooling2D.blockSize, '#F78234')], defaultLocation)
     }
 
     populateParamBox() {
@@ -43,7 +43,7 @@ export class MaxPooling2D extends Layer {
     }
 
     public clone() {
-        let newLayer = new MaxPooling2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), true)
+        let newLayer = new MaxPooling2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation))
 
         newLayer.paramBox = this.paramBox
         return newLayer

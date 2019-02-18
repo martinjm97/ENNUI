@@ -14,6 +14,7 @@ import { layer } from "@tensorflow/tfjs-vis/dist/show/model";
 import { HyperparameterData, model } from "./paramsObject";
 import { displayError } from "../ui/error";
 import { BatchNorm } from "../ui/shapes/layers/batchnorm";
+import { Dropout } from "../ui/shapes/layers/dropout";
 
 export interface SerializedNetwork {
 	graph: Array<LayerJson>
@@ -205,6 +206,8 @@ function createLayerInstanceFromName(svgData: DraggableData, lj: LayerJson): Lay
 					layer = new Flatten(); break;
 				case "BatchNorm":
 					layer = new BatchNorm(location); break;
+				case "Dropout":
+					layer = new Dropout(location); break;
 				default:
 					 displayError(new Error(`The specified layer "${lj}" was not recognized. `));
 			}

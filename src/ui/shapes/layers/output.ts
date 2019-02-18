@@ -9,11 +9,10 @@ export class Output extends ActivationLayer {
     readonly tfjsEmptyLayer = tf.layers.dense ;
 
     defaultLocation = new Point(document.getElementById("svg").getBoundingClientRect().width - 100, document.getElementById("svg").getBoundingClientRect().height/2);
-
-    constructor(invisible=false){
+    constructor(){
         super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')],
                new Point(document.getElementById("svg").getBoundingClientRect().width - 100,
-               document.getElementById("svg").getBoundingClientRect().height/2), invisible);
+               document.getElementById("svg").getBoundingClientRect().height/2));
 
     }
 
@@ -31,7 +30,7 @@ export class Output extends ActivationLayer {
     }
 
     public clone() {
-        let newLayer = new Output(true);
+        let newLayer = new Output();
         newLayer.paramBox = this.paramBox;
         return newLayer;
     }

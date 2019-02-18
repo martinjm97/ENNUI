@@ -8,11 +8,11 @@ export class Conv2D extends ActivationLayer {
 
     static readonly blockSize: number = 50;
 
-    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), invisible=false) {
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#3B6B88'),
                new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#3B7B88'),
                new PathShape("M-20 -40 h50 v50 h-20 v-10 h-10 v10 h-20 v-50 Z", '#3B8B88')],
-               defaultLocation,invisible)
+               defaultLocation)
     }
 
     populateParamBox() {
@@ -75,7 +75,7 @@ export class Conv2D extends ActivationLayer {
     }
 
     public clone() {
-        let newConv : Conv2D = new Conv2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation),true)
+        let newConv : Conv2D = new Conv2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation))
         newConv.activation = this.activation
         newConv.paramBox = this.paramBox
 

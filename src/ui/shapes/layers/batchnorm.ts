@@ -10,9 +10,9 @@ export class BatchNorm extends ActivationLayer {
 
     static readonly blockSize: number = 50;
 
-    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), invisible=false) {
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([new PathShape("M-10 -90 L 20 -60 v70 h-10 v-10 h-10 v10 h-10 v-100 Z", '#CFB53B')],
-               defaultLocation, invisible)
+               defaultLocation)
     }
 
     populateParamBox() {
@@ -49,7 +49,7 @@ export class BatchNorm extends ActivationLayer {
     }
 
     public clone() {
-        let newBN : BatchNorm = new BatchNorm(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation),true)
+        let newBN : BatchNorm = new BatchNorm(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation))
         newBN.activation = this.activation
         newBN.paramBox = this.paramBox
 

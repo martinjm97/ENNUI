@@ -1,19 +1,10 @@
 import * as tf from '@tensorflow/tfjs';
 
-import { IMAGE_H, IMAGE_W } from './data';
-import { SymbolicTensor } from '@tensorflow/tfjs';
 import { Layer, ActivationLayer } from '../ui/shapes/layer';
 import { Input } from '../ui/shapes/layers/input';
 import { displayError } from '../ui/error';
-import { Dense } from '../ui/shapes/layers/dense';
-import { MaxPooling2D } from '../ui/shapes/layers/maxpooling';
-import { Conv2D } from '../ui/shapes/layers/convolutional';
-import { Flatten } from '../ui/shapes/layers/flatten';
-import { Concatenate } from '../ui/shapes/layers/concatenate';
-import { Output } from '../ui/shapes/layers/output';
 import { pythonSkeleton } from './python_skeleton';
 import { juliaSkeleton } from './julia_skeleton';
-import { BatchNorm } from '../ui/shapes/layers/batchnorm';
 
 
 let typeToTensor: Map<string, any> = new Map()
@@ -32,7 +23,10 @@ defaults.set("MaxPooling2D", {poolSize: [2,2]})
 defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, stride: [2,2]})
 defaults.set("Output", {units: 10, activation: 'softmax'})
 defaults.set("BatchNorm", {momentum: 0.99})
-defaults.set("ReLu", {})
+defaults.set("Flatten", {})
+defaults.set("Concatenate", {})
+defaults.set("Dropout", {rate: 0.5})
+
 
 
 export function buildNetworkDAG(input: Input) {
@@ -93,60 +87,6 @@ export function cloneNetwork(input: Input, newInput: Input) {
                 visited.add(child)
             }
         }
-    }
-}
-
-export function addInExtraLayers(input: Input) {
-    // Initialize queues, dags, and parents (visited)
-
-    let queue: Layer[] = [input]
-    let visited: Set<Layer> = new Set()
-    console.log("Building graph... ")
-    let toAddFlatten = []
-    let toAddConcatenate: Layer[] = []
-
-    while (queue.length != 0) {
-        let current = queue.shift()
-
-        // Dense takes in 1D input so flatten if necessary
-        if (current instanceof Dense || current instanceof Output) {
-            for (let parent of current.parents){
-
-                if (parent instanceof MaxPooling2D || parent instanceof Conv2D || parent instanceof Input) {
-                    toAddFlatten.push([current, parent])
-                    // current.addParentLayerBetween(new Flatten(), parent)
-                }
-
-                if (parent instanceof BatchNorm && (parent.hasParentType(MaxPooling2D) || parent.hasParentType(Conv2D) || parent.hasParentType(Input))){
-                    toAddFlatten.push([current, parent])
-
-                }
-            }
-        }
-
-        // Concatentate parents if necessary
-        if (current.parents.size > 1 && !(current instanceof Concatenate)) {
-            toAddConcatenate.push(current)
-            // current.addParentLayer(new Concatenate())
-        }
-
-        // Continue BFS
-        for (let child of current.children) {
-
-            if (!visited.has(child)) {
-                queue.push(child)
-                visited.add(child)
-            }
-        }
-    }
-
-
-    for (let [layer, parent] of toAddFlatten){
-        layer.addParentLayerBetween(new Flatten(), parent)
-    }
-
-    for (let layer of toAddConcatenate){
-        layer.addParentLayer(new Concatenate())
     }
 }
 
@@ -229,10 +169,7 @@ function generateTfjsModel(sorted: Layer[]){
 }
 
 function networkDAG(input: Input){
-    let newInput = <Input> input.clone();
-    cloneNetwork(input, newInput);
-    addInExtraLayers(newInput);
-    let toposorted = topologicalSort(newInput);
+    let toposorted = topologicalSort(input);
     let model = generateTfjsModel(toposorted);
     console.log(model.summary());
     return model;

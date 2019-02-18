@@ -6,8 +6,8 @@ export class Dense extends ActivationLayer {
     layerType = "Dense"
     readonly tfjsEmptyLayer = tf.layers.dense
 
-    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), invisible=false) {
-        super([new PathShape("M-8 -90 h26 v100 h-8 v-10 h-10 v10 h-8 v-100 Z", '#F7473B')], defaultLocation, invisible)
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
+        super([new PathShape("M-8 -90 h26 v100 h-8 v-10 h-10 v10 h-8 v-100 Z", '#F7473B')], defaultLocation)
     }
 
     populateParamBox() {
@@ -40,7 +40,7 @@ export class Dense extends ActivationLayer {
     }
 
     public clone() {
-        let newLayer = new Dense(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation),true)
+        let newLayer = new Dense(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation))
         newLayer.paramBox = this.paramBox
         newLayer.activation = this.activation
         return newLayer

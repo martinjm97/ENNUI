@@ -1,9 +1,11 @@
-import { ActivationLayer } from "./shapes/layer";
+import { ActivationLayer, Layer } from "./shapes/layer";
 import { Activation, Relu } from "./shapes/activation";
 import { Point } from "./shapes/shape";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { Dense } from "./shapes/layers/dense";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
+import { Flatten } from "./shapes/layers/flatten";
+import { Concatenate } from "./shapes/layers/concatenate";
 
 export function resetWorkspace(svgData) {
 	// Set input and output locations
@@ -26,23 +28,30 @@ export function defaultTemplate(svgData) {
 
 	// Initialize each of the layers and activations
 	let canvasBoundingBox = document.getElementById("svg").getBoundingClientRect();
-	let convStartingPosition = new Point(canvasBoundingBox.width/3, canvasBoundingBox.height/2)
-	let denseStartingPosition = new Point(canvasBoundingBox.width*2/3, canvasBoundingBox.height/2)
+	let convStartingPosition = new Point(canvasBoundingBox.width/4, canvasBoundingBox.height/2.5)
+	let flatStartingPosition = new Point(canvasBoundingBox.width/1.75, canvasBoundingBox.height/2.5)
+	let denseStartingPosition = new Point(canvasBoundingBox.width*5/6.5, canvasBoundingBox.height/2.5)
 	let conv: ActivationLayer = new Conv2D(convStartingPosition)
 	let convRelu: Activation = new Relu(convStartingPosition)
+
+	let flat: Layer = new Flatten(flatStartingPosition)
 	let dense: ActivationLayer = new Dense(denseStartingPosition)
 	let denseRelu: Activation = new Relu(denseStartingPosition)
     
     // Add relationships among layers and activations
 	svgData.input.addChild(conv)
-	conv.addChild(dense)
+	conv.addChild(flat)
 	conv.addActivation(convRelu)
+
+	flat.addChild(dense)
+
 	dense.addChild(svgData.output)
 	dense.addActivation(denseRelu)
 
 	// Store the new network
 	svgData.draggable.push(conv);
 	svgData.draggable.push(dense);
+	svgData.draggable.push(flat)
 	svgData.draggable.push(convRelu);
 	svgData.draggable.push(denseRelu);
 }
@@ -60,10 +69,11 @@ export function complexTemplate(svgData) {
 	let height = canvasBoundingBox.height;
 	let convStartingPosition = new Point(width/3, height/3);
 	let denseStartingPosition = new Point(width*3/4, height/2);
-	let conv2StartingPosition = new Point(width/2, height*2/3);
-	let maxpoolingStartingPosition = new Point(width*2/3, height/3);
-	let conv3StartingPosition = new Point(width/2, height/3);
-
+	let conv2StartingPosition = new Point(width/2.8, height*2/3);
+	let maxpoolingStartingPosition = new Point(width/2, height/3);
+	let concatStartingPosition = new Point(width*2/3, height/2.2);
+	let flat1StartingPosition = new Point(width*1.9/3, height/2.2);
+	let flat2StartingPosition = new Point(width/1.8, height*2/3);
 
 	let conv: ActivationLayer = new Conv2D(convStartingPosition);
 	let convRelu: Activation = new Relu(convStartingPosition);
@@ -72,8 +82,10 @@ export function complexTemplate(svgData) {
 	let conv2: ActivationLayer = new Conv2D(conv2StartingPosition);
 	let convRelu2: Activation = new Relu(conv2StartingPosition);
 	let maxpooling: MaxPooling2D = new MaxPooling2D(maxpoolingStartingPosition);
-	let conv3: ActivationLayer = new Conv2D(conv3StartingPosition)
-	let convRelu3: Activation = new Relu(conv3StartingPosition);
+	let concat: Concatenate = new Concatenate(concatStartingPosition);
+	let flat1: Flatten = new Flatten(flat1StartingPosition);
+	let flat2: Flatten = new Flatten(flat2StartingPosition);
+
 
 
 	// Add relationships among layers and activations
@@ -81,20 +93,25 @@ export function complexTemplate(svgData) {
 	svgData.input.addChild(conv);
 	svgData.input.addChild(conv2);
 
-	// conv -> conv3
-	conv.addChild(conv3);
+	// conv -> maxpool
+	conv.addChild(maxpooling);
 	conv.addActivation(convRelu)
 
-	// conv3 -> maxpooling
-	conv3.addChild(maxpooling);
-	conv3.addActivation(convRelu3);
-
-	// maxpooling -> dense
-	maxpooling.addChild(dense);
+	// maxpooling -> flat1
+	maxpooling.addChild(flat1);
 	
-	// conv2 -> dense
-	conv2.addChild(dense)
-	conv2.addActivation(convRelu2)
+	// conv2 -> flat2
+	conv2.addChild(flat2);
+	conv2.addActivation(convRelu2);
+
+	// concat -> dense
+	concat.addChild(dense);
+
+	// flat1 -> concat
+	flat1.addChild(concat);
+
+	// flat2 -> concat
+	flat2.addChild(concat);
 
 	// dense -> out
 	dense.addActivation(denseRelu);
@@ -104,10 +121,9 @@ export function complexTemplate(svgData) {
 	// Store the new network
 	svgData.draggable.push(conv);
 	svgData.draggable.push(conv2);
-	svgData.draggable.push(conv3);
 	svgData.draggable.push(dense);
-	svgData.draggable.push(maxpooling)
+	svgData.draggable.push(maxpooling);
 	svgData.draggable.push(convRelu);
 	svgData.draggable.push(convRelu2);
-	svgData.draggable.push(convRelu3);
+	svgData.draggable.push(concat);
 }
