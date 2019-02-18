@@ -126,4 +126,6 @@ export function complexTemplate(svgData) {
 	svgData.draggable.push(convRelu);
 	svgData.draggable.push(convRelu2);
 	svgData.draggable.push(concat);
+	svgData.draggable.push(flat1);
+	svgData.draggable.push(flat2);
 }
