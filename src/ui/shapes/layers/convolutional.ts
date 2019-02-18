@@ -38,7 +38,7 @@ export class Conv2D extends ActivationLayer {
         let name2 = document.createElement('div')
         name2.className = 'paramname'
         name2.innerHTML = 'Kernel size:'
-        name2.setAttribute('data-name','kernel_size')
+        name2.setAttribute('data-name','kernelSize')
         let value2 = document.createElement('input')
         value2.className = 'paramvalue'
         value2.value = '5, 5'
@@ -65,13 +65,13 @@ export class Conv2D extends ActivationLayer {
 
     public lineOfPython(): string {
         let params = this.getParams();
-        return `Conv2D(${params["filters"]}, (${params["kernel_size"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
+        return `Conv2D(${params["filters"]}, (${params["kernelSize"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
     }
 
     public lineOfJulia(): string {
         let params = this.getParams();
         let prev_id = this.parents.values().next().value.uid;
-        return `Conv((${params["kernel_size"]}), size(x${prev_id}, 3)=>${params["filters"]}, ${this.getActivationText()}, stride=(${params["strides"]}))(x${prev_id})`
+        return `Conv((${params["kernelSize"]}), size(x${prev_id}, 3)=>${params["filters"]}, ${this.getActivationText()}, stride=(${params["strides"]}))(x${prev_id})`
     }
 
     public clone() {

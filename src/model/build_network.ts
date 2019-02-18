@@ -7,20 +7,24 @@ import { pythonSkeleton } from './python_skeleton';
 import { juliaSkeleton } from './julia_skeleton';
 
 
-let typeToTensor: Map<string, any> = new Map()
+let typeToTensor: Map<string, any> = new Map();
 
-typeToTensor.set("Input", tf.input)
-typeToTensor.set("Dense", tf.layers.dense)
-typeToTensor.set("MaxPooling2D", tf.layers.maxPooling2d)
-typeToTensor.set("Conv2D", tf.layers.conv2d)
-typeToTensor.set("BatchNorm", tf.layers.batchNormalization)
+typeToTensor.set("Input", tf.input);
+typeToTensor.set("Dense", tf.layers.dense);
+typeToTensor.set("MaxPooling2D", tf.layers.maxPooling2d);
+typeToTensor.set("Conv2D", tf.layers.conv2d);
+typeToTensor.set("BatchNorm", tf.layers.batchNormalization);
+typeToTensor.set("Dropout", tf.layers.dropout);
+typeToTensor.set("Flatten", tf.layers.flatten);
+typeToTensor.set("Concatenate", tf.layers.concatenate);
+
 
 // TODO: change this to classes
 export let defaults: Map<string, any> = new Map()
 defaults.set("Input", {})
 defaults.set("Dense", {units: 30})
-defaults.set("MaxPooling2D", {poolSize: [2,2]})
-defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, stride: [2,2]})
+defaults.set("MaxPooling2D", {poolSize: [2,2], strides: [2,2]})
+defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, strides: [2,2]})
 defaults.set("Output", {units: 10, activation: 'softmax'})
 defaults.set("BatchNorm", {momentum: 0.99})
 defaults.set("Flatten", {})

@@ -6,8 +6,9 @@ import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
 import { parseString } from "../utils";
-import { defaults } from '../../model/build_network';
+import { defaults} from '../../model/build_network';
 import { displayError } from '../error';
+import { stratify } from 'd3';
 
 export interface LayerJson {
     layer_name: string
@@ -152,10 +153,21 @@ export abstract class Layer extends Draggable {
 
     public getParams(): Map<string, any> {
         let params: Map<string, any> = new Map()
+        let defaultParams  = defaults.get(this.layerType);
         for(let line of this.paramBox.children){
-			let name = line.children[0].getAttribute('data-name');
-			let value = line.children[1].value;
-			params[name] = parseString(value);
+			let name  = line.children[0].getAttribute('data-name');
+            let value = line.children[1].value;
+
+            // Need to not parse as integer for float parameters            
+            if ((defaultParams[name].toString()).indexOf('.') >= 0) {
+                params[name] = parseFloat(value);
+            }
+
+            else {
+                params[name] = parseString(value);
+
+            }
+            
         }
         return params
     }

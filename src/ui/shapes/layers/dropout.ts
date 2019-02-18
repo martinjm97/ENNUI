@@ -36,11 +36,13 @@ export class Dropout extends Layer {
     public lineOfPython(): string {
         let params = this.getParams();
 
-        return `Dropout(${params["rate"]})`
+        return `Dropout(rate=${params["rate"]})`;
     }
 
     public lineOfJulia(): string {
-        return ``
+        let params = this.getParams();
+
+        return `Dropout(${params["rate"]})`;
     }
 
     public clone() {
