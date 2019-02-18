@@ -26,6 +26,20 @@ export class MaxPooling2D extends Layer {
         line.appendChild(name);
         line.appendChild(value);
         this.paramBox.append(line);
+
+        let line2 = document.createElement('div')
+        line2.className = 'paramline'
+        let name2 = document.createElement('div')
+        name2.className = 'paramname'
+        name2.innerHTML = 'Strides:'
+        name2.setAttribute('data-name','strides')
+        let value2 = document.createElement('input')
+        value2.className = 'paramvalue'
+        value2.value = '2, 2'
+        line2.appendChild(name2);
+        line2.appendChild(value2);
+        this.paramBox.append(line2);
+
         this.focusing();
     }
 
@@ -33,7 +47,7 @@ export class MaxPooling2D extends Layer {
 
     public lineOfPython(): string {
         let params = this.getParams();
-        return `MaxPooling2D(pool_size=(${params["poolSize"]}))`
+        return `MaxPooling2D(pool_size=(${params["poolSize"]}, strides=(${params["strides"]})))`
     }
 
     public lineOfJulia(): string {
