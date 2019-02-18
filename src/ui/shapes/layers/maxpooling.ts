@@ -22,7 +22,7 @@ export class MaxPooling2D extends Layer {
         name.setAttribute('data-name','poolSize')
         let value = document.createElement('input')
         value.className = 'paramvalue'
-        value.value = '2,2';
+        value.value = '2, 2';
         line.appendChild(name);
         line.appendChild(value);
         this.paramBox.append(line);
