@@ -13,6 +13,8 @@ import { Concatenate } from '../ui/shapes/layers/concatenate';
 import { Output } from '../ui/shapes/layers/output';
 import { pythonSkeleton } from './python_skeleton';
 import { juliaSkeleton } from './julia_skeleton';
+import { BatchNorm } from '../ui/shapes/layers/batchnorm';
+
 
 let typeToTensor: Map<string, any> = new Map()
 
@@ -20,6 +22,7 @@ typeToTensor.set("Input", tf.input)
 typeToTensor.set("Dense", tf.layers.dense)
 typeToTensor.set("MaxPooling2D", tf.layers.maxPooling2d)
 typeToTensor.set("Conv2D", tf.layers.conv2d)
+typeToTensor.set("BatchNorm", tf.layers.batchNormalization)
 
 // TODO: change this to classes
 export let defaults: Map<string, any> = new Map()
@@ -28,6 +31,8 @@ defaults.set("Dense", {units: 30})
 defaults.set("MaxPooling2D", {poolSize: [2,2]})
 defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, stride: [2,2]})
 defaults.set("Output", {units: 10, activation: 'softmax'})
+defaults.set("BatchNorm", {momentum: 0.99})
+defaults.set("ReLu", {})
 
 
 export function buildNetworkDAG(input: Input) {
@@ -111,6 +116,11 @@ export function addInExtraLayers(input: Input) {
                     toAddFlatten.push([current, parent])
                     // current.addParentLayerBetween(new Flatten(), parent)
                 }
+
+                if (parent instanceof BatchNorm && (parent.hasParentType(MaxPooling2D) || parent.hasParentType(Conv2D) || parent.hasParentType(Input))){
+                    toAddFlatten.push([current, parent])
+
+                }
             }
         }
 
@@ -129,6 +139,7 @@ export function addInExtraLayers(input: Input) {
             }
         }
     }
+
 
     for (let [layer, parent] of toAddFlatten){
         layer.addParentLayerBetween(new Flatten(), parent)
@@ -182,6 +193,11 @@ export function generatePython(sorted: Layer[]){
             applystring = `([${[...layer.parents].map(p => "x" + p.uid).join(", ")}])`;
         }
         pythonScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
+
+        if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).getActivationText() == "relu") {
+            pythonScript += `x${layer.uid} = ` + "ReLu()" + `(x${layer.uid})`  + "\n";
+            
+        }
     }
     pythonScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})\n`
     return pythonSkeleton(pythonScript)
