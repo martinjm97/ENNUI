@@ -12,6 +12,7 @@ import { Output } from "./shapes/layers/output";
 import { Dense } from "./shapes/layers/dense";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
+import { BatchNorm } from "./shapes/layers/batchnorm";
 import { clearError, displayError } from "./error";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
 import { pythonSkeleton } from "../model/python_skeleton";
@@ -121,7 +122,8 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 				break;
 			case 'Delete' :
-				deleteSelected();
+				if (document.getElementsByClassName('focusParam').length == 0)
+					deleteSelected();
 				break;
 			case 'Backspace' :
 				if (document.getElementsByClassName('focusParam').length == 0)
@@ -367,6 +369,8 @@ function appendItem(options){
 			case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
 			case "conv2D": item = new Conv2D(); console.log("Created Conv2D Layer"); break;
 			case "maxPooling2D": item = new MaxPooling2D(); console.log("Created MaxPooling2D Layer"); break;
+			case "batchnorm": item = new BatchNorm(); console.log("Created Batch Normalization Layer"); break;
+
 		}
 		case 'activation': switch(options.detail.activationType) {
 			case 'relu': item = new Relu(); console.log("Created Relu"); break;

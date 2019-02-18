@@ -68,7 +68,7 @@ export abstract class Layer extends Draggable {
             this.paramBox.className = 'parambox'
             this.paramBox.style.visibility = 'hidden'
             this.paramBox.style.position = 'absolute'
-	    this.paramBox.style.position = 'absolute'
+	        this.paramBox.style.position = 'absolute'
             this.paramBox.style.position = 'absolute'
             document.getElementById("paramtruck").appendChild(this.paramBox);
 
@@ -211,6 +211,20 @@ export abstract class Layer extends Draggable {
         this.parents.add(layer)
     }
 
+    /**
+     * Make new child -> this become this -> newChild -> old children.
+     * @param newChild a new child of this
+     */
+    public addChildLayerBetween(newChild: Layer){
+        for (let child of this.children){
+            newChild.addChild(child)
+            child.parents.delete(this)
+        }
+        this.children.clear()
+        this.addChild(newChild)
+        newChild.addParent(this)
+    }
+
     public getTfjsLayer(){
         return this.tfjsLayer
     }
@@ -225,7 +239,18 @@ export abstract class Layer extends Draggable {
         let parent:Layer = null
         for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
+        console.log('here')
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
+    }
+
+    public hasParentType(type){
+        for (let p of this.parents){
+            if (p instanceof type){
+                return true
+            }
+        }
+
+        return false;
     }
 
 }
@@ -236,6 +261,8 @@ export abstract class Layer extends Draggable {
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
     static defaultInitialLocation = new Point(100,100)
+
+    // Note: The activation will snap to the 0,0 point of an ActivationLayer
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100), invisible=false) {
         super(block, defaultLocation, invisible)
 
