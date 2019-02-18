@@ -13,6 +13,7 @@ import { Activation, Relu, Sigmoid, Tanh } from "../ui/shapes/activation";
 import { layer } from "@tensorflow/tfjs-vis/dist/show/model";
 import { HyperparameterData, model } from "./paramsObject";
 import { displayError } from "../ui/error";
+import { BatchNorm } from "../ui/shapes/layers/batchnorm";
 
 export interface SerializedNetwork {
 	graph: Array<LayerJson>
@@ -167,7 +168,7 @@ function createActivationInstanceFromName(svgData: DraggableData, layer: Activat
 			activation = new Tanh()
 			break;
 		default:
-			throw Error(`The specified activation "${activation_name}" was not recognized. `)
+			displayError(new Error(`The specified activation "${activation_name}" was not recognized. `))
 	}
 	layer.addActivation(activation)
 	svgData.draggable.push(activation)
@@ -202,8 +203,10 @@ function createLayerInstanceFromName(svgData: DraggableData, lj: LayerJson): Lay
 					layer = new Concatenate(); break;
 				case "Flatten":
 					layer = new Flatten(); break;
+				case "BatchNorm":
+					layer = new BatchNorm(location); break;
 				default:
-					throw Error(`The specified layer "${lj}" was not recognized. `)
+					 displayError(new Error(`The specified layer "${lj}" was not recognized. `));
 			}
 			svgData.draggable.push(layer);
 			break;
