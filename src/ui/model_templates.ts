@@ -71,7 +71,7 @@ export function complexTemplate(svgData) {
 	let denseStartingPosition = new Point(width*3/4, height/2);
 	let conv2StartingPosition = new Point(width/2.8, height*2/3);
 	let maxpoolingStartingPosition = new Point(width/2, height/3);
-	let concatStartingPosition = new Point(width*2/3, height/2.2);
+	let concatStartingPosition = new Point(width*2/3, height/1.9);
 	let flat1StartingPosition = new Point(width*1.9/3, height/2.2);
 	let flat2StartingPosition = new Point(width/1.8, height*2/3);
 
