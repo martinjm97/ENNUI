@@ -1,8 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { Layer } from "../layer";
 import { Point, Rectangle } from "../shape";
-import { defaults } from '../../../model/build_network';
-import { IMAGE_H, IMAGE_W, NUM_TRAIN_ELEMENTS } from '../../../model/data';
+import { IMAGE_H, IMAGE_W} from '../../../model/data';
 
 export class Input extends Layer {
     layerType = "Input"
@@ -10,8 +9,8 @@ export class Input extends Layer {
 
     defaultLocation = new Point(100, document.getElementById("svg").getBoundingClientRect().height/2)
 
-	constructor(invisible=false){
-        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, document.getElementById("svg").getBoundingClientRect().height/2), invisible)
+	constructor(){
+        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, document.getElementById("svg").getBoundingClientRect().height/2))
     }
 
     getHoverText(): string { return "Input"; }
@@ -32,7 +31,7 @@ export class Input extends Layer {
     }
 
     public clone() {
-        let newLayer = new Input(true)
+        let newLayer = new Input()
 
         return newLayer
     }
