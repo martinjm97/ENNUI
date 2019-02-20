@@ -6,6 +6,7 @@ import { Dense } from "./shapes/layers/dense";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { Flatten } from "./shapes/layers/flatten";
 import { Concatenate } from "./shapes/layers/concatenate";
+import { BatchNorm } from "./shapes/layers/batchnorm";
 
 export function resetWorkspace(svgData) {
 	// Set input and output locations
@@ -70,6 +71,7 @@ export function complexTemplate(svgData) {
 	let convStartingPosition = new Point(width/3, height/3);
 	let denseStartingPosition = new Point(width*3/4, height/2);
 	let conv2StartingPosition = new Point(width/2.8, height*2/3);
+	let batchStartingPosition = new Point(width/2.35, height*2/3);
 	let maxpoolingStartingPosition = new Point(width/2, height/3);
 	let concatStartingPosition = new Point(width*2/3, height/1.9);
 	let flat1StartingPosition = new Point(width*1.9/3, height/2.2);
@@ -83,6 +85,7 @@ export function complexTemplate(svgData) {
 	let convRelu2: Activation = new Relu(conv2StartingPosition);
 	let maxpooling: MaxPooling2D = new MaxPooling2D(maxpoolingStartingPosition);
 	let concat: Concatenate = new Concatenate(concatStartingPosition);
+	let batch: ActivationLayer = new BatchNorm(batchStartingPosition);
 	let flat1: Flatten = new Flatten(flat1StartingPosition);
 	let flat2: Flatten = new Flatten(flat2StartingPosition);
 
@@ -100,9 +103,12 @@ export function complexTemplate(svgData) {
 	// maxpooling -> flat1
 	maxpooling.addChild(flat1);
 	
-	// conv2 -> flat2
-	conv2.addChild(flat2);
+	// conv2 -> batch
+	conv2.addChild(batch);
 	conv2.addActivation(convRelu2);
+
+	// batch -> flat2
+	batch.addChild(flat2);
 
 	// concat -> dense
 	concat.addChild(dense);
@@ -128,4 +134,5 @@ export function complexTemplate(svgData) {
 	svgData.draggable.push(concat);
 	svgData.draggable.push(flat1);
 	svgData.draggable.push(flat2);
+	svgData.draggable.push(batch);
 }
