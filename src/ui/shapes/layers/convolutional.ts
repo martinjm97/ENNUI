@@ -8,11 +8,11 @@ export class Conv2D extends ActivationLayer {
 
     static readonly blockSize: number = 50;
 
-    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), invisible=false) {
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
         super([new Rectangle(new Point(-54, -80), Conv2D.blockSize, Conv2D.blockSize, '#3B6B88'),
                new Rectangle(new Point(-37, -60), Conv2D.blockSize, Conv2D.blockSize, '#3B7B88'),
                new PathShape("M-20 -40 h50 v50 h-20 v-10 h-10 v10 h-20 v-50 Z", '#3B8B88')],
-               defaultLocation,invisible)
+               defaultLocation)
     }
 
     populateParamBox() {
@@ -38,7 +38,7 @@ export class Conv2D extends ActivationLayer {
         let name2 = document.createElement('div')
         name2.className = 'paramname'
         name2.innerHTML = 'Kernel size:'
-        name2.setAttribute('data-name','kernel_size')
+        name2.setAttribute('data-name','kernelSize')
         let value2 = document.createElement('input')
         value2.className = 'paramvalue'
         value2.value = '5, 5'
@@ -65,17 +65,17 @@ export class Conv2D extends ActivationLayer {
 
     public lineOfPython(): string {
         let params = this.getParams();
-        return `Conv2D(${params["filters"]}, (${params["kernel_size"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
+        return `Conv2D(${params["filters"]}, (${params["kernelSize"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
     }
 
     public lineOfJulia(): string {
         let params = this.getParams();
         let prev_id = this.parents.values().next().value.uid;
-        return `Conv((${params["kernel_size"]}), size(x${prev_id}, 3)=>${params["filters"]}, ${this.getActivationText()}, stride=(${params["strides"]}))(x${prev_id})`
+        return `Conv((${params["kernelSize"]}), size(x${prev_id}, 3)=>${params["filters"]}, ${this.getActivationText()}, stride=(${params["strides"]}))(x${prev_id})`
     }
 
     public clone() {
-        let newConv : Conv2D = new Conv2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation),true)
+        let newConv : Conv2D = new Conv2D(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation))
         newConv.activation = this.activation
         newConv.paramBox = this.paramBox
 

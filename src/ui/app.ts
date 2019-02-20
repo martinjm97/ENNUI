@@ -1,7 +1,7 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython } from "../model/build_network";
+import { buildNetworkDAG, topologicalSort, cloneNetwork, generatePython } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
@@ -17,6 +17,10 @@ import { clearError, displayError } from "./error";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
 import { pythonSkeleton } from "../model/python_skeleton";
 import { copyTextToClipboard } from "./utils";
+import { browserLocalStorage } from "@tensorflow/tfjs-core/dist/io/local_storage";
+import { Concatenate } from "./shapes/layers/concatenate";
+import { Flatten } from "./shapes/layers/flatten";
+import { Dropout } from "./shapes/layers/dropout";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -319,10 +323,7 @@ function  dispatchCreationOnClick(elmt){
 				updateNetworkParameters({itemType: itemType, setting : setting});
 			} else if (itemType == "share") {
 				if (elmt.getAttribute('share-option') == "exportPython") {
-					let newInput = svgData.input.clone()
-					cloneNetwork(svgData.input, newInput)
-					addInExtraLayers(newInput)
-					download(generatePython(topologicalSort(newInput)), "mnist_model.py");
+					download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
 				} else if (elmt.getAttribute('share-option') == "copyModel"){
 					let state = graphToJson(svgData)
 					let baseUrl: string = window.location.href
@@ -370,6 +371,10 @@ function appendItem(options){
 			case "conv2D": item = new Conv2D(); console.log("Created Conv2D Layer"); break;
 			case "maxPooling2D": item = new MaxPooling2D(); console.log("Created MaxPooling2D Layer"); break;
 			case "batchnorm": item = new BatchNorm(); console.log("Created Batch Normalization Layer"); break;
+			case "flatten": item = new Flatten(); console.log("Created Flatten Layer"); break;
+			case "concatenate": item = new Concatenate(); console.log("Created Concatenate Layer"); break;
+			case "dropout": item = new Dropout(); console.log("Created Dropout Layer"); break;
+
 
 		}
 		case 'activation': switch(options.detail.activationType) {
