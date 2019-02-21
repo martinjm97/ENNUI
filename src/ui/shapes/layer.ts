@@ -45,7 +45,7 @@ export abstract class Layer extends Draggable {
         this.uid = Layer.nextID
         Layer.nextID += 1
         this.block = block
-        
+
         for (let rect of this.block) {
             this.svgComponent.call(rect.svgAppender.bind(rect))
         }
@@ -76,7 +76,7 @@ export abstract class Layer extends Draggable {
 
         this.populateParamBox()
 
-        
+
 
     }
 
@@ -125,7 +125,7 @@ export abstract class Layer extends Draggable {
             let newWire = new Wire(this, child)
             this.wires.add(newWire)
             child.wires.add(newWire)
-            
+
         }
     }
 
@@ -161,7 +161,7 @@ export abstract class Layer extends Draggable {
 			let name  = line.children[0].getAttribute('data-name');
             let value = line.children[1].value;
 
-            // Need to not parse as integer for float parameters            
+            // Need to not parse as integer for float parameters
             if ((defaultParams[name].toString()).indexOf('.') >= 0) {
                 params[name] = parseFloat(value);
             }
@@ -169,7 +169,7 @@ export abstract class Layer extends Draggable {
             else {
                 params[name] = parseString(value);
             }
-            
+
         }
         return params
     }
@@ -257,7 +257,7 @@ export abstract class Layer extends Draggable {
         if (this.parents.size > 1) {
             displayError(new Error("Must use a concatenate when a layer has multiple parents"));
         }
-        
+
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
 
@@ -297,12 +297,13 @@ export abstract class ActivationLayer extends Layer {
         }
     }
 
-    public select() {
-        super.select()
+    public raise() {
+        super.raise()
         if (this.activation != null) {
-            this.activation.svgComponent.raise()
+            this.activation.raise()
         }
     }
+
     public delete() {
         super.delete()
         // Remove this layer from global state
@@ -358,7 +359,7 @@ export abstract class ActivationLayer extends Layer {
         for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
 
-        
+
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer());
     }
 }
