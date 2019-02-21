@@ -19,25 +19,25 @@ export abstract class Draggable {
                        .style("user-select","none")
                        .text(this.getHoverText());
     moveTimeout: any;
-    
-    constructor(defaultLocation=new Point(50,100), invisible=false) {        
+
+    constructor(defaultLocation=new Point(50,100), invisible=false) {
         if(!invisible) {
             this.svgComponent = d3.select<SVGGraphicsElement, {}>("#svg")
                                 .append<SVGGraphicsElement>("g")
                                 .attr('transform','translate('+defaultLocation.x+','+defaultLocation.y+')')
-                                .on("click", () => { 
+                                .on("click", () => {
                                     this.select()
                                     window.clearTimeout(this.moveTimeout)
-                                    this.hoverText.style("visibility", "hidden") 
+                                    this.hoverText.style("visibility", "hidden")
                                     })
                                 .on("contextmenu", () => {
                                     window.clearTimeout(this.moveTimeout)
-                                    this.hoverText.style("visibility", "hidden") 
+                                    this.hoverText.style("visibility", "hidden")
                                     })
                                 .on("mousemove", () => {
                                     this.hoverText.style("visibility", "hidden")
                                     clearTimeout(this.moveTimeout);
-                                    this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 100);
+                                    this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 280);
                                     this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
                                 .on("mouseout", () => {clearTimeout(this.moveTimeout)})
             this.makeDraggable()
@@ -64,7 +64,7 @@ export abstract class Draggable {
                 }
                 // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
                 // instead of after actually dragging a little bit)
-                this.select()                
+                this.select()
                 firstDrag = false
             }
             let canvasBoundingBox = document.getElementById("svg").getBoundingClientRect()
@@ -78,7 +78,7 @@ export abstract class Draggable {
         }
 
         let dragHandler = d3.drag().touchable(true).clickDistance(4)
-            .on("drag", dragThings) 
+            .on("drag", dragThings)
             .on("end", () => {firstDrag = true; mousePosRelativeToCenter = null;})
 
         this.svgComponent.call(dragHandler)
@@ -86,6 +86,11 @@ export abstract class Draggable {
 
     // Special behavior when being dragged e.g. activations snap to Layers
     public dragAction(d) {}
+
+    // Bring in front of the other UI elements
+    public raise(){
+        this.svgComponent.raise()
+    }
 
     // The text to display when hovering over an object
     public getHoverText(): string { return "" }
@@ -98,7 +103,7 @@ export abstract class Draggable {
             windowProperties.selectedElement.unselect()
         }
         windowProperties.selectedElement = this
-        this.svgComponent.raise()
+        this.raise()
         this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
     }
 
@@ -116,14 +121,14 @@ export abstract class Draggable {
         let bbox = this.svgComponent.node().getBBox()
         return new Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2)
     }
-    
+
 
     getPosition(): Point {
 		let transformation = this.svgComponent.attr('transform')
 		let numArr = transformation.substring( transformation.indexOf('(') + 1 , transformation.indexOf(')') ).split(',').map(value => parseInt(value));
         return new Point(numArr[0], numArr[1])
     }
-    
+
     setPosition(position: Point) {
 		this.svgComponent.attr('transform','translate('+position.x+','+position.y+')')
     }
