@@ -68,14 +68,14 @@ export function complexTemplate(svgData) {
 	let canvasBoundingBox = document.getElementById("svg").getBoundingClientRect();
 	let width = canvasBoundingBox.width;
 	let height = canvasBoundingBox.height;
-	let convStartingPosition = new Point(width/3, height/3);
+	let convStartingPosition = new Point(width/3.5, height/3);
 	let denseStartingPosition = new Point(width*3/4, height/2);
-	let conv2StartingPosition = new Point(width/2.8, height*2/3);
-	let batchStartingPosition = new Point(width/2.35, height*2/3);
-	let maxpoolingStartingPosition = new Point(width/2, height/3);
+	let conv2StartingPosition = new Point(width/3.5, height*2/3);
+	let batchStartingPosition = new Point(width/2.5, height*2/3);
+	let maxpoolingStartingPosition = new Point(width/2.5, height/3);
 	let concatStartingPosition = new Point(width*2/3, height/1.9);
-	let flat1StartingPosition = new Point(width*1.9/3, height/2.2);
-	let flat2StartingPosition = new Point(width/1.8, height*2/3);
+	let flat1StartingPosition = new Point(width/1.7, height/2.2);
+	let flat2StartingPosition = new Point(width/1.7, height*2/3);
 
 	let conv: ActivationLayer = new Conv2D(convStartingPosition);
 	let convRelu: Activation = new Relu(convStartingPosition);
