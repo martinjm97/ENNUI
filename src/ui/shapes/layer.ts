@@ -93,6 +93,9 @@ export abstract class Layer extends Draggable {
         if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
             currSelected.addChild(this)
         }
+        for (let wire of this.wires) {
+            wire.raise()
+        }
         super.select()
         this.wireCircle.style("visibility", "visible")
         document.getElementById("defaultparambox").style.display = "none"
