@@ -47,7 +47,7 @@ export class MaxPooling2D extends Layer {
 
     public lineOfPython(): string {
         let params = this.getParams();
-        return `MaxPooling2D(pool_size=(${params["poolSize"]}, strides=(${params["strides"]})))`
+        return `MaxPooling2D(pool_size=(${params["poolSize"]}), strides=(${params["strides"]}))`
     }
 
     public lineOfJulia(): string {
