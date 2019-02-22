@@ -97,6 +97,7 @@ export abstract class Layer extends Draggable {
             wire.raise()
         }
         super.select()
+        this.raise()
         this.wireCircle.style("visibility", "visible")
         document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
