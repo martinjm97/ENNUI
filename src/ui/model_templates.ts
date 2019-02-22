@@ -17,7 +17,7 @@ export function resetWorkspace(svgData) {
 	if (svgData.output != null){
 		svgData.output.setPosition(svgData.output.defaultLocation)
 	}
-    
+
     // Remove all other layers
     for (let layer of svgData.draggable) {
         layer.delete();
@@ -38,7 +38,7 @@ export function defaultTemplate(svgData) {
 	let flat: Layer = new Flatten(flatStartingPosition)
 	let dense: ActivationLayer = new Dense(denseStartingPosition)
 	let denseRelu: Activation = new Relu(denseStartingPosition)
-    
+
     // Add relationships among layers and activations
 	svgData.input.addChild(conv)
 	conv.addChild(flat)
@@ -82,10 +82,10 @@ export function complexTemplate(svgData) {
 	let dense: ActivationLayer = new Dense(denseStartingPosition);
 	let denseRelu: Activation = new Relu(denseStartingPosition);
 	let conv2: ActivationLayer = new Conv2D(conv2StartingPosition);
-	let convRelu2: Activation = new Relu(conv2StartingPosition);
 	let maxpooling: MaxPooling2D = new MaxPooling2D(maxpoolingStartingPosition);
 	let concat: Concatenate = new Concatenate(concatStartingPosition);
 	let batch: ActivationLayer = new BatchNorm(batchStartingPosition);
+	let batchRelu2: Activation = new Relu(batchStartingPosition);
 	let flat1: Flatten = new Flatten(flat1StartingPosition);
 	let flat2: Flatten = new Flatten(flat2StartingPosition);
 
@@ -102,13 +102,13 @@ export function complexTemplate(svgData) {
 
 	// maxpooling -> flat1
 	maxpooling.addChild(flat1);
-	
+
 	// conv2 -> batch
 	conv2.addChild(batch);
-	conv2.addActivation(convRelu2);
 
 	// batch -> flat2
 	batch.addChild(flat2);
+	batch.addActivation(batchRelu2);
 
 	// concat -> dense
 	concat.addChild(dense);
@@ -130,7 +130,7 @@ export function complexTemplate(svgData) {
 	svgData.draggable.push(dense);
 	svgData.draggable.push(maxpooling);
 	svgData.draggable.push(convRelu);
-	svgData.draggable.push(convRelu2);
+	svgData.draggable.push(batchRelu2);
 	svgData.draggable.push(concat);
 	svgData.draggable.push(flat1);
 	svgData.draggable.push(flat2);
