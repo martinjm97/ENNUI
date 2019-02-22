@@ -39,8 +39,8 @@ export class Wire {
                                 .attr("points", "0,16, 20,0, 0,-16")
 
         this.updatePosition()
-        this.source.svgComponent.raise()
-        this.dest.svgComponent.raise()
+        this.source.raise()
+        this.dest.raise()
 
         this.line.on("click", () => {this.select()})
         this.triangle.on("click", () => {this.select()})
@@ -61,8 +61,8 @@ export class Wire {
 
     public raise() {
         this.group.raise()
-        this.source.svgComponent.raise()
-        this.dest.svgComponent.raise()
+        this.source.raise()
+        this.dest.raise()
     }
 
     public select() {

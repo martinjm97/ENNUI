@@ -10,26 +10,28 @@ export abstract class Activation extends Draggable {
     abstract activationType: string;
     static defaultLocation: Point = new Point(50, 150);
     body: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-    
-    constructor(color: string, defaultLocation) { 
+
+    constructor(color: string, defaultLocation) {
         super(defaultLocation);
 
         this.body = this.svgComponent.append<SVGGraphicsElement>("path").attr("d", "M0 0 h10 v10 h8 v20 h-26 v-20 h8 v-10 Z")
                                                                         .style("fill", color)
 
-        // let middleTooth: Rectangle = new Rectangle(new Point(0, 0), 10, 10, color);
-        // let lowerBlock: Rectangle = new Rectangle(new Point(-8, 10), 26, 20, color);
+        this.makeDraggable()
+    }
 
-        // this.svgComponent.call(lowerBlock.svgAppender.bind(lowerBlock))
-        // this.svgComponent.call(middleTooth.svgAppender.bind(middleTooth))
 
-        this.makeDraggable() 
+    public delete() {
+        console.log("Deleting")
+        if (this.layer != null) {
+            this.layer.activation = null
+        }
+        super.delete()
     }
 
     public select() {
         super.select()
         this.body.style("stroke", "yellow").style("stroke-width", "2")
-
     }
 
     public unselect() {
@@ -56,7 +58,7 @@ export abstract class Activation extends Draggable {
             if (this.layer != null) {
                 this.layer.removeActivation()
                 this.layer = null
-            } 
+            }
             closestLayer.addActivation(this)
             this.layer = closestLayer
         } else if (this.layer != null) { // otherwise, if we unsnap update as appropriate
@@ -72,14 +74,14 @@ export class Relu extends Activation {
     activationType = "relu"
 
     constructor(defaultLocation=Point.randomPoint(50, 50, Activation.defaultLocation)) {
-        
+
         super("#B29F9C", defaultLocation)
 
         this.svgComponent.append("path").attr("d", "M-5 20 l10 0 l7 -7")
                                         .style("stroke", "black")
                                         .style("stroke-width", 3)
                                         .style("fill", "none")
-        
+
     }
 
     getHoverText(): string { return "relu" }
@@ -105,7 +107,7 @@ export class Sigmoid extends Activation {
 
 export class Tanh extends Activation {
     activationType = "tanh"
-    
+
     constructor(defaultLocation=Point.randomPoint(50, 50, Activation.defaultLocation)) {
         super("#A3A66D", defaultLocation)
 
@@ -113,7 +115,7 @@ export class Tanh extends Activation {
         .style("stroke", "black")
         .style("stroke-width", 3)
         .style("fill", "none")
-        
+
     }
 
     getHoverText(): string { return "tanh" }
@@ -121,7 +123,7 @@ export class Tanh extends Activation {
 
 export class Softmax extends Activation {
     activationType = "softmax"
-    
+
     constructor(defaultLocation=Point.randomPoint(50, 50, Activation.defaultLocation)) {
         super("#FFFFFF", defaultLocation)
 
@@ -131,7 +133,7 @@ export class Softmax extends Activation {
         .style("stroke-width", 3)
         .style("fill", "none")
 
-        
+
     }
 
     getHoverText(): string { return "softmax" }
