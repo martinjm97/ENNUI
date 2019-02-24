@@ -34,7 +34,7 @@ export abstract class Layer extends Draggable {
     wires: Set<Wire> = new Set();
     wireCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     wireCircleSelected: boolean = false;
-    static nextID: number = 0;
+    private static nextID: number = 0;
     uid: number;
     abstract lineOfPython(): string;
     abstract getHoverText(): string;
@@ -75,9 +75,12 @@ export abstract class Layer extends Draggable {
         document.getElementById("paramtruck").appendChild(this.paramBox);
 
         this.populateParamBox()
+    }
 
-
-
+    public static getNextID(){
+        let id = Layer.nextID;
+        Layer.nextID += 1;
+        return id;
     }
 
     populateParamBox() {}
@@ -158,12 +161,9 @@ export abstract class Layer extends Draggable {
     public getParams(): Map<string, any> {
         let params: Map<string, any> = new Map()
         let defaultParams = defaults.get(this.layerType);
-        console.log("getting params")
         for(let line of this.paramBox.children){
 			let name  = line.children[0].getAttribute('data-name');
             let value = line.children[1].value;
-            console.log("name", name)
-            console.log("value", value)
 
             // Need to not parse as integer for float parameters
             if ((defaultParams[name].toString()).indexOf('.') >= 0) {
@@ -339,7 +339,7 @@ export abstract class ActivationLayer extends Layer {
     }
 
     public getActivationText(): string {
-        return this.activation.activationType;
+        return this.activation != null ? this.activation.activationType : null;
     }
 
     public removeActivation() {

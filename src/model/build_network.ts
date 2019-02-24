@@ -160,10 +160,9 @@ export function generatePython(sorted: Layer[]){
         // TODO: Move this to BatchNorm and generalize layerstring to an array
         if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).activation != null) {
             pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";
-
         }
     }
-    pythonScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})`
+    pythonScript += `model = Model(inputs=x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})`
     return pythonSkeleton(pythonScript)
 }
 
@@ -178,7 +177,7 @@ export function generateJulia(sorted: Layer[]): string {
         juliaInitialization += layer.initLineOfJulia();
         juliaScript += layer.lineOfJulia();
     }
-    return juliaSkeleton(juliaInitialization, juliaScript)
+    return juliaSkeleton(juliaInitialization, juliaScript);
 }
 
 /**
@@ -186,10 +185,10 @@ export function generateJulia(sorted: Layer[]): string {
  * @param sorted topologically sorted list of layers
  */
 function generateTfjsModel(sorted: Layer[]){
-    sorted.forEach(layer => layer.generateTfjsLayer())
-    let input = sorted[0].getTfjsLayer()
-    let output = sorted[sorted.length - 1].getTfjsLayer()
-    return tf.model({inputs: input, outputs: output})
+    sorted.forEach(layer => layer.generateTfjsLayer());
+    let input = sorted[0].getTfjsLayer();
+    let output = sorted[sorted.length - 1].getTfjsLayer();
+    return tf.model({inputs: input, outputs: output});
 }
 
 function networkDAG(toposorted){
