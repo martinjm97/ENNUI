@@ -58,19 +58,23 @@ export class BatchNorm extends ActivationLayer {
     }
 
     public generateTfjsLayer(){
-        let parameters = {momentum: 0.99}
-        let config = this.getParams()
+        let parameters = {momentum: 0.99};
+        let config = this.getParams();
         for (let param in config) {
-            parameters[param] = config[param]
+            parameters[param] = config[param];
         }
 
-        let parent:Layer = null
+        let parent:Layer = null;
         for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
-        this.tfjsLayer = <SymbolicTensor>this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
+        this.tfjsLayer = <SymbolicTensor>this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer());
 
         if (this.activation != null) {
-            this.tfjsLayer = <SymbolicTensor>tf.layers.reLU().apply(this.tfjsLayer)
+
+            if(this.activation.activationType != "relu") {
+                displayError(new Error("Batch Normalization does not support activations other than ReLu"));
+            }
+            this.tfjsLayer = <SymbolicTensor>tf.layers.reLU().apply(this.tfjsLayer);
         }
     }
 
