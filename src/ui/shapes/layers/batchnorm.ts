@@ -43,7 +43,7 @@ export class BatchNorm extends ActivationLayer {
         return `BatchNormalization(momentum=${params["momentum"]})`
     }
 
-    public lineOfJulia(): string {
+    public initLineOfJulia(): string {
         displayError(new Error('Batch Normalization is not yet supported for Julia.'));
         return ``;
     }
