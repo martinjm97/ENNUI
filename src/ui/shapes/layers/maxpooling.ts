@@ -43,7 +43,7 @@ export class MaxPooling2D extends Layer {
         this.focusing();
     }
 
-    getHoverText(): string { return "maxpool" }
+    getHoverText(): string { return "Maxpool" }
 
     public lineOfPython(): string {
         let params = this.getParams();
