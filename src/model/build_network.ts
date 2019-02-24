@@ -159,6 +159,9 @@ export function generatePython(sorted: Layer[]){
 
         // TODO: Move this to BatchNorm and generalize layerstring to an array
         if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).activation != null) {
+            if(this.activation.activationType != "relu") {
+                displayError(new Error("Batch Normalization does not support activations other than ReLu"));
+            }
             pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";
         }
     }
