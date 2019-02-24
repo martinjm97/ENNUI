@@ -158,9 +158,12 @@ export abstract class Layer extends Draggable {
     public getParams(): Map<string, any> {
         let params: Map<string, any> = new Map()
         let defaultParams = defaults.get(this.layerType);
+        console.log("getting params")
         for(let line of this.paramBox.children){
 			let name  = line.children[0].getAttribute('data-name');
             let value = line.children[1].value;
+            console.log("name", name)
+            console.log("value", value)
 
             // Need to not parse as integer for float parameters
             if ((defaultParams[name].toString()).indexOf('.') >= 0) {
