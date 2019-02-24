@@ -95,12 +95,12 @@ function forward(net, data)
     net.data[size(worklist, 1)]
 end
 
-loss(x, y) = crossentropy(forward(net, x), y)
+loss(x, y) = ${model.params.getJuliaLoss()}(network(x), y)
 
 accuracy(x, y) = mean(onecold(forward(net, x)) .== onecold(y))
 
 evalcb = throttle(() -> @show(accuracy(tX, tY)), 10)
-opt = Descent(0.1)
+opt = ${model.params.getJuliaOptimizer()}(${model.params.learningRate})
 
 for i in 1:6
     Flux.train!(loss, params(net), train, opt, cb = evalcb)
