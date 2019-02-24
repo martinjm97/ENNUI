@@ -121,7 +121,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	window.onkeyup = function(event){
 		switch(event.key){
 			case 'Escape' :
-				if(windowProperties.selectedElement){
+				if (document.getElementById("informationTab").style.display != "none") {
+					showInformationOverlay();
+				}
+				else if(windowProperties.selectedElement){
 					windowProperties.selectedElement.unselect();
 					windowProperties.selectedElement = null;
 				}
@@ -135,12 +138,19 @@ document.addEventListener("DOMContentLoaded", function() {
 					deleteSelected();
 				break;
 			case 'Enter' :
+				if (document.getElementById("informationTab").style.display != "none") {
+					showInformationOverlay();
+				}
 				break;
 		}
 	};
 
 
 	svgData = loadStateIfPossible()
+
+	// Begin page with info tab
+	showInformationOverlay();
+
 
 });
 
@@ -450,8 +460,6 @@ function switchTab(tab) {
 	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected")
 	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected")
 
-
-
 }
 
 function showInformationOverlay() {
@@ -461,3 +469,4 @@ function showInformationOverlay() {
 		document.getElementById("informationTab").style.display = "none";
 	}
 }
+
