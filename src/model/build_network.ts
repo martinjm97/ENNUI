@@ -160,10 +160,10 @@ export function generatePython(sorted: Layer[]){
         // TODO: Move this to BatchNorm and generalize layerstring to an array
         if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).activation != null) {
             pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";
-            
+
         }
     }
-    pythonScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})\n`
+    pythonScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})`
     return pythonSkeleton(pythonScript)
 }
 
@@ -171,13 +171,14 @@ export function generatePython(sorted: Layer[]){
  * Creates corresponding Julia code.
  * @param sorted topologically sorted list of layers
  */
-export function generateJulia(sorted: Layer[]){
-    let juliaScript: string = ""
+export function generateJulia(sorted: Layer[]): string {
+    let juliaInitialization:string = "";
+    let juliaScript: string = "";
     for (let layer of sorted) {
-        let layerstring = layer.lineOfJulia();
-        juliaScript += `\tx${layer.uid} = ${layerstring}\n`;
+        juliaInitialization += layer.initLineOfJulia();
+        juliaScript += layer.lineOfJulia();
     }
-    return juliaSkeleton(juliaScript)
+    return juliaSkeleton(juliaInitialization, juliaScript)
 }
 
 /**

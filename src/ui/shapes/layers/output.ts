@@ -24,9 +24,10 @@ export class Output extends ActivationLayer {
         return `Dense(10, activation='softmax')`;
     }
 
-    public lineOfJulia(): string {
-        let prev_id = this.parents.values().next().value.uid;
-        return `Dense(size(x${prev_id}, 1), 10)(x${prev_id}) \n\treturn softmax(x${this.uid}) |> gpu`;
+    public initLineOfJulia(): string {
+        let init = `x${this.uid} = insert!(net, (shape) -> Dense(shape[1], 10))\n`
+        init += `x${this.uid} = insert!(net, (shape) -> (x) -> softmax(x))`
+        return init
     }
 
     public clone() {

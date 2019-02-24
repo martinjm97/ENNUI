@@ -37,7 +37,7 @@ export abstract class Layer extends Draggable {
     static nextID: number = 0;
     uid: number;
     abstract lineOfPython(): string;
-    abstract lineOfJulia(): string;
+    abstract getHoverText(): string;
     abstract clone(): Layer;
 
     constructor(block: Array<Shape>, defaultLocation) {
@@ -157,7 +157,7 @@ export abstract class Layer extends Draggable {
 
     public getParams(): Map<string, any> {
         let params: Map<string, any> = new Map()
-        let defaultParams  = defaults.get(this.layerType);
+        let defaultParams = defaults.get(this.layerType);
         for(let line of this.paramBox.children){
 			let name  = line.children[0].getAttribute('data-name');
             let value = line.children[1].value;
@@ -262,10 +262,22 @@ export abstract class Layer extends Draggable {
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
 
+    public initLineOfJulia(): string {
+        return '';
+    }
+
+    public lineOfJulia(): string {
+        let connections = ''
+        for (let child of this.children){
+            connections += `connect!(net, x${this.uid}, x${child.uid})\n`
+        }
+        return connections
+    }
+
     public hasParentType(type){
         for (let p of this.parents){
             if (p instanceof type){
-                return true
+                return true;
             }
         }
 
@@ -291,10 +303,10 @@ export abstract class ActivationLayer extends Layer {
 
 
     public dragAction(d) {
-        super.dragAction(d)
+        super.dragAction(d);
         if (this.activation != null) {
-            let p = this.getPosition()
-            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
+            let p = this.getPosition();
+            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")");
         }
     }
 
@@ -306,49 +318,49 @@ export abstract class ActivationLayer extends Layer {
     }
 
     public delete() {
-        super.delete()
+        super.delete();
         // Remove this layer from global state
-        windowProperties.activationLayers.delete(this)
+        windowProperties.activationLayers.delete(this);
         if (this.activation != null) {
-            this.activation.delete()
+            this.activation.delete();
         }
     }
 
     public addActivation(activation: Activation) {
         if (this.activation != null && this.activation != activation) {
             this.activation.delete();
-            this.activation.layer = null
+            this.activation.layer = null;
         }
-        this.activation = activation
-        this.activation.setPosition(this.getPosition())
+        this.activation = activation;
+        this.activation.setPosition(this.getPosition());
     }
 
     public getActivationText(): string {
-        return this.activation != null ? this.activation.activationType : "relu";
+        return this.activation.activationType;
     }
 
     public removeActivation() {
-        this.activation = null
+        this.activation = null;
     }
 
     public toJson(): LayerJson {
         let json = super.toJson()
         if (this.activation != null) {
-            json.params["activation"] = this.activation.activationType
+            json.params["activation"] = this.activation.activationType;
         }
-        return json
+        return json;
     }
 
     public generateTfjsLayer(){
         // TODO change defaults to class level
-        let parameters = defaults.get(this.layerType)
-        let config = this.getParams()
+        let parameters = defaults.get(this.layerType);
+        let config = this.getParams();
         for (let param in config) {
-            parameters[param] = config[param]
+            parameters[param] = config[param];
         }
 
         if (this.activation != null) {
-            parameters.activation = this.activation.activationType
+            parameters.activation = this.activation.activationType;
         }
 
         let parent:Layer = null

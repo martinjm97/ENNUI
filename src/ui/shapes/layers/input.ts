@@ -26,10 +26,6 @@ export class Input extends Layer {
         return `Input(shape=(${IMAGE_H},${IMAGE_W}, 1))`
     }
 
-    public lineOfJulia(): string {
-        return `input`
-    }
-
     public clone() {
         let newLayer = new Input()
 
