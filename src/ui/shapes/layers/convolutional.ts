@@ -64,17 +64,18 @@ export class Conv2D extends ActivationLayer {
     public getHoverText(): string { return "Conv" }
 
     public lineOfPython(): string {
+        console.log("getting params")
         let params = this.getParams();
         let activation = this.getActivationText();
         let activationText = activation == null ? "None" : `'${activation}'`;
-        return `Conv2D(${params["filters"]}, (${params["kernel_size"]}), strides=(${params["strides"]}), activation=${activationText})`
+        return `Conv2D(${params["filters"]}, (${params["kernelSize"]}), strides=(${params["strides"]}), activation=${activationText})`
     }
 
     public initLineOfJulia(): string {
         let params = this.getParams();
         let activation = this.getActivationText();
         let activationText = activation == null ? '' : `, ${activation}`;
-        return `x${this.uid} = insert!(net, (shape) -> Conv((${params["kernel_size"]}), shape[3] =>${params["filters"]}${activationText}, stride=(${params["strides"]})))\n`
+        return `x${this.uid} = insert!(net, (shape) -> Conv((${params["kernelSize"]}), shape[3] =>${params["filters"]}${activationText}, stride=(${params["strides"]})))\n`
     }
 
     public clone() {
