@@ -50,10 +50,9 @@ export class MaxPooling2D extends Layer {
         return `MaxPooling2D(pool_size=(${params["poolSize"]}), strides=(${params["strides"]}))`
     }
 
-    public lineOfJulia(): string {
+    public initLineOfJulia(): string {
         let params = this.getParams();
-        let prev_id = this.parents.values().next().value.uid;
-        return `maxpool(x${prev_id}, (${params["poolSize"]}))`;
+        return `x${this.uid} = insert!(net, (shape) -> (x) -> maxpool(x, (${params["poolSize"]})))\n`;
     }
 
     public clone() {

@@ -64,7 +64,6 @@ export class Conv2D extends ActivationLayer {
     public getHoverText(): string { return "Conv" }
 
     public lineOfPython(): string {
-        console.log("getting params")
         let params = this.getParams();
         let activation = this.getActivationText();
         let activationText = activation == null ? "None" : `'${activation}'`;

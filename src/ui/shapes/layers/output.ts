@@ -7,6 +7,7 @@ import { displayError } from '../../error';
 export class Output extends ActivationLayer {
     layerType = "Output";
     readonly tfjsEmptyLayer = tf.layers.dense ;
+    private juliaFinalLineId = null;
 
     defaultLocation = new Point(document.getElementById("svg").getBoundingClientRect().width - 100, document.getElementById("svg").getBoundingClientRect().height/2);
     constructor(){
@@ -16,7 +17,7 @@ export class Output extends ActivationLayer {
 
     }
 
-    getHoverText(): string { return "Output" }
+    getHoverText(): string { return "Output"; }
 
     delete() { this.unselect(); }
 
@@ -25,9 +26,17 @@ export class Output extends ActivationLayer {
     }
 
     public initLineOfJulia(): string {
-        let init = `x${this.uid} = insert!(net, (shape) -> Dense(shape[1], 10))\n`
-        init += `x${this.uid} = insert!(net, (shape) -> (x) -> softmax(x))`
-        return init
+        let init = `x${this.uid} = insert!(net, (shape) -> Dense(shape[1], 10))\n`;
+        if (this.juliaFinalLineId == null) {
+            this.juliaFinalLineId = Layer.getNextID()
+        }
+        init += `x${this.juliaFinalLineId} = insert!(net, (shape) -> (x) -> softmax(x))`;
+        return init;
+    }
+
+    public lineOfJulia(): string {
+        let connections = super.lineOfJulia();
+        return connections + `connect!(net, x${this.uid}, x${this.juliaFinalLineId})`;
     }
 
     public clone() {
