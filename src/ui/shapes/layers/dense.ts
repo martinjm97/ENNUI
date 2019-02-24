@@ -31,8 +31,8 @@ export class Dense extends ActivationLayer {
     public lineOfPython(): string {
         let params = this.getParams();
         let activation = this.getActivationText();
-        let activationText = activation == null ? "None" : `'${activation}'`;
-        return `Dense(${params["units"]}, activation=${activationText})`;
+        let activationText = activation == null ? "" : `, activation='${activation}'`;
+        return `Dense(${params["units"]}${activationText})`;
     }
 
     public initLineOfJulia(): string {
