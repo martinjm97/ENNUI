@@ -294,14 +294,14 @@ export abstract class Layer extends Draggable {
  */
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
-    static defaultInitialLocation = new Point(100,100)
+    static defaultInitialLocation = new Point(100,100);
 
     // Note: The activation will snap to the 0,0 point of an ActivationLayer
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) {
-        super(block, defaultLocation)
+        super(block, defaultLocation);
 
         // Keep track of activationLayers in global state for activation snapping
-        windowProperties.activationLayers.add(this)
+        windowProperties.activationLayers.add(this);
     }
 
 
@@ -316,7 +316,7 @@ export abstract class ActivationLayer extends Layer {
     public raise() {
         super.raise()
         if (this.activation != null) {
-            this.activation.raise()
+            this.activation.raise();
         }
     }
 
@@ -326,6 +326,7 @@ export abstract class ActivationLayer extends Layer {
         windowProperties.activationLayers.delete(this);
         if (this.activation != null) {
             this.activation.delete();
+            this.removeActivation();
         }
     }
 
@@ -335,6 +336,7 @@ export abstract class ActivationLayer extends Layer {
             this.activation.layer = null;
         }
         this.activation = activation;
+        this.activation.layer = this;
         this.activation.setPosition(this.getPosition());
     }
 
@@ -347,7 +349,7 @@ export abstract class ActivationLayer extends Layer {
     }
 
     public toJson(): LayerJson {
-        let json = super.toJson()
+        let json = super.toJson();
         if (this.activation != null) {
             json.params["activation"] = this.activation.activationType;
         }
