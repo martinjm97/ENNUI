@@ -138,6 +138,9 @@ document.addEventListener("DOMContentLoaded", function() {
 					deleteSelected();
 				break;
 			case 'Enter' :
+				if (document.getElementById("informationTab").style.display != "none") {
+					showInformationOverlay();
+				}
 				break;
 		}
 	};
