@@ -20,15 +20,6 @@ export abstract class Activation extends Draggable {
         this.makeDraggable()
     }
 
-
-    public delete() {
-        console.log("Deleting")
-        if (this.layer != null) {
-            this.layer.activation = null
-        }
-        super.delete()
-    }
-
     public select() {
         super.select()
         this.body.style("stroke", "yellow").style("stroke-width", "2")
@@ -37,6 +28,14 @@ export abstract class Activation extends Draggable {
     public unselect() {
         super.unselect()
         this.body.style("stroke", null).style("stroke-width", null)
+    }
+
+    public delete() {
+        // Remove the activation from the layer then delete the activation.
+        if(this.layer != null) {
+            this.layer.removeActivation()
+        }
+        super.delete()
     }
 
     public dragAction(d) {

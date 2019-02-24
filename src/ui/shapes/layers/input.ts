@@ -19,20 +19,20 @@ export class Input extends Layer {
 
     public generateTfjsLayer(){
         // TODO make this a member variable
-        this.tfjsLayer = this.tfjsEmptyLayer({shape: [IMAGE_H, IMAGE_W, 1]})
+        this.tfjsLayer = this.tfjsEmptyLayer({shape: [IMAGE_H, IMAGE_W, 1]});
     }
 
     public lineOfPython(): string {
-        return `Input(shape=(${IMAGE_H},${IMAGE_W}, 1))`
+        return `Input(shape=(${IMAGE_H},${IMAGE_W}, 1))`;
     }
 
-    public lineOfJulia(): string {
-        return `input`
+    public initLineOfJulia(): string {
+        return `x${this.uid} = insert!(net, (shape) -> x -> x)\n`;
     }
 
     public clone() {
-        let newLayer = new Input()
+        let newLayer = new Input();
 
-        return newLayer
+        return newLayer;
     }
 }

@@ -18,9 +18,8 @@ export class Flatten extends Layer {
         return `Flatten()`;
     }
 
-    public lineOfJulia(): string {
-        let prev_id = this.parents.values().next().value.uid;
-        return `reshape(x${prev_id}, :, size(x${prev_id}, 4))`;
+    public initLineOfJulia(): string {
+        return `x${this.uid} = insert!(net, (shape) -> (x) -> reshape(x, :, size(x, 4)))\n`
     }
 
     public clone() {

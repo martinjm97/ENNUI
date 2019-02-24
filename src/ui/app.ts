@@ -1,7 +1,7 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, topologicalSort, cloneNetwork, generatePython } from "../model/build_network";
+import { buildNetworkDAG, topologicalSort, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
@@ -337,16 +337,18 @@ function  dispatchCreationOnClick(elmt){
 			} else if (itemType == "share") {
 				if (elmt.getAttribute('share-option') == "exportPython") {
 					download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
+				} else if (elmt.getAttribute('share-option') == "exportJulia") {
+					download(generateJulia(topologicalSort(svgData.input)), "mnist_model.jl");
 				} else if (elmt.getAttribute('share-option') == "copyModel"){
-					let state = graphToJson(svgData)
-					let baseUrl: string = window.location.href
-					let urlParam: string = storeNetworkInUrl(state)
-					copyTextToClipboard(baseUrl + "#" + urlParam)
+					let state = graphToJson(svgData);
+					let baseUrl: string = window.location.href;
+					let urlParam: string = storeNetworkInUrl(state);
+					copyTextToClipboard(baseUrl + "#" + urlParam);
 				}
 			} else if (itemType == "classes") {
 				let selected = elmt.parentElement.getElementsByClassName("selected");
 				if (selected.length > 0) {
-					selected[0].classList.remove("selected")
+					selected[0].classList.remove("selected");
 				}
 
 				elmt.classList.add("selected");

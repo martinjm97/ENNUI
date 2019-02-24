@@ -7,7 +7,7 @@ export class Dropout extends Layer {
     readonly tfjsEmptyLayer = tf.layers.dropout
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
-        super([new PathShape("M0 0 h60 v60 h-60 v-60 Z", '#99BCE0'), 
+        super([new PathShape("M0 0 h60 v60 h-60 v-60 Z", '#99BCE0'),
                new PathShape("M18 0 h4 v60 h-4 v-60 Z", 'rgba(20, 20, 20, 0.2)'),
                new PathShape("M38 0 h4 v60 h-4 v-60 Z", 'rgba(20, 20, 20, 0.2)'),
                new PathShape("M0 18 v4 h60 v-4 h-60 Z", 'rgba(20, 20, 20, 0.2)'),
@@ -39,10 +39,9 @@ export class Dropout extends Layer {
         return `Dropout(rate=${params["rate"]})`;
     }
 
-    public lineOfJulia(): string {
+    public initLineOfJulia(): string {
         let params = this.getParams();
-
-        return `Dropout(${params["rate"]})`;
+        return `x${this.uid} = insert!(net, (shape) -> Dropout(${params["rate"]}))\n`;
     }
 
     public clone() {
