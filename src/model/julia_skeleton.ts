@@ -95,7 +95,7 @@ function forward(net, data)
     net.data[size(worklist, 1)]
 end
 
-loss(x, y) = ${model.params.getJuliaLoss()}(network(x), y)
+loss(x, y) = ${model.params.getJuliaLoss()}(forward(net, x), y)
 
 accuracy(x, y) = mean(onecold(forward(net, x)) .== onecold(y))
 
