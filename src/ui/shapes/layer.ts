@@ -24,7 +24,7 @@ export abstract class Layer extends Draggable {
     layerType: string = ""; // TODO change this
     protected tfjsLayer: tf.SymbolicTensor;
     protected readonly tfjsEmptyLayer;
-    paramBox;
+    paramBox: HTMLElement;
     
     block: Array<Shape>;
     children: Set<Layer> = new Set();
@@ -152,24 +152,29 @@ export abstract class Layer extends Draggable {
     public getParams(): Map<string, any> {
         let params: Map<string, any> = new Map()
         for(let line of this.paramBox.children){
-			let name = line.children[0].getAttribute('data-name');
-			let value = line.children[1].value;
-			params[name] = parseString(value);
+            let name = line.children[0].getAttribute('data-name');
+            if (line.children[1].className == "select") {
+                let selectElement: HTMLSelectElement = <HTMLSelectElement>line.children[1].children[0];
+                params[name] = selectElement.options[selectElement.selectedIndex].value
+            } else {
+                let value = (<HTMLInputElement>line.children[1]).value;
+                params[name] = parseString(value);
+            }
         }
         return params
     }
 
-    public setParams(params: Map<string, any>) {
+    public setParams(params: Map<string, any>): void {
         for(let line of this.paramBox.children){
             let name = line.children[0].getAttribute('data-name');
-			line.children[1].value = params[name];
+			(<HTMLInputElement>line.children[1]).value = params[name];
         }
     }
 
     public focusing() {
         for(let line of this.paramBox.children){
-            line.children[1].onfocus = this.toggleFocus.bind(line.children[1]);
-            line.children[1].onblur = this.toggleFocus.bind(line.children[1]);
+            (<HTMLInputElement>line.children[1]).onfocus = this.toggleFocus.bind(line.children[1]);
+            (<HTMLInputElement>line.children[1]).onblur = this.toggleFocus.bind(line.children[1]);
         }
     }
 

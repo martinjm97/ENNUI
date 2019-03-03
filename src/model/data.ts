@@ -25,6 +25,7 @@ export abstract class ImageData {
     protected testImages: Tensor<Rank>;
     protected trainLabels: Tensor<Rank>;
     protected testLabels: Tensor<Rank>;
+    protected datasetName: string;
 
     public dataLoaded : boolean = false;
 
@@ -37,7 +38,7 @@ export abstract class ImageData {
      *   xs: The data tensor, of shape `[numTrainExamples, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS]`.
      *   labels: The one-hot encoded labels tensor, of shape `[numTrainExamples, NUM_CLASSES]`.
      */
-    getTrainData(numExamples: number = 10000): {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>} {
+    getTrainData(numExamples: number = 15000): {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>} {
         console.log(this.trainImages)
         let xs = tf.reshape<tf.Rank.R4>(this.trainImages, [this.trainImages.size / this.IMAGE_SIZE, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS])
         let labels = tf.reshape<tf.Rank.R2>(this.trainLabels, [this.trainLabels.size / this.NUM_CLASSES, this.NUM_CLASSES])
@@ -110,6 +111,15 @@ export abstract class ImageData {
         labels = <tf.Tensor<Rank.R2>> tf.stack(newLabels)
         return {xs, labels};
     }
+
+    protected toggleLoadingOverlay(): void {
+        if (document.getElementById("loadingDataTab").style.display == "none") {
+            document.getElementById("datasetLoadingName").innerText = this.datasetName;
+            document.getElementById("loadingDataTab").style.display = "block";
+        } else {
+            document.getElementById("loadingDataTab").style.display = "none";
+        }
+    }
 }
 
 export class Cifar10Data extends ImageData {
@@ -118,6 +128,8 @@ export class Cifar10Data extends ImageData {
     IMAGE_CHANNELS = 3;
     IMAGE_SIZE = this.IMAGE_HEIGHT * this.IMAGE_WIDTH * this.IMAGE_CHANNELS;
     NUM_CLASSES = 10;
+
+    datasetName = "CIFAR-10";
 
     private static _instance: Cifar10Data;
     
@@ -130,12 +142,12 @@ export class Cifar10Data extends ImageData {
             return;
         }
         
-        showLoadingOverlay();
+        this.toggleLoadingOverlay();
 
         const data = new Cifar10()
         await data.load()
 
-        const {xs: trainX, ys: trainY} = data.nextTrainBatch(10000)
+        const {xs: trainX, ys: trainY} = data.nextTrainBatch(15000)
         const {xs: testX, ys: testY} = data.nextTestBatch(1500)
         this.trainImages = <Tensor<Rank.R4>> <unknown> trainX;
         this.trainLabels = <Tensor<Rank.R4>> <unknown> trainY;
@@ -161,6 +173,8 @@ export class MnistData extends ImageData {
     IMAGE_SIZE = this.IMAGE_HEIGHT * this.IMAGE_WIDTH * this.IMAGE_CHANNELS;
     NUM_CLASSES = 10;
 
+    datasetName = "MNIST";
+
     private static _instance: MnistData;
 
     public static get Instance()
@@ -174,7 +188,7 @@ export class MnistData extends ImageData {
             return;
         }
 
-        showLoadingOverlay()
+        this.toggleLoadingOverlay();
 
         const img = new Image();
         let datasetImages;
@@ -245,13 +259,11 @@ export class MnistData extends ImageData {
 }
 
 
-export const mnistData = Cifar10Data.Instance;
-export const cifarData = Cifar10Data.Instance;
+export let dataset: ImageData = MnistData.Instance;
 
-function showLoadingOverlay(): void {
-	if (document.getElementById("loadingDataTab").style.display == "none") {
-		document.getElementById("loadingDataTab").style.display = "block";
-	} else {
-		document.getElementById("loadingDataTab").style.display = "none";
-	}
+export function changeDataset(newDataset: string) {
+    switch (newDataset) {
+        case "mnist": dataset = MnistData.Instance; break;
+        case "cifar": dataset = Cifar10Data.Instance; break;
+    }
 }
