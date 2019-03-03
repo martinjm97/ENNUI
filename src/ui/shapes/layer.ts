@@ -167,7 +167,13 @@ export abstract class Layer extends Draggable {
     public setParams(params: Map<string, any>): void {
         for(let line of this.paramBox.children){
             let name = line.children[0].getAttribute('data-name');
-			(<HTMLInputElement>line.children[1]).value = params[name];
+            if (line.children[1].className == "select") {
+                let selectElement: HTMLSelectElement = <HTMLSelectElement>line.children[1].children[0];
+                // Get index with the correct value and select it
+                selectElement.selectedIndex = Array.apply(null, selectElement).findIndex(elem => elem.value === params[name])
+            } else {
+                (<HTMLInputElement>line.children[1]).value = params[name];
+            }
         }
     }
 

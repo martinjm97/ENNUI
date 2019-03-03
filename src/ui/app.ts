@@ -300,8 +300,9 @@ function dispatchCreationOnClick(elmt){
 			updateNetworkParameters({itemType: itemType, setting : setting});
 		} else if (itemType == "share") {
 			if (elmt.getAttribute('share-option') == "exportPython") {
-				if (dataset instanceof Cifar10Data) {
-					let error : Error = Error("CIFAR-10 dataset exporting to python not currently supported.")
+				console.log(svgData.input.getParams()["dataset"])
+				if (svgData.input.getParams()["dataset"] == "cifar") {
+					let error : Error = Error("CIFAR-10 dataset exporting to python not currently supported. Select MNIST dataset instead.")
 					displayError(error);
 					return;
 				}
