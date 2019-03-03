@@ -33,6 +33,7 @@ body {
     font-family: Helvetica;
     user-select:none;
     padding: 7.5px 10px;
+    display: block;
 }
 
 #menu_expander {
@@ -42,49 +43,50 @@ body {
   margin-left: -10px;
 }
 
-#this_will_be_a_triangle {
-  width: 200%;
-  height:30px;
-  margin-top:calc(50vh - 15px);
-  margin-left: -30%;
-  cursor: pointer;
-}
-
-#this_will_be_a_triangle > svg {
-    height: 30px;
-    width: 10px;
-}
-
-
-
-// #right_menu_expander {
-//   width:10px;
-//   height:100%;
-//   float:right;
-//   background: #E5E5FC;
-// }
-
-#right_this_will_be_a_triangle {
+#menu_expander_handle {
   width: 200%;
   height:30px;
   margin-top:calc(50vh - 15px);
   cursor: pointer;
 }
 
-#right_this_will_be_a_triangle > svg {
+#menu_expander_handle > svg {
     height: 30px;
-    width: 10px;
+    width: 20px;
 }
 
+#right_menu_expander {
+  width: 10px;
+  height: 100%;
+  float: right;
+  background: #E5E5FC;
+  margin-right: -10px;
+}
+
+#right_menu_expander_handle {
+  width: 200%;
+  height:30px;
+  margin-top:calc(50vh - 15px);
+  cursor: pointer;
+  float:right;
+}
+
+#right_menu_expander_handle > svg {
+    height: 30px;
+    width: 20px;
+}
 
 #paramshell {
-    width: 200px;
+    width: 180px;
     height: 100%;
     float:right;
     background-color: $color-menu-bg;
     font-size:18px;
     font-family: Helvetica;
     user-select:none;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: block;
 }
 
 #blanktab {
