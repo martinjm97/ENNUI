@@ -213,10 +213,8 @@ body {
 }
 
 .paramname{
-    width:70%;
     text-align:left;
     height:100%;
-    line-height:100%;
     font-size:16px;
     font-family: Helvetica;
     background-color: transparent;
@@ -228,7 +226,6 @@ body {
     width:30%;
     text-align:center;
     height:20px;
-    line-height:100%;
     font-size:16px;
     font-family: Helvetica;
     float:right;
@@ -519,3 +516,56 @@ label {
     margin: 12px;
     // flex-basis: 7%;
 }
+
+
+.select {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0px;
+    width: 50%;
+    float: right;
+  }
+  .select select {
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
+    padding: 7px 10px;
+    outline: 0;
+    border: 0;
+    border-radius: 0;
+    background: #ccc;
+    color: #000;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  .select select::-ms-expand {
+    display: none;
+  }
+  .select select:hover,
+  .select select:focus {
+    color: #000;
+    background: #bbb;
+  }
+  .select select:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .select__arrow {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    border-style: solid;
+    border-width: 8px 5px 0 5px;
+    border-color: #000 transparent transparent transparent;
+  }
+  .select select:hover ~ .select__arrow,
+  .select select:focus ~ .select__arrow {
+    border-top-color: #000;
+  }
+  .select select:disabled ~ .select__arrow {
+    border-top-color: #000;
+  }
