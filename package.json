@@ -9,7 +9,10 @@
     "@types/d3": "^5.0.1",
     "common-js": "^0.3.8",
     "d3": "^5.7.0",
+    "file-loader": "^3.0.1",
     "file-saver": "^2.0.0",
+    "tfjs-cifar10-web": "^1.1.1",
+    "url-loader": "^1.1.2",
     "webpack": "^4.27.1"
   },
   "devDependencies": {

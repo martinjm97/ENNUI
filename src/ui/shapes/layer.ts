@@ -26,8 +26,8 @@ export abstract class Layer extends Draggable {
     layerType: string = ""; // TODO change this
     protected tfjsLayer: tf.SymbolicTensor;
     protected readonly tfjsEmptyLayer;
-    paramBox;
-
+    paramBox: HTMLElement;
+    
     block: Array<Shape>;
     children: Set<Layer> = new Set();
     parents: Set<Layer> = new Set();
@@ -162,33 +162,42 @@ export abstract class Layer extends Draggable {
         let params: Map<string, any> = new Map()
         let defaultParams = defaults.get(this.layerType);
         for(let line of this.paramBox.children){
-			let name  = line.children[0].getAttribute('data-name');
-            let value = line.children[1].value;
+            let name = line.children[0].getAttribute('data-name');
+            if (line.children[1].className == "select") {
+                let selectElement: HTMLSelectElement = <HTMLSelectElement>line.children[1].children[0];
+                params[name] = selectElement.options[selectElement.selectedIndex].value
+            } else {
+                let value = (<HTMLInputElement>line.children[1]).value;
+                // Need to not parse as integer for float parameters
+                if ((defaultParams[name].toString()).indexOf('.') >= 0) {
+                    params[name] = parseFloat(value);
+                }
 
-            // Need to not parse as integer for float parameters
-            if ((defaultParams[name].toString()).indexOf('.') >= 0) {
-                params[name] = parseFloat(value);
+                else {
+                    params[name] = parseString(value);
+                }
             }
-
-            else {
-                params[name] = parseString(value);
-            }
-
         }
         return params
     }
 
-    public setParams(params: Map<string, any>) {
+    public setParams(params: Map<string, any>): void {
         for(let line of this.paramBox.children){
             let name = line.children[0].getAttribute('data-name');
-			line.children[1].value = params[name];
+            if (line.children[1].className == "select") {
+                let selectElement: HTMLSelectElement = <HTMLSelectElement>line.children[1].children[0];
+                // Get index with the correct value and select it
+                selectElement.selectedIndex = Array.apply(null, selectElement).findIndex(elem => elem.value === params[name])
+            } else {
+                (<HTMLInputElement>line.children[1]).value = params[name];
+            }
         }
     }
 
     public focusing() {
         for(let line of this.paramBox.children){
-            line.children[1].onfocus = this.toggleFocus.bind(line.children[1]);
-            line.children[1].onblur = this.toggleFocus.bind(line.children[1]);
+            (<HTMLInputElement>line.children[1]).onfocus = this.toggleFocus.bind(line.children[1]);
+            (<HTMLInputElement>line.children[1]).onblur = this.toggleFocus.bind(line.children[1]);
         }
     }
 

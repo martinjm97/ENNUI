@@ -1,6 +1,6 @@
 import * as tfvis from '@tensorflow/tfjs-vis';
 import * as tf from '@tensorflow/tfjs';
-import { IMAGE_W, IMAGE_H, data, NUM_CLASSES } from './data';
+import { dataset } from './data';
 import { model } from './paramsObject';
 import { tabSelected } from '../ui/app';
 
@@ -23,7 +23,7 @@ const testExamples:number = 50;
  * Show predictions on a number of test examples.
  */
 export async function showPredictions() {
-  if (tabSelected() == "visualizationTab" && data.dataLoaded) {
+  if (tabSelected() == "visualizationTab" && dataset.dataLoaded) {
     const testExamples = 60;
 
     let label = null
@@ -34,7 +34,7 @@ export async function showPredictions() {
             break
         }
     }
-    const examples = data.getTestDataWithLabel(testExamples, label);
+    const examples = dataset.getTestDataWithLabel(testExamples, label);
 
     // Code wrapped in a tf.tidy() function callback will have their tensors freed
     // from GPU memory after execution without having to call dispose().
@@ -64,15 +64,15 @@ export async function showPredictions() {
 }
 
 export function showConfusionMatrix() {
-  if (tabSelected() == "progressTab" && data.dataLoaded) {
-    const {xs, labels} = data.getTestData(1000);
+  if (tabSelected() == "progressTab" && dataset.dataLoaded) {
+    const {xs, labels} = dataset.getTestData(1000);
     tf.tidy(() => {
       const output = model.architecture.predict(xs);
 
       const fixedLabels = <tf.Tensor<tf.Rank.R1>>labels.argMax(1);
       const predictions = output.argMax(1);
 
-      tfvis.metrics.confusionMatrix(fixedLabels, predictions, NUM_CLASSES).then(function(confusionValues) {
+      tfvis.metrics.confusionMatrix(fixedLabels, predictions, dataset.NUM_CLASSES).then(function(confusionValues) {
         const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
         tfvis.render.confusionMatrix({
           values: confusionValues ,
@@ -96,8 +96,8 @@ export function setupTestResults() {
     div.className = 'pred-container';
 
     const canvas = document.createElement('canvas');
-    canvas.width = IMAGE_W;
-    canvas.height = IMAGE_H;
+    canvas.width = dataset.IMAGE_WIDTH;
+    canvas.height = dataset.IMAGE_HEIGHT;
     canvas.className = 'prediction-canvas';
     let ctx = canvas.getContext("2d");
     ctx.rect(0, 0, 1000, 5000);
@@ -199,9 +199,9 @@ export function setupPlots() {
   accuracyValues = [[], []];
   lossValues = [[],[]];
   let confusionValues = [];
-  for (let i = 0; i < NUM_CLASSES; i++) {
-    let arr = new Array(NUM_CLASSES);
-    arr.fill(0,0,NUM_CLASSES);
+  for (let i = 0; i < dataset.NUM_CLASSES; i++) {
+    let arr = new Array(dataset.NUM_CLASSES);
+    arr.fill(0,0,dataset.NUM_CLASSES);
     confusionValues.push(arr);
   }
   const lossContainer = document.getElementById('loss-canvas');
@@ -234,7 +234,7 @@ export function setupPlots() {
 }
 
 export function draw(image, canvas) {
-  const [width, height] = [28, 28];
+  const [width, height] = [dataset.IMAGE_HEIGHT, dataset.IMAGE_WIDTH];
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
@@ -242,10 +242,18 @@ export function draw(image, canvas) {
   const data = image.dataSync();
   for (let i = 0; i < height * width; ++i) {
     const j = i * 4;
-    imageData.data[j + 0] = data[i] * 255;
-    imageData.data[j + 1] = data[i] * 255;
-    imageData.data[j + 2] = data[i] * 255;
-    imageData.data[j + 3] = 255;
+    if (dataset.IMAGE_CHANNELS == 3) {
+      const k = i * 3;
+      imageData.data[j + 0] = data[k + 0] * 255;
+      imageData.data[j + 1] = data[k + 1] * 255;
+      imageData.data[j + 2] = data[k + 2] * 255;
+      imageData.data[j + 3] = 255;
+    } else {
+      imageData.data[j + 0] = data[i] * 255;
+      imageData.data[j + 1] = data[i] * 255;
+      imageData.data[j + 2] = data[i] * 255;
+      imageData.data[j + 3] = 255;
+    }
   }
   ctx.putImageData(imageData, 0, 0);
 }
