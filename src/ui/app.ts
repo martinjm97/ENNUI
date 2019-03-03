@@ -95,9 +95,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	});
 
-	// window.addEventListener('resize',resizeMiddleSVG);
+	window.addEventListener('resize',resizeMiddleSVG);
 
-	// resizeMiddleSVG();
+	resizeMiddleSVG();
 
 	// bindMenuExpander();
 
@@ -198,18 +198,16 @@ function bindMenuExpander(){
 
 		}
 
-		// resizeMiddleSVG();
+		resizeMiddleSVG();
 
 	});
 }
 
-// function resizeMiddleSVG(){
-// 	let ratio = document.getElementById('middle').clientWidth/800;
+function resizeMiddleSVG(){
+	let ratio = document.getElementById('middle').clientWidth/800;
 
-// 	console.log('ratio',ratio)
-
-// 	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
-// }
+	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
+}
 
 function makeCollapsable(elmt){
 
