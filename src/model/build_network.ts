@@ -5,7 +5,6 @@ import { Input } from '../ui/shapes/layers/input';
 import { displayError } from '../ui/error';
 import { pythonSkeleton } from './python_skeleton';
 import { juliaSkeleton } from './julia_skeleton';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 
 let typeToTensor: Map<string, any> = new Map();
