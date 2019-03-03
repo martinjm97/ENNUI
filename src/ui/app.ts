@@ -17,7 +17,7 @@ import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url"
 import { pythonSkeleton } from "../model/python_skeleton";
 import { copyTextToClipboard } from "./utils";
 
-import { Cifar10Data } from "../model/data";
+import { changeDataset, dataset, Cifar10Data } from "../model/data";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -125,17 +125,16 @@ document.addEventListener("DOMContentLoaded", function() {
 				if (document.getElementsByClassName('focusParam').length == 0)
 					deleteSelected();
 				break;
-			case 'Enter' :
-				Cifar10Data.Instance.load().then(function() {
-					Cifar10Data.Instance.getTrainData()
-				})
-				
+			case 'Enter' :				
 				break;
 		}
 	};
 
 
 	svgData = loadStateIfPossible()
+
+	// Select the input block when we load the page
+	svgData.input.select();
 
 });
 
@@ -154,6 +153,8 @@ async function trainOnClick() {
 	let training = document.getElementById('train');
 	if (!training.classList.contains("train-active")){
 		clearError()
+
+		changeDataset(svgData.input.getParams()["dataset"])
 
 		// Grab hyperparameters
 		setModelHyperparameters()
@@ -299,6 +300,11 @@ function dispatchCreationOnClick(elmt){
 			updateNetworkParameters({itemType: itemType, setting : setting});
 		} else if (itemType == "share") {
 			if (elmt.getAttribute('share-option') == "exportPython") {
+				if (dataset instanceof Cifar10Data) {
+					let error : Error = Error("CIFAR-10 dataset exporting to python not currently supported.")
+					displayError(error);
+					return;
+				}
 				let newInput = svgData.input.clone()
 				cloneNetwork(svgData.input, newInput)
 				addInExtraLayers(newInput)
