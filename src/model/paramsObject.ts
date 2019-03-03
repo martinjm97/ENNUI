@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import { displayError } from '../ui/error';
 
 export interface HyperparameterData {
     learningRate: number
@@ -21,14 +22,14 @@ class NetworkParameters
     constructor(){}
 
     public isParam(param){
-        return this.paramNames.has(param); 
+        return this.paramNames.has(param);
     }
 
     public getOptimizer(){
         switch(this.optimizer){
             case 'sgd':
                 return tf.train.sgd(this.learningRate);
-            
+
             case 'rmsprop':
                 return tf.train.rmsprop(this.learningRate);
 
@@ -50,22 +51,58 @@ class NetworkParameters
     public getPythonOptimizer() {
         switch(this.optimizer) {
             case 'sgd':
-            return 'SGD';
-        
-        case 'rmsprop':
-            return 'RMSprop';
+                return 'SGD';
 
-        case 'adagrad':
-            return 'Adagrad';
+            case 'rmsprop':
+                return 'RMSprop';
 
-        case 'adam':
-            return 'Adam';
+            case 'adagrad':
+                return 'Adagrad';
 
-        default:
-            throw new Error('Undefined optimizer!');
+            case 'adam':
+                return 'Adam';
 
+            default:
+                throw new Error('Undefined optimizer!');
         }
-        
+    }
+
+    public getJuliaLoss() {
+        switch(this.loss) {
+            case 'categoricalCrossentropy':
+                return 'crossentropy';
+
+            case 'hinge':
+                displayError(new Error("Hinge loss is not yet implemented in Julia. "))
+
+            case 'meanSquaredError':
+                return 'mse';
+
+            case 'meanAbsoluteError':
+                return '((pred, y) -> mean(abs.(pred .- y)))';
+
+            default:
+                throw new Error('Undefined loss!');
+        }
+    }
+
+    public getJuliaOptimizer() {
+        switch(this.optimizer) {
+            case 'sgd':
+                return 'Descent';
+
+            case 'rmsprop':
+                return 'RMSProp';
+
+            case 'adagrad':
+                return 'ADAGrad';
+
+            case 'adam':
+                return 'ADAM';
+
+            default:
+                throw new Error('Undefined optimizer!');
+        }
     }
 }
 

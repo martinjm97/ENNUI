@@ -6,8 +6,8 @@ export class Dense extends ActivationLayer {
     layerType = "Dense"
     readonly tfjsEmptyLayer = tf.layers.dense
 
-    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation), invisible=false) {
-        super([new PathShape("M-8 -90 h26 v100 h-8 v-10 h-10 v10 h-8 v-100 Z", '#F7473B')], defaultLocation, invisible)
+    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
+        super([new PathShape("M-8 -90 h26 v100 h-8 v-10 h-10 v10 h-8 v-100 Z", '#F7473B')], defaultLocation)
     }
 
     populateParamBox() {
@@ -30,11 +30,20 @@ export class Dense extends ActivationLayer {
 
     public lineOfPython(): string {
         let params = this.getParams();
-        return `Dense(${params["units"]}, activation='${this.getActivationText()}')`
+        let activation = this.getActivationText();
+        let activationText = activation == null ? "" : `, activation='${activation}'`;
+        return `Dense(${params["units"]}${activationText})`;
+    }
+
+    public initLineOfJulia(): string {
+        let params = this.getParams();
+        let activation = this.getActivationText();
+        let activationText = activation == null ? '' : `, ${activation}`;
+        return `x${this.uid} = insert!(net, (shape) -> Dense(shape[1], ${params["units"]}${activationText}))\n`;
     }
 
     public clone() {
-        let newLayer = new Dense(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation),true)
+        let newLayer = new Dense(Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation))
         newLayer.paramBox = this.paramBox
         newLayer.activation = this.activation
         return newLayer
