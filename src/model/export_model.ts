@@ -10,17 +10,37 @@ import { Conv2D } from "../ui/shapes/layers/convolutional";
 import { Concatenate } from "../ui/shapes/layers/concatenate";
 import { Flatten } from "../ui/shapes/layers/flatten";
 import { Activation, Relu, Sigmoid, Tanh } from "../ui/shapes/activation";
-import { layer } from "@tensorflow/tfjs-vis/dist/show/model";
 import { HyperparameterData, model } from "./paramsObject";
 import { displayError } from "../ui/error";
+import { BatchNorm } from "../ui/shapes/layers/batchnorm";
+import { Dropout } from "../ui/shapes/layers/dropout";
 
 export interface SerializedNetwork {
 	graph: Array<LayerJson>
 	hyperparameters: HyperparameterData
 }
 
+export function hasPathToOutput(svgData: DraggableData): boolean {
+	let queue: Layer[] = [svgData.input]
+	let visited: Set<Layer> = new Set()
+	let layersFromInput: Set<Layer> = new Set()
+	while (queue.length != 0) {
+		let current = queue.shift()
+		layersFromInput.add(current)
+		// check each connections of the node
+		for (let child of current.children) {
+			if (!visited.has(child)) {
+				queue.push(child)
+				visited.add(child)
+			}
+		}
+	}
+
+	return layersFromInput.has(svgData.output)
+}
+
 export function graphToJson(svgData: DraggableData): SerializedNetwork {
-	// Initialize queues, dags, and parents (visited) 
+	// Initialize queues, dags, and parents (visited)
 	let queue: Layer[] = [svgData.input]
 	let visited: Set<Layer> = new Set()
 	let layersjson: Array<LayerJson> = new Array()
@@ -36,8 +56,8 @@ export function graphToJson(svgData: DraggableData): SerializedNetwork {
 		}
 	}
 
-	let serializedNet: SerializedNetwork = { 
-		"graph": layersjson, 
+	let serializedNet: SerializedNetwork = {
+		"graph": layersjson,
 		"hyperparameters": setHyperparameterData(),
 	}
 
@@ -60,14 +80,14 @@ function setHyperparameterData(): HyperparameterData {
 			case "learningRate":
 				learningRate = Number(value);
 				break;
-			
+
 			case "epochs":
 				epochs = parseInt(value);
 				break;
-			
+
 			case "batchSize":
 				batchSize = parseInt(value);
-				break;	
+				break;
 		};
 	}
 	for (let elmt of document.getElementsByClassName("selected")) {
@@ -75,7 +95,7 @@ function setHyperparameterData(): HyperparameterData {
 			optimizer_id = elmt.id
 		} else if (elmt.hasAttribute("data-lossType")){
 			loss_id = elmt.id
-		} 
+		}
 	}
 
 	return {
@@ -103,12 +123,12 @@ function setHyperparams(hyperparamData: HyperparameterData){
 		paramName.value = hyperparamData[hyperparam.id].toString();
 	}
 	document.getElementById("defaultOptimizer").classList.remove("selected")
-	document.getElementById(hyperparamData.optimizer_id).classList.add("selected");	
+	document.getElementById(hyperparamData.optimizer_id).classList.add("selected");
 	document.getElementById("defaultLoss").classList.remove("selected")
-	document.getElementById(hyperparamData.loss_id).classList.add("selected");	
+	document.getElementById(hyperparamData.loss_id).classList.add("selected");
 }
 
-function graphFromJson(svgData: DraggableData, layersJson: Array<LayerJson>): DraggableData {	
+function graphFromJson(svgData: DraggableData, layersJson: Array<LayerJson>): DraggableData {
 
 	// Make each of the objects without parents and children
 	let uidToObject: Map<Number, Layer> = new Map();
@@ -148,7 +168,7 @@ function createActivationInstanceFromName(svgData: DraggableData, layer: Activat
 			activation = new Tanh()
 			break;
 		default:
-			throw Error(`The specified activation "${activation_name}" was not recognized. `)
+			displayError(new Error(`The specified activation "${activation_name}" was not recognized. `))
 	}
 	layer.addActivation(activation)
 	svgData.draggable.push(activation)
@@ -157,17 +177,17 @@ function createActivationInstanceFromName(svgData: DraggableData, layer: Activat
 
 function createLayerInstanceFromName(svgData: DraggableData, lj: LayerJson): Layer {
 
-	// Create an instance from the instance name. 
+	// Create an instance from the instance name.
 	let layer: Layer;
 	let location = new Point(lj.xPosition, lj.yPosition)
 	switch (lj.layer_name){
 		case "Input":
-			layer = new Input(); 
+			layer = new Input();
 			layer.setPosition(location)
 			svgData.input = <Input> layer;
 			break;
-		case "Output": 
-			layer = new Output(); 
+		case "Output":
+			layer = new Output();
 			layer.setPosition(location)
 			svgData.output = <Output> layer;
 			break;
@@ -180,11 +200,15 @@ function createLayerInstanceFromName(svgData: DraggableData, lj: LayerJson): Lay
 				case "Conv2D":
 					layer = new Conv2D(location); break;
 				case "Concatenate":
-					layer = new Concatenate(); break;
+					layer = new Concatenate(location); break;
 				case "Flatten":
-					layer = new Flatten(); break;
+					layer = new Flatten(location); break;
+				case "BatchNorm":
+					layer = new BatchNorm(location); break;
+				case "Dropout":
+					layer = new Dropout(location); break;
 				default:
-					throw Error(`The specified layer "${lj}" was not recognized. `)
+					 displayError(new Error(`The specified layer "${lj}" was not recognized. `));
 			}
 			svgData.draggable.push(layer);
 			break;
@@ -198,4 +222,4 @@ export function download(content: string, filename: string) {
 	 type: "text/plain;charset=utf-8"
 	});
 	saveAs(blob, filename);
-} 
+}

@@ -1,19 +1,19 @@
 import * as tf from '@tensorflow/tfjs';
 import { Layer } from "../layer";
 import { Point, Rectangle } from "../shape";
-import { defaults } from '../../../model/build_network';
 import { dataset } from '../../../model/data';
+import { get_svg_original_bounding_box } from '../../utils';
 
 export class Input extends Layer {
     layerType = "Input"
     readonly tfjsEmptyLayer = tf.input;
 
-    defaultLocation = new Point(100, document.getElementById("svg").getBoundingClientRect().height/2)
+    defaultLocation = new Point(100, get_svg_original_bounding_box(document.getElementById("svg")).height/2)
 
-	constructor(invisible=false){
-        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, document.getElementById("svg").getBoundingClientRect().height/2), invisible)
+	constructor(){
+        super([new Rectangle(new Point(0,0), 40, 40, '#806CB7')], new Point(100, get_svg_original_bounding_box(document.getElementById("svg")).height/2))
     }
-    
+
     getHoverText(): string { return "Input"; }
 
     delete() { this.unselect(); }
@@ -60,9 +60,13 @@ export class Input extends Layer {
         return `Input(shape=(${dataset.IMAGE_HEIGHT},${dataset.IMAGE_WIDTH}, ${dataset.IMAGE_CHANNELS}))`
     }
 
-    public clone() {
-        let newLayer = new Input(true)
+    public initLineOfJulia(): string {
+        return `x${this.uid} = insert!(net, (shape) -> x -> x)\n`;
+    }
 
-        return newLayer
+    public clone() {
+        let newLayer = new Input();
+
+        return newLayer;
     }
 }

@@ -14,7 +14,10 @@ sed -i 's/src\/ui\///' $folder/index.html
 sed -i 's/dist\///' $folder/index.html
 
 # Copy style.css
-cp ./src/ui/style.css $folder
+uglifycss ./src/ui/style.css > $folder/style.css
+
+# Copy favicon
+cp ./favicon.ico $folder
 
 # Uglify and copy bundle.js
 uglifyjs --compress --mangle --wrap -- dist/bundle.js > $folder/bundle.js

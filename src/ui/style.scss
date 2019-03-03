@@ -55,6 +55,28 @@ body {
     width: 10px;
 }
 
+  
+
+// #right_menu_expander {
+//   width:10px;
+//   height:100%;
+//   float:right;
+//   background: #E5E5FC;
+// }
+
+#right_this_will_be_a_triangle {
+  width: 200%;
+  height:30px;
+  margin-top:calc(50vh - 15px);
+  cursor: pointer;
+}
+
+#right_this_will_be_a_triangle > svg {
+    height: 30px;
+    width: 10px;
+}
+
+
 #paramshell {
     width: 200px;
     height: 100%;
@@ -74,7 +96,7 @@ body {
 #bottomblanktab {
     height: 100%;
     width: 100%;
-    
+
 
     vertical-align: middle;
     background-color: #A8A8BD;
@@ -82,7 +104,7 @@ body {
     //height: 70px;
     float:left;
 }
- 
+
 .icon{
     padding-top: 23;
     padding-left: 1;
@@ -103,7 +125,7 @@ body {
 }
 
 .tab:hover {
-    background-color: #C7C7E0; 
+    background-color: #C7C7E0;
 }
 
 .tab-selected {
@@ -126,7 +148,7 @@ body {
 
     cursor: pointer;
 }
- 
+
 .trainbox {
     text-align: center;
     margin-top: 20px;
@@ -138,7 +160,7 @@ body {
     font-size:22px;
     font-family: Helvetica;
 }
- 
+
 .train {
     background: #447344;
     color: #eee;
@@ -152,7 +174,7 @@ body {
 }
 
 .train:hover {
-    background-color: #00008B; 
+    background-color: #00008B;
 }
 
 .train-active {
@@ -160,7 +182,7 @@ body {
 }
 
 .bottomCategory{
-    position: absolute; 
+    position: absolute;
     bottom: 10px;
     width: 160px;
     padding-bottom: 15px;
@@ -178,7 +200,7 @@ body {
     padding-top: 20px;
     text-align: center;
 }
- 
+
 .paramline{
     width:100%;
     text-align:left;
@@ -187,9 +209,9 @@ body {
     font-size:22px;
     font-family: Helvetica;
     background-color: transparent;
-    user-select:none;	
+    user-select:none;
 }
- 
+
 .paramname{
     text-align:left;
     height:100%;
@@ -210,7 +232,7 @@ body {
 }
 
 .option:hover {
-    background-color: #ccc; 
+    background-color: #ccc;
 }
 
 .option {
@@ -227,6 +249,12 @@ body {
 
     background-color: transparent;
     user-select:none;
+
+    
+}
+
+.last-dropdown {
+    border-bottom: 0px;
 }
 
 .right-option {
@@ -241,13 +269,38 @@ div.option.selected {
  }
 
 div.top_neighbor_tab-selected {
-    border-bottom-right-radius: 5px; 
+    border-bottom-right-radius: 5px;
 }
 
  div.bottom_neighbor_tab-selected {
     border-top-right-radius: 5px;
  }
- 
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}  
+  
+.dropdown-content { 
+    border-radius: 6px;
+    float: right;
+    display: none;
+    position: fixed;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    background-color: $color-menu-bg;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    
+}
+.left {
+    left: 218px;
+    margin-top: -11px;
+}
+
+
+.dropdown:hover .dropdown-content {display: block;}
+
 .toggle {
     width: calc(100% - 10px);
     height: 30px;
@@ -277,15 +330,14 @@ div.top_neighbor_tab-selected {
 
 
 #svg {
-    width: 100%;
-    height: 100%; 
-    overflow: scroll;
+    width: 800px;
+    height: 100%;
 }
-
 
 #networkTab {
     width: 100%;
-    height: 100%; 
+    height: 100%;
+    overflow: hidden;
 }
 
 #progressTab {
@@ -320,7 +372,7 @@ a {
 
 #embeddedYoutube {
     width: 50%;
-    height: 50%; 
+    height: 50%;
     padding: 10px;
     position: absolute;
     top: 0; right: 0;
@@ -341,7 +393,7 @@ a {
     right: 0;
     bottom: 0;
     background-color: rgba(0,0,0,0.8);
-    
+
     cursor: pointer;
     font-family: Helvetica;
     z-index: 9999;
@@ -380,9 +432,9 @@ a {
 }
 
 #informationBody {
-    text-align: left;
+    text-align: center;
     color: $color-menu-bg;
-    font-size: 32;
+    font-size: 24;
 }
 
 #error {
@@ -396,20 +448,20 @@ a {
     border-width: 3px;
     border-color: #555;
 }
- 
-#x  {
+
+#x {
     position: absolute;
     top: 0px;
     right: 0px;
     cursor: pointer;
 }
 
-#errorMessage  {
+#errorMessage {
     height: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
- 
+
 label {
     display: inline-block;
     width: 250px;

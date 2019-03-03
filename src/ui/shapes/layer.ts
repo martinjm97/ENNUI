@@ -6,14 +6,16 @@ import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
 import { parseString } from "../utils";
-import { defaults } from '../../model/build_network';
+import { defaults} from '../../model/build_network';
+import { displayError } from '../error';
+import { stratify } from 'd3';
 
 export interface LayerJson {
     layer_name: string
     id: number
     children_ids: Array<number>
     parent_ids: Array<number>
-    params: Map<string, any> 
+    params: Map<string, any>
     xPosition: number
     yPosition: number
 }
@@ -32,54 +34,58 @@ export abstract class Layer extends Draggable {
     wires: Set<Wire> = new Set();
     wireCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     wireCircleSelected: boolean = false;
-    static nextID: number = 0;
+    private static nextID: number = 0;
     uid: number;
     abstract lineOfPython(): string;
+    abstract getHoverText(): string;
     abstract clone(): Layer;
-    
-    constructor(block: Array<Shape>, defaultLocation, invisible=false) { 
+
+    constructor(block: Array<Shape>, defaultLocation) {
         super(defaultLocation)
         this.uid = Layer.nextID
         Layer.nextID += 1
         this.block = block
-        if(!invisible) {
-            for (let rect of this.block) {
-                this.svgComponent.call(rect.svgAppender.bind(rect))
-            }
-            this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
-                                            .attr("cx", this.center().x)
-                                            .attr("cy", this.center().y)
-                                            .attr("r", 10)
-                                            .style("fill", "black")
-                                            .style("stroke-width", "4")
-                                            .style("visibility", "hidden")
-            
-            if(this.layerType == "Output"){
-                this.wireCircle.style("display", "none")
-            }
-            
-            this.wireCircle.on("click", () => {
-                this.wireCircleSelected = true
-                this.wireCircle.style("stroke", "red")
-            })
 
-            this.paramBox = document.createElement('div')
-            this.paramBox.className = 'parambox'
-            this.paramBox.style.visibility = 'hidden'
-            this.paramBox.style.position = 'absolute'	
-	    this.paramBox.style.position = 'absolute'	
-            this.paramBox.style.position = 'absolute'	
-            document.getElementById("paramtruck").appendChild(this.paramBox);
+        for (let rect of this.block) {
+            this.svgComponent.call(rect.svgAppender.bind(rect))
+        }
+        this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
+                                        .attr("cx", this.center().x)
+                                        .attr("cy", this.center().y)
+                                        .attr("r", 10)
+                                        .style("fill", "black")
+                                        .style("stroke-width", "4")
+                                        .style("visibility", "hidden")
 
-            this.populateParamBox()
-
+        if(this.layerType == "Output"){
+            this.wireCircle.style("display", "none")
         }
 
+        this.wireCircle.on("click", () => {
+            this.wireCircleSelected = true
+            this.wireCircle.style("stroke", "red")
+        })
+
+        this.paramBox = document.createElement('div')
+        this.paramBox.className = 'parambox'
+        this.paramBox.style.visibility = 'hidden'
+        this.paramBox.style.position = 'absolute'
+        this.paramBox.style.position = 'absolute'
+        this.paramBox.style.position = 'absolute'
+        document.getElementById("paramtruck").appendChild(this.paramBox);
+
+        this.populateParamBox()
+    }
+
+    public static getNextID(){
+        let id = Layer.nextID;
+        Layer.nextID += 1;
+        return id;
     }
 
     populateParamBox() {}
 
-    public dragAction(d) { 
+    public dragAction(d) {
         for (let wire of this.wires) {
             wire.updatePosition()
         }
@@ -90,7 +96,11 @@ export abstract class Layer extends Draggable {
         if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
             currSelected.addChild(this)
         }
+        for (let wire of this.wires) {
+            wire.raise()
+        }
         super.select()
+        this.raise()
         this.wireCircle.style("visibility", "visible")
         document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
@@ -111,19 +121,18 @@ export abstract class Layer extends Draggable {
      * Add a child layer of this node (successor).
      * @param child the layer pointed to by the given wire
      */
-    public addChild(child: Layer, visible=true) {
+    public addChild(child: Layer) {
         if (!this.children.has(child) && !child.children.has(this)) {
             this.children.add(child)
             child.parents.add(this)
 
-            if(visible){
-                let newWire = new Wire(this, child)
-                this.wires.add(newWire)
-                child.wires.add(newWire)
-            }
+            let newWire = new Wire(this, child)
+            this.wires.add(newWire)
+            child.wires.add(newWire)
+
         }
     }
-    
+
     /**
      * Add a parent layer of this node (predecessor).
      * @param parent the layer pointed to by the given wire
@@ -143,14 +152,15 @@ export abstract class Layer extends Draggable {
             "children_ids": Array.from(this.children, child => child.uid),
             "parent_ids": Array.from(this.parents, parent => parent.uid),
             "params": this.getParams(),
-            "id": this.uid, 
-            "xPosition": this.getPosition().x, 
+            "id": this.uid,
+            "xPosition": this.getPosition().x,
             "yPosition": this.getPosition().y,
         }
     }
 
     public getParams(): Map<string, any> {
         let params: Map<string, any> = new Map()
+        let defaultParams = defaults.get(this.layerType);
         for(let line of this.paramBox.children){
             let name = line.children[0].getAttribute('data-name');
             if (line.children[1].className == "select") {
@@ -158,7 +168,14 @@ export abstract class Layer extends Draggable {
                 params[name] = selectElement.options[selectElement.selectedIndex].value
             } else {
                 let value = (<HTMLInputElement>line.children[1]).value;
-                params[name] = parseString(value);
+                // Need to not parse as integer for float parameters
+                if ((defaultParams[name].toString()).indexOf('.') >= 0) {
+                    params[name] = parseFloat(value);
+                }
+
+                else {
+                    params[name] = parseString(value);
+                }
             }
         }
         return params
@@ -188,7 +205,7 @@ export abstract class Layer extends Draggable {
         textField.target.classList.toggle("focusParam");
     }
     /**
-     * Make parent -> this become parent -> layer -> this.  
+     * Make parent -> this become parent -> layer -> this.
      * @param layer a layer that will become the new parent
      * @param parent a parent of this
      */
@@ -198,14 +215,14 @@ export abstract class Layer extends Draggable {
 
         layer.parents.add(parent)
         layer.children.add(this)
-        
+
         this.parents.delete(parent)
         this.parents.add(layer)
     }
 
-    
+
     /**
-     * Make parents -> this become parents -> layer -> this.  
+     * Make parents -> this become parents -> layer -> this.
      * @param parent a parent of this
      */
     public addParentLayer(layer: Layer) {
@@ -213,14 +230,28 @@ export abstract class Layer extends Draggable {
             parent.children.delete(this)
             parent.children.add(layer)
         }
-        
+
         layer.parents = new Set([...layer.parents, ...this.parents])
         layer.children.add(this)
-        
+
         this.parents.clear()
         this.parents.add(layer)
     }
-    
+
+    /**
+     * Make new child -> this become this -> newChild -> old children.
+     * @param newChild a new child of this
+     */
+    public addChildLayerBetween(newChild: Layer){
+        for (let child of this.children){
+            newChild.addChild(child)
+            child.parents.delete(this)
+        }
+        this.children.clear()
+        this.addChild(newChild)
+        newChild.addParent(this)
+    }
+
     public getTfjsLayer(){
         return this.tfjsLayer
     }
@@ -232,12 +263,39 @@ export abstract class Layer extends Draggable {
         for (let param in config) {
             parameters[param] = config[param]
         }
-        let parent:Layer = null 
-        for (let p of this.parents){ parent = p; break } 
+        let parent:Layer = null
+        for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
+
+        if (this.parents.size > 1) {
+            displayError(new Error("Must use a concatenate when a layer has multiple parents"));
+        }
+
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
-    
+
+    public initLineOfJulia(): string {
+        return '';
+    }
+
+    public lineOfJulia(): string {
+        let connections = ''
+        for (let child of this.children){
+            connections += `connect!(net, x${this.uid}, x${child.uid})\n`
+        }
+        return connections
+    }
+
+    public hasParentType(type){
+        for (let p of this.parents){
+            if (p instanceof type){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
 
 /**
@@ -245,78 +303,90 @@ export abstract class Layer extends Draggable {
  */
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
-    static defaultInitialLocation = new Point(100,100)
-    constructor(block: Array<Shape>, defaultLocation=new Point(100,100), invisible=false) { 
-        super(block, defaultLocation, invisible)
-        
+    static defaultInitialLocation = new Point(100,100);
+
+    // Note: The activation will snap to the 0,0 point of an ActivationLayer
+    constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) {
+        super(block, defaultLocation);
+
         // Keep track of activationLayers in global state for activation snapping
-        windowProperties.activationLayers.add(this)
+        windowProperties.activationLayers.add(this);
     }
 
 
     public dragAction(d) {
-        super.dragAction(d)
+        super.dragAction(d);
         if (this.activation != null) {
-            let p = this.getPosition()
-            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")")
+            let p = this.getPosition();
+            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")");
         }
     }
 
-    public select() {
-        super.select()
+    public raise() {
+        super.raise()
         if (this.activation != null) {
-            this.activation.svgComponent.raise()
+            this.activation.raise();
         }
     }
+
     public delete() {
-        super.delete()
+        super.delete();
         // Remove this layer from global state
-        windowProperties.activationLayers.delete(this)
+        windowProperties.activationLayers.delete(this);
         if (this.activation != null) {
-            this.activation.delete()
-        } 
+            this.activation.delete();
+            this.removeActivation();
+        }
     }
 
     public addActivation(activation: Activation) {
         if (this.activation != null && this.activation != activation) {
             this.activation.delete();
-            this.activation.layer = null
-        } 
-        this.activation = activation
-        this.activation.setPosition(this.getPosition())
+            this.activation.layer = null;
+        }
+        this.activation = activation;
+        this.activation.layer = this;
+        this.activation.setPosition(this.getPosition());
     }
 
     public getActivationText(): string {
-        return this.activation != null ? this.activation.activationType : "relu";
+        return this.activation != null ? this.activation.activationType : null;
     }
 
     public removeActivation() {
-        this.activation = null
+        this.activation = null;
     }
 
     public toJson(): LayerJson {
-        let json = super.toJson()
+        let json = super.toJson();
         if (this.activation != null) {
-            json.params["activation"] = this.activation.activationType
+            json.params["activation"] = this.activation.activationType;
         }
-        return json
+        return json;
     }
 
     public generateTfjsLayer(){
         // TODO change defaults to class level
-        let parameters = defaults.get(this.layerType)
-        let config = this.getParams()
+        let parameters = defaults.get(this.layerType);
+        let config = this.getParams();
         for (let param in config) {
-            parameters[param] = config[param]
+            parameters[param] = config[param];
         }
 
         if (this.activation != null) {
-            parameters.activation = this.activation.activationType
+            parameters.activation = this.activation.activationType;
         }
 
-        let parent:Layer = null 
-        for (let p of this.parents){ parent = p; break } 
+        let parent:Layer = null
+
+        if (this.parents.size > 1) {
+            displayError(new Error("Must use a concatenate when a layer has multiple parents"));
+        }
+
+        for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
-        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
+
+
+        this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer());
     }
 }

@@ -10,6 +10,7 @@ export class Wire {
     dest: Layer;
     line: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     triangle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    group: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
 
     static nextID: number = 0;
     id: number;
@@ -23,23 +24,23 @@ export class Wire {
         let sourceCenter = this.source.getPosition().add(this.source.center())
         let destCenter = this.dest.getPosition().add(this.dest.center())
 
-        let newGroup = d3.select<SVGGraphicsElement, {}>("#svg")
+        this.group = d3.select<SVGGraphicsElement, {}>("#svg")
                         .append<SVGGraphicsElement>("g")
 
-        this.line = newGroup.append<SVGGraphicsElement>("line")
+        this.line = this.group.append<SVGGraphicsElement>("line")
                             .attr('x1',sourceCenter.x)
                             .attr('y1',sourceCenter.y)
                             .attr('x2',destCenter.x)
                             .attr('y2',destCenter.y)
                             .style('stroke','black')
                             .style('stroke-width',6)
-        
-        this.triangle = newGroup.append<SVGGraphicsElement>("polygon")
+
+        this.triangle = this.group.append<SVGGraphicsElement>("polygon")
                                 .attr("points", "0,16, 20,0, 0,-16")
 
         this.updatePosition()
-        this.source.svgComponent.raise()
-        this.dest.svgComponent.raise()
+        this.source.raise()
+        this.dest.raise()
 
         this.line.on("click", () => {this.select()})
         this.triangle.on("click", () => {this.select()})
@@ -53,9 +54,15 @@ export class Wire {
                  .attr('y1',sourceCenter.y)
                  .attr('x2',destCenter.x)
                  .attr('y2',destCenter.y)
-        
+
         this.triangle.attr("transform", "translate(" + midPoint.x + ","
                 + midPoint.y + ")rotate("+ sourceCenter.angleTo(destCenter) + ")")
+    }
+
+    public raise() {
+        this.group.raise()
+        this.source.raise()
+        this.dest.raise()
     }
 
     public select() {
@@ -66,9 +73,7 @@ export class Wire {
             windowProperties.selectedElement.unselect()
         }
         windowProperties.selectedElement = this
-        this.line.raise()
-        this.source.svgComponent.raise()
-        this.dest.svgComponent.raise()
+        this.raise()
         this.line.style("stroke", "yellow")
         this.triangle.style("fill", "yellow")
     }

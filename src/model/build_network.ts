@@ -1,43 +1,49 @@
 import * as tf from '@tensorflow/tfjs';
 
-import { SymbolicTensor } from '@tensorflow/tfjs';
 import { Layer, ActivationLayer } from '../ui/shapes/layer';
 import { Input } from '../ui/shapes/layers/input';
 import { displayError } from '../ui/error';
-import { Dense } from '../ui/shapes/layers/dense';
-import { MaxPooling2D } from '../ui/shapes/layers/maxpooling';
-import { Conv2D } from '../ui/shapes/layers/convolutional';
-import { Flatten } from '../ui/shapes/layers/flatten';
-import { Concatenate } from '../ui/shapes/layers/concatenate';
-import { Output } from '../ui/shapes/layers/output';
 import { pythonSkeleton } from './python_skeleton';
+import { juliaSkeleton } from './julia_skeleton';
 
-let typeToTensor: Map<string, any> = new Map()
 
-typeToTensor.set("Input", tf.input)
-typeToTensor.set("Dense", tf.layers.dense)
-typeToTensor.set("MaxPooling2D", tf.layers.maxPooling2d)
-typeToTensor.set("Conv2D", tf.layers.conv2d)
+let typeToTensor: Map<string, any> = new Map();
+
+typeToTensor.set("Input", tf.input);
+typeToTensor.set("Dense", tf.layers.dense);
+typeToTensor.set("MaxPooling2D", tf.layers.maxPooling2d);
+typeToTensor.set("Conv2D", tf.layers.conv2d);
+typeToTensor.set("BatchNorm", tf.layers.batchNormalization);
+typeToTensor.set("Dropout", tf.layers.dropout);
+typeToTensor.set("Flatten", tf.layers.flatten);
+typeToTensor.set("Concatenate", tf.layers.concatenate);
+
 
 // TODO: change this to classes
 export let defaults: Map<string, any> = new Map()
 defaults.set("Input", {})
 defaults.set("Dense", {units: 30})
-defaults.set("MaxPooling2D", {poolSize: [2,2]})
-defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, stride: [2,2]})
+defaults.set("MaxPooling2D", {poolSize: [2,2], strides: [2,2]})
+defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, strides: [2,2]})
 defaults.set("Output", {units: 10, activation: 'softmax'})
+defaults.set("BatchNorm", {momentum: 0.99})
+defaults.set("Flatten", {})
+defaults.set("Concatenate", {})
+defaults.set("Dropout", {rate: 0.5})
+
 
 
 export function buildNetworkDAG(input: Input) {
+    let toposorted = topologicalSort(input);
     try {
-        return networkDAG(input);
+        return networkDAG(toposorted);
     } catch(err) {
         displayError(err)
     }
 }
 
 export function cloneNetwork(input: Input, newInput: Input) {
-    // Initialize queues, dags, and parents (visited) 
+    // Initialize queues, dags, and parents (visited)
 
     let oldId2Clone = {}
     oldId2Clone[input.uid] = newInput
@@ -58,15 +64,15 @@ export function cloneNetwork(input: Input, newInput: Input) {
             else {
                 newLayer = oldId2Clone[current.uid]
             }
-            
-        
+
+
             // Add in cloned parent/child relations
 
             for (let p of current.parents) {
-                
+
                 if(!(p.uid in oldId2Clone)) {
                     oldId2Clone[p.uid] = p.clone()
-                    
+
                 }
                 let newParent = oldId2Clone[p.uid]
                 newParent.addChild(newLayer, false)
@@ -80,88 +86,57 @@ export function cloneNetwork(input: Input, newInput: Input) {
 
         // Continue BFS
         for (let child of current.children) {
-            
+
             if (!visited.has(child)) {
                 queue.push(child)
                 visited.add(child)
             }
         }
-    }
-}
-
-export function addInExtraLayers(input: Input) {
-    // Initialize queues, dags, and parents (visited) 
-
-    let queue: Layer[] = [input]
-    let visited: Set<Layer> = new Set()
-    console.log("Building graph... ")
-    let toAddFlatten = []
-    let toAddConcatenate: Layer[] = []  
-
-    while (queue.length != 0) {
-        let current = queue.shift()
-
-        // Dense takes in 1D input so flatten if necessary
-        if (current instanceof Dense || current instanceof Output) {
-            for (let parent of current.parents){
-                
-                if (parent instanceof MaxPooling2D || parent instanceof Conv2D || parent instanceof Input) {
-                    toAddFlatten.push([current, parent])
-                    // current.addParentLayerBetween(new Flatten(), parent)
-                }
-            }
-        }
-        
-        // Concatentate parents if necessary
-        if (current.parents.size > 1 && !(current instanceof Concatenate)) {
-            toAddConcatenate.push(current)
-            // current.addParentLayer(new Concatenate())
-        }
-
-        // Continue BFS
-        for (let child of current.children) {
-            
-            if (!visited.has(child)) {
-                queue.push(child)
-                visited.add(child)
-            }
-        }
-    }
-
-    for (let [layer, parent] of toAddFlatten){
-        layer.addParentLayerBetween(new Flatten(), parent)
-    }
-
-    for (let layer of toAddConcatenate){
-        layer.addParentLayer(new Concatenate())
     }
 }
 
 export function topologicalSort(input: Input): Layer[] {
     // Kahn's algorithm
-    let sorted: Layer[] = []
-    let visited: Set<Layer> = new Set()
-    let frontier: Layer[] = [input]
+    let sorted: Layer[] = [];
+    let visited: Set<Layer> = new Set();
+    let frontier: Layer[] = [input];
+
     while (frontier.length > 0) {
-        let layer = frontier.pop()
-        visited.add(layer)
-        sorted.push(layer)
+        let layer = frontier.pop();
+        visited.add(layer);
+        sorted.push(layer);
         for (let child of layer.children) {
+
+            // Check not a loop
+            let childIndex = sorted.indexOf(child);
+
+            if (childIndex >= 0 && childIndex < sorted.indexOf(layer)) {
+                displayError(new Error("Cannot have backwards edges"));
+            }
+
             // Check if we've already visited all parents
-            let canAdd = true
+            let canAdd = true;
             for (let parent of child.parents){
-                canAdd = visited.has(parent)
+
+                canAdd = visited.has(parent);
                 if (!canAdd) {
-                    break
+                    break;
                 }
             }
 
             // All dependencies are added then add child
             if (canAdd) {
-                frontier.push(child)
+                frontier.push(child);
             }
         }
     }
+
+    // Second cycle check
+
+    if (sorted[sorted.length - 1].layerType != "Output") {
+        displayError(new Error("Cannot have backwards edges"));
+    }
+
     return sorted
 }
 
@@ -180,8 +155,16 @@ export function generatePython(sorted: Layer[]){
             applystring = `([${[...layer.parents].map(p => "x" + p.uid).join(", ")}])`;
         }
         pythonScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
+
+        // TODO: Move this to BatchNorm and generalize layerstring to an array
+        if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).activation != null) {
+            if(this.activation != null && this.activation.activationType != "relu") {
+                displayError(new Error("Batch Normalization does not support activations other than ReLu"));
+            }
+            pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";
+        }
     }
-    pythonScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})\n`
+    pythonScript += `model = Model(inputs=x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})`
     return pythonSkeleton(pythonScript)
 }
 
@@ -189,20 +172,14 @@ export function generatePython(sorted: Layer[]){
  * Creates corresponding Julia code.
  * @param sorted topologically sorted list of layers
  */
-export function generateJulia(sorted: Layer[]){
-    let juliaScript: string = ""
+export function generateJulia(sorted: Layer[]): string {
+    let juliaInitialization:string = "";
+    let juliaScript: string = "";
     for (let layer of sorted) {
-        let layerstring = layer.lineOfPython();
-        let applystring = ""; // Nothing to apply if no parents (input)
-        if(layer.parents.size == 1) {
-            applystring = `(x${layer.parents.values().next().value.uid})`;
-        } else if (layer.parents.size > 1) {
-            applystring = `([${[...layer.parents].map(p => "x" + p.uid).join(", ")}])`;
-        }
-        juliaScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
+        juliaInitialization += layer.initLineOfJulia();
+        juliaScript += layer.lineOfJulia();
     }
-    juliaScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})\n`
-    return pythonSkeleton(juliaScript)
+    return juliaSkeleton(juliaInitialization, juliaScript);
 }
 
 /**
@@ -210,17 +187,13 @@ export function generateJulia(sorted: Layer[]){
  * @param sorted topologically sorted list of layers
  */
 function generateTfjsModel(sorted: Layer[]){
-    sorted.forEach(layer => layer.generateTfjsLayer())
-    let input = sorted[0].getTfjsLayer()
-    let output = sorted[sorted.length - 1].getTfjsLayer()
-    return tf.model({inputs: input, outputs: output})    
+    sorted.forEach(layer => layer.generateTfjsLayer());
+    let input = sorted[0].getTfjsLayer();
+    let output = sorted[sorted.length - 1].getTfjsLayer();
+    return tf.model({inputs: input, outputs: output});
 }
 
-function networkDAG(input: Input){
-    let newInput = <Input> input.clone();
-    cloneNetwork(input, newInput);
-    addInExtraLayers(newInput);
-    let toposorted = topologicalSort(newInput);
+function networkDAG(toposorted){
     let model = generateTfjsModel(toposorted);
     console.log(model.summary());
     return model;

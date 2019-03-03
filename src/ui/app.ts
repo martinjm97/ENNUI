@@ -1,7 +1,7 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, topologicalSort, addInExtraLayers, cloneNetwork, generatePython } from "../model/build_network";
+import { buildNetworkDAG, topologicalSort, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
@@ -12,10 +12,15 @@ import { Output } from "./shapes/layers/output";
 import { Dense } from "./shapes/layers/dense";
 import { Conv2D } from "./shapes/layers/convolutional";
 import { MaxPooling2D } from "./shapes/layers/maxpooling";
+import { BatchNorm } from "./shapes/layers/batchnorm";
 import { clearError, displayError } from "./error";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
 import { pythonSkeleton } from "../model/python_skeleton";
 import { copyTextToClipboard } from "./utils";
+import { browserLocalStorage } from "@tensorflow/tfjs-core/dist/io/local_storage";
+import { Concatenate } from "./shapes/layers/concatenate";
+import { Flatten } from "./shapes/layers/flatten";
+import { Dropout } from "./shapes/layers/dropout";
 
 import { changeDataset, dataset, Cifar10Data } from "../model/data";
 
@@ -92,6 +97,10 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	});
 
+	window.addEventListener('resize',resizeMiddleSVG);
+
+	resizeMiddleSVG();
+
 	bindMenuExpander();
 
 	document.getElementById('defaultOptimizer').classList.add('selected')
@@ -113,19 +122,26 @@ document.addEventListener("DOMContentLoaded", function() {
 	window.onkeyup = function(event){
 		switch(event.key){
 			case 'Escape' :
-				if(windowProperties.selectedElement){
+				if (document.getElementById("informationTab").style.display != "none") {
+					showInformationOverlay();
+				}
+				else if(windowProperties.selectedElement){
 					windowProperties.selectedElement.unselect();
 					windowProperties.selectedElement = null;
 				}
 				break;
 			case 'Delete' :
-				deleteSelected();
+				if (document.getElementsByClassName('focusParam').length == 0)
+					deleteSelected();
 				break;
 			case 'Backspace' :
 				if (document.getElementsByClassName('focusParam').length == 0)
 					deleteSelected();
 				break;
-			case 'Enter' :				
+			case 'Enter' :
+				if (document.getElementById("informationTab").style.display != "none") {
+					showInformationOverlay();
+				}
 				break;
 		}
 	};
@@ -136,6 +152,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Select the input block when we load the page
 	svgData.input.select();
 
+	// Begin page with info tab
+	showInformationOverlay();
 });
 
 function deleteSelected(){
@@ -184,14 +202,26 @@ function bindMenuExpander(){
 			document.getElementById('menu').style.display = 'block'
 			document.getElementById('expander_triangle').setAttribute('points',"0,15 10,30 10,0");
 
+			document.getElementById('middle').style.width = 'calc(100% - 430px)'
+
 		} else {
 
 			document.getElementById('menu').style.display = 'none'
 			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
 
+			document.getElementById('middle').style.width = 'calc(100% - 270px)'
+
 		}
 
+		resizeMiddleSVG();
+
 	});
+}
+
+function resizeMiddleSVG(){
+	let ratio = document.getElementById('middle').clientWidth/800;
+
+	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
 }
 
 function makeCollapsable(elmt){
@@ -280,60 +310,69 @@ export function tabSelected(): string {
 }
 
 
-function dispatchCreationOnClick(elmt){
-	elmt.addEventListener('click', function(e){
-		let itemType = elmt.parentElement.getAttribute('data-itemType')
-
-		if (model.params.isParam(itemType)){
-			let setting;
-			if (elmt.hasAttribute('data-trainType')) {
-				setting = elmt.getAttribute('data-trainType');
-			} else if (elmt.hasAttribute('data-lossType')) {
-				setting = elmt.getAttribute('data-lossType');
+function  dispatchCreationOnClick(elmt){
+	if (!elmt.classList.contains('dropdown'))
+		elmt.addEventListener('click', function(e){
+			let itemType
+			if (elmt.parentElement.classList.contains('dropdown-content')) {
+				itemType = elmt.parentElement.parentElement.parentElement.getAttribute('data-itemType')
 			}
-
-			let selected = elmt.parentElement.getElementsByClassName("selected");
-			if (selected.length > 0) {
-				selected[0].classList.remove("selected");
+			else {
+				itemType = elmt.parentElement.getAttribute('data-itemType')
 			}
-			elmt.classList.add("selected");
-			updateNetworkParameters({itemType: itemType, setting : setting});
-		} else if (itemType == "share") {
-			if (elmt.getAttribute('share-option') == "exportPython") {
-				console.log(svgData.input.getParams()["dataset"])
-				if (svgData.input.getParams()["dataset"] == "cifar") {
-					let error : Error = Error("CIFAR-10 dataset exporting to python not currently supported. Select MNIST dataset instead.")
-					displayError(error);
-					return;
+			if (model.params.isParam(itemType)){
+				let setting;
+				if (elmt.hasAttribute('data-trainType')) {
+					setting = elmt.getAttribute('data-trainType');
+				} else if (elmt.hasAttribute('data-lossType')) {
+					setting = elmt.getAttribute('data-lossType');
 				}
-				let newInput = svgData.input.clone()
-				cloneNetwork(svgData.input, newInput)
-				addInExtraLayers(newInput)
-				download(generatePython(topologicalSort(newInput)), "mnist_model.py");
-			} else if (elmt.getAttribute('share-option') == "copyModel"){
-				let state = graphToJson(svgData)
-				let baseUrl: string = window.location.href
-				let urlParam: string = storeNetworkInUrl(state)
-				copyTextToClipboard(baseUrl + "#" + urlParam)
-			}
-		} else if (itemType == "classes") {
-			let selected = elmt.parentElement.getElementsByClassName("selected");
-			if (selected.length > 0) {
-				selected[0].classList.remove("selected")
-			}
 
-			elmt.classList.add("selected");
+				let selected = elmt.parentElement.getElementsByClassName("selected");
+				if (selected.length > 0) {
+					selected[0].classList.remove("selected");
+				}
+				elmt.classList.add("selected");
+				updateNetworkParameters({itemType: itemType, setting : setting});
+			} else if (itemType == "share") {
+				if (elmt.getAttribute('share-option') == "exportPython") {
+					if (svgData.input.getParams()["dataset"] == "cifar") {
+						let error : Error = Error("CIFAR-10 dataset exporting to Python not currently supported. Select MNIST dataset instead.")
+						displayError(error);
+						return;
+					}
+					download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
+				} else if (elmt.getAttribute('share-option') == "exportJulia") {
+					if (svgData.input.getParams()["dataset"] == "cifar") {
+						let error : Error = Error("CIFAR-10 dataset exporting to Julia not currently supported. Select MNIST dataset instead.")
+						displayError(error);
+						return;
+					}
+					download(generateJulia(topologicalSort(svgData.input)), "mnist_model.jl");
+				} else if (elmt.getAttribute('share-option') == "copyModel"){
+					let state = graphToJson(svgData);
+					let baseUrl: string = window.location.href;
+					let urlParam: string = storeNetworkInUrl(state);
+					copyTextToClipboard(baseUrl + "#" + urlParam);
+				}
+			} else if (itemType == "classes") {
+				let selected = elmt.parentElement.getElementsByClassName("selected");
+				if (selected.length > 0) {
+					selected[0].classList.remove("selected");
+				}
 
-			if (model.architecture != null){
-				showPredictions()
+				elmt.classList.add("selected");
+
+				if (model.architecture != null){
+					showPredictions()
+				}
+			} else {
+				let detail = { itemType : itemType}
+				detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
+				let event = new CustomEvent('create', { detail : detail } );
+				window.dispatchEvent(event);
 			}
-		} else {
-			let detail = { itemType : itemType}
-			detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
-			let event = new CustomEvent('create', { detail : detail } );
-			window.dispatchEvent(event);
-		}
-	});
+		});
 }
 
 
@@ -356,6 +395,12 @@ function appendItem(options){
 			case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
 			case "conv2D": item = new Conv2D(); console.log("Created Conv2D Layer"); break;
 			case "maxPooling2D": item = new MaxPooling2D(); console.log("Created MaxPooling2D Layer"); break;
+			case "batchnorm": item = new BatchNorm(); console.log("Created Batch Normalization Layer"); break;
+			case "flatten": item = new Flatten(); console.log("Created Flatten Layer"); break;
+			case "concatenate": item = new Concatenate(); console.log("Created Concatenate Layer"); break;
+			case "dropout": item = new Dropout(); console.log("Created Dropout Layer"); break;
+
+
 		}
 		case 'activation': switch(options.detail.activationType) {
 			case 'relu': item = new Relu(); console.log("Created Relu"); break;
@@ -425,8 +470,6 @@ function switchTab(tab) {
 	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected")
 	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected")
 
-
-
 }
 
 function showInformationOverlay() {
@@ -436,3 +479,4 @@ function showInformationOverlay() {
 		document.getElementById("informationTab").style.display = "none";
 	}
 }
+
