@@ -1,6 +1,7 @@
 import { Point } from "./shape";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
+import { get_svg_original_bounding_box } from "../utils";
 
 export abstract class Draggable {
     static readonly snapRadius: number = 400;
@@ -67,7 +68,7 @@ export abstract class Draggable {
                 this.select()                
                 firstDrag = false
             }
-            let canvasBoundingBox = document.getElementById("svg").getBoundingClientRect()
+            let canvasBoundingBox = get_svg_original_bounding_box(document.getElementById("svg"))
             // TODO: take into account the width of the object this.svgComponent
             let tx = Math.min(Math.max(0, d3.event.x - mousePosRelativeToCenter.x), canvasBoundingBox.width)
             let ty = Math.min(Math.max(0, d3.event.y - mousePosRelativeToCenter.y), canvasBoundingBox.height)
