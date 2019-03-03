@@ -103,6 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	resizeMiddleSVG();
 
 	bindMenuExpander();
+	bindRightMenuExpander();
 
 	document.getElementById('defaultOptimizer').classList.add('selected')
 	document.getElementById('defaultLoss').classList.add('selected')
@@ -197,20 +198,63 @@ async function trainOnClick() {
 }
 
 function bindMenuExpander(){
-	document.getElementById('menu_expander').addEventListener('click',function(e){
+	document.getElementById('menu').style.display = 'block';
+	document.getElementById('menu_expander_handle').addEventListener('click',function(e){
 		if(document.getElementById('menu').style.display == 'none'){
 
 			document.getElementById('menu').style.display = 'block'
 			document.getElementById('expander_triangle').setAttribute('points',"0,15 10,30 10,0");
 
-			document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			if(document.getElementById('paramshell').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 230px)'
+			}
 
 		} else {
 
 			document.getElementById('menu').style.display = 'none'
 			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
 
-			document.getElementById('middle').style.width = 'calc(100% - 270px)'
+			if(document.getElementById('paramshell').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 270px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 70px)'
+			}
+
+
+		}
+
+		resizeMiddleSVG();
+
+	});
+}
+
+function bindRightMenuExpander(){
+	document.getElementById('paramshell').style.display = 'block';
+	document.getElementById('right_menu_expander_handle').addEventListener('click',function(e){
+		if(document.getElementById('paramshell').style.display == 'none'){
+
+			document.getElementById('paramshell').style.display = 'block'
+			document.getElementById('right_expander_triangle').setAttribute('points',"20,15 10,30 10,0");
+
+			if(document.getElementById('menu').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 250px)'
+			}
+
+		} else {
+
+			document.getElementById('paramshell').style.display = 'none'
+			document.getElementById('right_expander_triangle').setAttribute('points',"0,15 10,30 10,0");
+
+			if(document.getElementById('menu').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 250px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 70px)'
+			}
+
 
 		}
 
