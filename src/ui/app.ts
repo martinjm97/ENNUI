@@ -22,6 +22,8 @@ import { Concatenate } from "./shapes/layers/concatenate";
 import { Flatten } from "./shapes/layers/flatten";
 import { Dropout } from "./shapes/layers/dropout";
 
+import { changeDataset, dataset, Cifar10Data } from "../model/data";
+
 export interface DraggableData {
 	draggable: Array<Draggable>
 	input: Input
@@ -148,10 +150,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	svgData = loadStateIfPossible()
 
+	// Select the input block when we load the page
+	svgData.input.select();
+
 	// Begin page with info tab
 	showInformationOverlay();
-
-
 });
 
 function deleteSelected(){
@@ -169,6 +172,8 @@ async function trainOnClick() {
 	let training = document.getElementById('train');
 	if (!training.classList.contains("train-active")){
 		clearError()
+
+		changeDataset(svgData.input.getParams()["dataset"])
 
 		// Grab hyperparameters
 		setModelHyperparameters()
@@ -375,8 +380,18 @@ function  dispatchCreationOnClick(elmt){
 				updateNetworkParameters({itemType: itemType, setting : setting});
 			} else if (itemType == "share") {
 				if (elmt.getAttribute('share-option') == "exportPython") {
+					if (svgData.input.getParams()["dataset"] == "cifar") {
+						let error : Error = Error("CIFAR-10 dataset exporting to Python not currently supported. Select MNIST dataset instead.")
+						displayError(error);
+						return;
+					}
 					download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
 				} else if (elmt.getAttribute('share-option') == "exportJulia") {
+					if (svgData.input.getParams()["dataset"] == "cifar") {
+						let error : Error = Error("CIFAR-10 dataset exporting to Julia not currently supported. Select MNIST dataset instead.")
+						displayError(error);
+						return;
+					}
 					download(generateJulia(topologicalSort(svgData.input)), "mnist_model.jl");
 				} else if (elmt.getAttribute('share-option') == "copyModel"){
 					let state = graphToJson(svgData);
