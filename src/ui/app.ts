@@ -96,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 	window.addEventListener('resize',resizeMiddleSVG);
+	window.addEventListener('resize', setupPlots);
 
 	resizeMiddleSVG();
 
@@ -214,7 +215,7 @@ function bindMenuExpander(){
 }
 
 function resizeMiddleSVG(){
-	let ratio = document.getElementById('middle').clientWidth/800;
+	let ratio = document.getElementById('middle').clientWidth/1000;
 
 	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
 }

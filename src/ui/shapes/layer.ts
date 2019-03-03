@@ -8,7 +8,6 @@ import { windowProperties } from "../window";
 import { parseString } from "../utils";
 import { defaults} from '../../model/build_network';
 import { displayError } from '../error';
-import { stratify } from 'd3';
 
 export interface LayerJson {
     layer_name: string
