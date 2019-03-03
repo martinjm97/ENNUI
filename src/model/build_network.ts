@@ -5,6 +5,7 @@ import { Input } from '../ui/shapes/layers/input';
 import { displayError } from '../ui/error';
 import { pythonSkeleton } from './python_skeleton';
 import { juliaSkeleton } from './julia_skeleton';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 
 let typeToTensor: Map<string, any> = new Map();
@@ -34,8 +35,9 @@ defaults.set("Dropout", {rate: 0.5})
 
 
 export function buildNetworkDAG(input: Input) {
+    let toposorted = topologicalSort(input);
     try {
-        return networkDAG(input);
+        return networkDAG(toposorted);
     } catch(err) {
         displayError(err)
     }
@@ -96,29 +98,46 @@ export function cloneNetwork(input: Input, newInput: Input) {
 
 export function topologicalSort(input: Input): Layer[] {
     // Kahn's algorithm
-    let sorted: Layer[] = []
-    let visited: Set<Layer> = new Set()
-    let frontier: Layer[] = [input]
+    let sorted: Layer[] = [];
+    let visited: Set<Layer> = new Set();
+    let frontier: Layer[] = [input];
+
     while (frontier.length > 0) {
-        let layer = frontier.pop()
-        visited.add(layer)
-        sorted.push(layer)
+        let layer = frontier.pop();
+        visited.add(layer);
+        sorted.push(layer);
         for (let child of layer.children) {
+
+            // Check not a loop
+            let childIndex = sorted.indexOf(child);
+
+            if (childIndex >= 0 && childIndex < sorted.indexOf(layer)) {
+                displayError(new Error("Cannot have backwards edges"));
+            }
+
             // Check if we've already visited all parents
-            let canAdd = true
+            let canAdd = true;
             for (let parent of child.parents){
-                canAdd = visited.has(parent)
+
+                canAdd = visited.has(parent);
                 if (!canAdd) {
-                    break
+                    break;
                 }
             }
 
             // All dependencies are added then add child
             if (canAdd) {
-                frontier.push(child)
+                frontier.push(child);
             }
         }
     }
+
+    // Second cycle check
+
+    if (sorted[sorted.length - 1].layerType != "Output") {
+        displayError(new Error("Cannot have backwards edges"));
+    }
+
     return sorted
 }
 
@@ -140,11 +159,13 @@ export function generatePython(sorted: Layer[]){
 
         // TODO: Move this to BatchNorm and generalize layerstring to an array
         if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).activation != null) {
+            if(this.activation != null && this.activation.activationType != "relu") {
+                displayError(new Error("Batch Normalization does not support activations other than ReLu"));
+            }
             pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";
-            
         }
     }
-    pythonScript += `model = Model(inputs= x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})\n`
+    pythonScript += `model = Model(inputs=x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})`
     return pythonSkeleton(pythonScript)
 }
 
@@ -152,13 +173,14 @@ export function generatePython(sorted: Layer[]){
  * Creates corresponding Julia code.
  * @param sorted topologically sorted list of layers
  */
-export function generateJulia(sorted: Layer[]){
-    let juliaScript: string = ""
+export function generateJulia(sorted: Layer[]): string {
+    let juliaInitialization:string = "";
+    let juliaScript: string = "";
     for (let layer of sorted) {
-        let layerstring = layer.lineOfJulia();
-        juliaScript += `\tx${layer.uid} = ${layerstring}\n`;
+        juliaInitialization += layer.initLineOfJulia();
+        juliaScript += layer.lineOfJulia();
     }
-    return juliaSkeleton(juliaScript)
+    return juliaSkeleton(juliaInitialization, juliaScript);
 }
 
 /**
@@ -166,14 +188,13 @@ export function generateJulia(sorted: Layer[]){
  * @param sorted topologically sorted list of layers
  */
 function generateTfjsModel(sorted: Layer[]){
-    sorted.forEach(layer => layer.generateTfjsLayer())
-    let input = sorted[0].getTfjsLayer()
-    let output = sorted[sorted.length - 1].getTfjsLayer()
-    return tf.model({inputs: input, outputs: output})
+    sorted.forEach(layer => layer.generateTfjsLayer());
+    let input = sorted[0].getTfjsLayer();
+    let output = sorted[sorted.length - 1].getTfjsLayer();
+    return tf.model({inputs: input, outputs: output});
 }
 
-function networkDAG(input: Input){
-    let toposorted = topologicalSort(input);
+function networkDAG(toposorted){
     let model = generateTfjsModel(toposorted);
     console.log(model.summary());
     return model;

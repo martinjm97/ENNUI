@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { ActivationLayer } from "../layer";
+import { ActivationLayer, Layer } from "../layer";
 import { Point, PathShape, Rectangle } from "../shape";
 
 export class Conv2D extends ActivationLayer {
@@ -65,13 +65,16 @@ export class Conv2D extends ActivationLayer {
 
     public lineOfPython(): string {
         let params = this.getParams();
-        return `Conv2D(${params["filters"]}, (${params["kernelSize"]}), strides=(${params["strides"]}), activation='${this.getActivationText()}')`
+        let activation = this.getActivationText();
+        let activationText = activation == null ? "" : `, activation='${activation}'`;
+        return `Conv2D(${params["filters"]}, (${params["kernelSize"]}), strides=(${params["strides"]})${activationText})`
     }
 
-    public lineOfJulia(): string {
+    public initLineOfJulia(): string {
         let params = this.getParams();
-        let prev_id = this.parents.values().next().value.uid;
-        return `Conv((${params["kernelSize"]}), size(x${prev_id}, 3)=>${params["filters"]}, ${this.getActivationText()}, stride=(${params["strides"]}))(x${prev_id})`
+        let activation = this.getActivationText();
+        let activationText = activation == null ? '' : `, ${activation}`;
+        return `x${this.uid} = insert!(net, (shape) -> Conv((${params["kernelSize"]}), shape[3] =>${params["filters"]}${activationText}, stride=(${params["strides"]})))\n`
     }
 
     public clone() {
