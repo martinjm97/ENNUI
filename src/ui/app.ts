@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	resizeMiddleSVG();
 
-	// bindMenuExpander();
+	bindMenuExpander();
 
 	document.getElementById('defaultOptimizer').classList.add('selected')
 	document.getElementById('defaultLoss').classList.add('selected')
