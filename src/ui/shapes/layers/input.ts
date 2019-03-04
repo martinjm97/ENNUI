@@ -19,12 +19,14 @@ export class Input extends Layer {
     delete() { this.unselect(); }
 
     populateParamBox() {
+        // Dataset input box
+        // TODO: separate this logic out.
         let line = document.createElement('div')
-        line.className = 'paramline'        
+        line.className = 'paramline selectline'
 
         let name = document.createElement('div')
         name.className = "paramname"
-        name.innerHTML = 'Dataset:'  
+        name.innerHTML = 'Dataset:'
         name.setAttribute('data-name','dataset')
 
         let select_div = document.createElement('div')
@@ -49,9 +51,24 @@ export class Input extends Layer {
         select_div.appendChild(arrow)
         this.paramBox.append(line);
         this.focusing()
+
+        // // Subset the data
+        // let line2 = document.createElement('div')
+        // line2.className = 'paramline'
+        // let subset = document.createElement('div')
+        // subset.className = 'paramname'
+        // subset.innerHTML = 'Subset:'
+        // subset.setAttribute('data-name','subset')
+        // let value2 = document.createElement('input')
+        // value2.className = 'paramvalue layerparamvalue'
+        // value2.value = '0.5'
+        // line2.appendChild(subset);
+        // line2.appendChild(value2);
+        // this.paramBox.append(line2);
+        // this.focusing()
     }
 
-    public generateTfjsLayer(){ 
+    public generateTfjsLayer(){
         // TODO make this a member variable
         this.tfjsLayer = this.tfjsEmptyLayer({shape: [dataset.IMAGE_HEIGHT, dataset.IMAGE_WIDTH, dataset.IMAGE_CHANNELS]})
     }
