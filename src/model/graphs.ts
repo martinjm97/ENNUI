@@ -1,29 +1,18 @@
 import * as tfvis from '@tensorflow/tfjs-vis';
 import * as tf from '@tensorflow/tfjs';
-import { IMAGE_W, IMAGE_H, data, NUM_CLASSES } from './data';
+import { dataset } from './data';
 import { model } from './paramsObject';
 import { tabSelected } from '../ui/app';
 
 const GRAPH_FONT_SIZE = 14;
-
-// const statusElement = document.getElementById('status');
-// const messageElement = document.getElementById('message');
-
-// export function logStatus(message) {
-//   statusElement.innerText = message;
-// }
-
-// export function trainingLog(message) {
-//   messageElement.innerText = `${message}\n`;
-//   console.log(message);
-// }
+const NUM_CLASSES = 10;
 
 const testExamples:number = 50;
 /**
  * Show predictions on a number of test examples.
  */
 export async function showPredictions() {
-  if (tabSelected() == "visualizationTab" && data.dataLoaded) {
+  if (tabSelected() == "visualizationTab" && dataset.dataLoaded) {
     const testExamples = 60;
 
     let label = null
@@ -34,7 +23,7 @@ export async function showPredictions() {
             break
         }
     }
-    const examples = data.getTestDataWithLabel(testExamples, label);
+    const examples = dataset.getTestDataWithLabel(testExamples, label);
 
     // Code wrapped in a tf.tidy() function callback will have their tensors freed
     // from GPU memory after execution without having to call dispose().
@@ -63,29 +52,30 @@ export async function showPredictions() {
   }
 }
 
+let confusionValues = [];
+for (let i = 0; i < NUM_CLASSES; i++) {
+  let arr = new Array(NUM_CLASSES);
+  arr.fill(0,0,NUM_CLASSES);
+  confusionValues.push(arr);
+}
+
 export function showConfusionMatrix() {
-  if (tabSelected() == "progressTab" && data.dataLoaded) {
-    const {xs, labels} = data.getTestData(1000);
+  if (tabSelected() == "progressTab" && dataset.dataLoaded) {
+    const {xs, labels} = dataset.getTestData(1000);
     tf.tidy(() => {
       const output = model.architecture.predict(xs);
 
       const fixedLabels = <tf.Tensor<tf.Rank.R1>>labels.argMax(1);
       const predictions = output.argMax(1);
 
-      tfvis.metrics.confusionMatrix(fixedLabels, predictions, NUM_CLASSES).then(function(confusionValues) {
-        const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
-        tfvis.render.confusionMatrix({
-          values: confusionValues ,
-          labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        }, confusionMatrixElement, {
-          fontSize: GRAPH_FONT_SIZE,
-          shadeDiagonal: false,
-        });
+      tfvis.metrics.confusionMatrix(fixedLabels, predictions, NUM_CLASSES).then(function(confusionVals) {
+        confusionValues = confusionVals;
+        renderConfusionMatrix();
       });
-      
+
     });
   }
-  
+
 }
 
 export function setupTestResults() {
@@ -96,8 +86,8 @@ export function setupTestResults() {
     div.className = 'pred-container';
 
     const canvas = document.createElement('canvas');
-    canvas.width = IMAGE_W;
-    canvas.height = IMAGE_H;
+    canvas.width = dataset.IMAGE_WIDTH;
+    canvas.height = dataset.IMAGE_HEIGHT;
     canvas.className = 'prediction-canvas';
     let ctx = canvas.getContext("2d");
     ctx.rect(0, 0, 1000, 5000);
@@ -148,8 +138,6 @@ export function showTestResults(batch, predictions, labels) {
   }
 }
 
-// const lossLabelElement = document.getElementById('loss-label');
-// const accuracyLabelElement = document.getElementById('accuracy-label');
 let lossValues = [[], []];
 export function plotLoss(batch, loss, set) {
   const series = set === 'train' ? 0 : 1;
@@ -166,8 +154,8 @@ export function renderLossPlot() {
       {values: lossValues, series: ['train', 'validation']}, lossContainer, {
         xLabel: 'Batch #',
         yLabel: 'Loss',
-        width: 400*1.15,
-        height: 300*1.15,
+        width: canvasWidth() / 2,
+        height: canvasHeight() / 2,
         fontSize: GRAPH_FONT_SIZE,
       });
 }
@@ -188,53 +176,44 @@ export function renderAccuracyPlot() {
       accuracyContainer, {
         xLabel: 'Batch #',
         yLabel: 'Accuracy',
-        width: 400*1.15,
-        height: 300*1.15,
+        width: canvasWidth() / 2,
+        height: canvasHeight() / 2,
         yAxisDomain: [0,1],
         fontSize: GRAPH_FONT_SIZE,
       });
 }
 
-export function setupPlots() {
-  accuracyValues = [[], []];
-  lossValues = [[],[]];
-  let confusionValues = [];
-  for (let i = 0; i < NUM_CLASSES; i++) {
-    let arr = new Array(NUM_CLASSES);
-    arr.fill(0,0,NUM_CLASSES);
-    confusionValues.push(arr);
-  }
-  const lossContainer = document.getElementById('loss-canvas');
-  const accuracyContainer = document.getElementById('accuracy-canvas');
+function renderConfusionMatrix() {
   const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
-  tfvis.render.linechart(
-    {values: lossValues, series: ['train', 'validation']}, lossContainer, {
-      xLabel: 'Batch #',
-      yLabel: 'Loss',
-      width: 400*1.15,
-      height: 300*1.15,
-      fontSize: GRAPH_FONT_SIZE,
-    });
-  tfvis.render.linechart(
-    {values: accuracyValues, series: ['train', 'validation']},
-    accuracyContainer, {
-      xLabel: 'Batch #',
-      yLabel: 'Accuracy',
-      width: 400*1.15,
-      height: 300*1.15,
-      fontSize: GRAPH_FONT_SIZE,
-    });
-    tfvis.render.confusionMatrix({
-      values: confusionValues ,
-      labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-    }, confusionMatrixElement, {
-      fontSize: GRAPH_FONT_SIZE,
-      shadeDiagonal: false,
-    });
+  tfvis.render.confusionMatrix({
+    values: confusionValues ,
+    labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  }, confusionMatrixElement, {
+    fontSize: GRAPH_FONT_SIZE,
+    shadeDiagonal: false,
+  });
 }
 
+function canvasWidth(): number {
+  let columnGap = parseInt(getComputedStyle(document.getElementById("progressTab")).gridColumnGap);
+  return document.getElementById('middle').clientWidth - columnGap;
+}
+
+function canvasHeight(): number {
+  let verticalPadding = parseInt(getComputedStyle(document.getElementById("progressTab")).padding);
+  let height = document.getElementById('middle').clientHeight - 2 * verticalPadding;
+  return height;
+}
+
+export function setupPlots() {
+  renderLossPlot();
+  renderAccuracyPlot();
+  renderConfusionMatrix();
+}
+
+
 export function draw(image, canvas) {
-  const [width, height] = [28, 28];
+  const [width, height] = [dataset.IMAGE_HEIGHT, dataset.IMAGE_WIDTH];
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
@@ -242,10 +221,18 @@ export function draw(image, canvas) {
   const data = image.dataSync();
   for (let i = 0; i < height * width; ++i) {
     const j = i * 4;
-    imageData.data[j + 0] = data[i] * 255;
-    imageData.data[j + 1] = data[i] * 255;
-    imageData.data[j + 2] = data[i] * 255;
-    imageData.data[j + 3] = 255;
+    if (dataset.IMAGE_CHANNELS == 3) {
+      const k = i * 3;
+      imageData.data[j + 0] = data[k + 0] * 255;
+      imageData.data[j + 1] = data[k + 1] * 255;
+      imageData.data[j + 2] = data[k + 2] * 255;
+      imageData.data[j + 3] = 255;
+    } else {
+      imageData.data[j + 0] = data[i] * 255;
+      imageData.data[j + 1] = data[i] * 255;
+      imageData.data[j + 2] = data[i] * 255;
+      imageData.data[j + 3] = 255;
+    }
   }
   ctx.putImageData(imageData, 0, 0);
 }

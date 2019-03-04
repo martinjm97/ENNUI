@@ -18,7 +18,7 @@ export class Dense extends ActivationLayer {
         name.innerHTML = 'Units:'
         name.setAttribute('data-name','units')
         let value = document.createElement('input')
-        value.className = 'paramvalue'
+        value.className = 'paramvalue layerparamvalue'
         value.value = '30'
         line.appendChild(name);
         line.appendChild(value);
@@ -31,8 +31,8 @@ export class Dense extends ActivationLayer {
     public lineOfPython(): string {
         let params = this.getParams();
         let activation = this.getActivationText();
-        let activationText = activation == null ? "None" : `'${activation}'`;
-        return `Dense(${params["units"]}, activation=${activationText})`;
+        let activationText = activation == null ? "" : `, activation='${activation}'`;
+        return `Dense(${params["units"]}${activationText})`;
     }
 
     public initLineOfJulia(): string {

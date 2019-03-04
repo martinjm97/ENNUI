@@ -22,6 +22,8 @@ import { Concatenate } from "./shapes/layers/concatenate";
 import { Flatten } from "./shapes/layers/flatten";
 import { Dropout } from "./shapes/layers/dropout";
 
+import { changeDataset, dataset, Cifar10Data } from "../model/data";
+
 export interface DraggableData {
 	draggable: Array<Draggable>
 	input: Input
@@ -95,12 +97,13 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	});
 
+	window.addEventListener('resize',resizeMiddleSVG);
+	window.addEventListener('resize', setupPlots);
 
-	// window.addEventListener('resize',resizeMiddleSVG);
+	resizeMiddleSVG();
 
-	// resizeMiddleSVG();
-
-	// bindMenuExpander();
+	bindMenuExpander();
+	bindRightMenuExpander();
 
 	document.getElementById('defaultOptimizer').classList.add('selected')
 	document.getElementById('defaultLoss').classList.add('selected')
@@ -148,10 +151,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	svgData = loadStateIfPossible()
 
+	// Select the input block when we load the page
+	svgData.input.select();
+
 	// Begin page with info tab
 	showInformationOverlay();
-
-
 });
 
 function deleteSelected(){
@@ -169,6 +173,8 @@ async function trainOnClick() {
 	let training = document.getElementById('train');
 	if (!training.classList.contains("train-active")){
 		clearError()
+
+		changeDataset(svgData.input.getParams()["dataset"])
 
 		// Grab hyperparameters
 		setModelHyperparameters()
@@ -192,37 +198,79 @@ async function trainOnClick() {
 }
 
 function bindMenuExpander(){
-	document.getElementById('menu_expander').addEventListener('click',function(e){
+	document.getElementById('menu').style.display = 'block';
+	document.getElementById('menu_expander_handle').addEventListener('click',function(e){
 		if(document.getElementById('menu').style.display == 'none'){
 
 			document.getElementById('menu').style.display = 'block'
 			document.getElementById('expander_triangle').setAttribute('points',"0,15 10,30 10,0");
 
-			document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			if(document.getElementById('paramshell').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 240px)'
+			}
 
 		} else {
 
 			document.getElementById('menu').style.display = 'none'
 			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
 
-			document.getElementById('middle').style.width = 'calc(100% - 270px)'
+			if(document.getElementById('paramshell').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 250px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 60px)'
+			}
+
 
 		}
 
-		// resizeMiddleSVG();
+		resizeMiddleSVG();
 
 	});
 }
 
+function bindRightMenuExpander(){
+	document.getElementById('paramshell').style.display = 'block';
+	document.getElementById('right_menu_expander_handle').addEventListener('click',function(e){
+		if(document.getElementById('paramshell').style.display == 'none'){
+
+			document.getElementById('paramshell').style.display = 'block'
+			document.getElementById('right_expander_triangle').setAttribute('points',"20,15 10,30 10,0");
+
+			if(document.getElementById('menu').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 250px)'
+			}
+
+		} else {
+
+			document.getElementById('paramshell').style.display = 'none'
+			document.getElementById('right_expander_triangle').setAttribute('points',"0,15 10,30 10,0");
+
+			if(document.getElementById('menu').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 240px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 60px)'
+			}
 
 
-// function resizeMiddleSVG(){
-// 	let ratio = document.getElementById('middle').clientWidth/800;
+		}
 
-// 	console.log('ratio',ratio)
+		resizeMiddleSVG();
 
-// 	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
-// }
+	});
+}
+
+function resizeMiddleSVG(){
+
+	const original_svg_width = 1000;
+
+	let ratio = document.getElementById('middle').clientWidth/original_svg_width;
+
+	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,original_svg_width*0.5*(ratio-1),0].join(',')+')';
+}
 
 function makeCollapsable(elmt){
 
@@ -336,8 +384,18 @@ function  dispatchCreationOnClick(elmt){
 				updateNetworkParameters({itemType: itemType, setting : setting});
 			} else if (itemType == "share") {
 				if (elmt.getAttribute('share-option') == "exportPython") {
+					if (svgData.input.getParams()["dataset"] == "cifar") {
+						let error : Error = Error("CIFAR-10 dataset exporting to Python not currently supported. Select MNIST dataset instead.")
+						displayError(error);
+						return;
+					}
 					download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
 				} else if (elmt.getAttribute('share-option') == "exportJulia") {
+					if (svgData.input.getParams()["dataset"] == "cifar") {
+						let error : Error = Error("CIFAR-10 dataset exporting to Julia not currently supported. Select MNIST dataset instead.")
+						displayError(error);
+						return;
+					}
 					download(generateJulia(topologicalSort(svgData.input)), "mnist_model.jl");
 				} else if (elmt.getAttribute('share-option') == "copyModel"){
 					let state = graphToJson(svgData);

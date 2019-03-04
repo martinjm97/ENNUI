@@ -14,3 +14,7 @@ To Build the app, run:
 
 For Continuous Build and Integration, run:
 `npm run watch`
+
+To use chrome with localhost and the CIFAR-10 Dataset, make sure to close
+all chrome windows and run the following command to launch chrome:
+'path/to/chrome.exe --allow-file-access-from-files'

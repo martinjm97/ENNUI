@@ -33,58 +33,60 @@ body {
     font-family: Helvetica;
     user-select:none;
     padding: 7.5px 10px;
+    display: block;
 }
 
-// #menu_expander {
-//   width:10px;
-//   height:100%;
-//   float:left;
-//   margin-left: -10px;
-// }
-
-#this_will_be_a_triangle {
-  width: 200%;
-  height:30px;
-  margin-top:calc(50vh - 15px);
-  margin-left: -30%;
-  cursor: pointer;
+#menu_expander {
+  width:10px;
+  height:100%;
+  float:left;
+  margin-left: -10px;
 }
 
-#this_will_be_a_triangle > svg {
-    height: 30px;
-    width: 10px;
-}
-
-  
-
-// #right_menu_expander {
-//   width:10px;
-//   height:100%;
-//   float:right;
-//   background: #E5E5FC;
-// }
-
-#right_this_will_be_a_triangle {
+#menu_expander_handle {
   width: 200%;
   height:30px;
   margin-top:calc(50vh - 15px);
   cursor: pointer;
 }
 
-#right_this_will_be_a_triangle > svg {
+#menu_expander_handle > svg {
     height: 30px;
-    width: 10px;
+    width: 20px;
 }
 
+#right_menu_expander {
+  width: 10px;
+  height: 100%;
+  float: right;
+  background: #E5E5FC;
+  margin-right: -10px;
+}
+
+#right_menu_expander_handle {
+  width: 200%;
+  height:30px;
+  margin-top:calc(50vh - 15px);
+  cursor: pointer;
+  float:right;
+}
+
+#right_menu_expander_handle > svg {
+    height: 30px;
+    width: 20px;
+}
 
 #paramshell {
-    width: 200px;
+    width: 180px;
     height: 100%;
     float:right;
     background-color: $color-menu-bg;
     font-size:18px;
     font-family: Helvetica;
     user-select:none;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: block;
 }
 
 #blanktab {
@@ -152,9 +154,7 @@ body {
 .trainbox {
     text-align: center;
     margin-top: 20px;
-    margin-left: 18px;
-    margin-right: 10px;
-    width:160px;
+    width:180px;
     height:70px;
     line-height: 50px;
     font-size:22px;
@@ -213,10 +213,8 @@ body {
 }
 
 .paramname{
-    width:70%;
     text-align:left;
     height:100%;
-    line-height:100%;
     font-size:16px;
     font-family: Helvetica;
     background-color: transparent;
@@ -224,13 +222,17 @@ body {
     float:left;
 }
 
+.layerparamvalue {
+    margin-top: 5px
+}
+
 .paramvalue{
     width:30%;
     text-align:center;
     height:20px;
-    line-height:100%;
     font-size:16px;
     font-family: Helvetica;
+    margin-right: 10px;
     float:right;
 }
 
@@ -253,7 +255,7 @@ body {
     background-color: transparent;
     user-select:none;
 
-    
+
 }
 
 .last-dropdown {
@@ -282,9 +284,9 @@ div.top_neighbor_tab-selected {
 .dropdown {
     position: relative;
     display: inline-block;
-}  
-  
-.dropdown-content { 
+}
+
+.dropdown-content {
     border-radius: 6px;
     float: right;
     display: none;
@@ -294,7 +296,7 @@ div.top_neighbor_tab-selected {
     z-index: 1;
     background-color: $color-menu-bg;
     border: 1px solid rgba(128, 128, 128, 0.5);
-    
+
 }
 .left {
     left: 218px;
@@ -333,8 +335,9 @@ div.top_neighbor_tab-selected {
 
 
 #svg {
-    width: 100%;
+    width: 1000px;
     height: 100%;
+    background: #e3e3eE;
 }
 
 #networkTab {
@@ -519,3 +522,60 @@ label {
     margin: 12px;
     // flex-basis: 7%;
 }
+
+.selectline {
+    margin-bottom: 10px;
+}
+
+.select {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0px;
+    width: 50%;
+    margin-right: 10px;
+    float: right;
+  }
+  .select select {
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
+    padding: 7px 10px;
+    outline: 0;
+    border: 0;
+    border-radius: 0;
+    background: #ccc;
+    color: #000;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  .select select::-ms-expand {
+    display: none;
+  }
+  .select select:hover,
+  .select select:focus {
+    color: #000;
+    background: #bbb;
+  }
+  .select select:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .select__arrow {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    border-style: solid;
+    border-width: 8px 5px 0 5px;
+    border-color: #000 transparent transparent transparent;
+  }
+  .select select:hover ~ .select__arrow,
+  .select select:focus ~ .select__arrow {
+    border-top-color: #000;
+  }
+  .select select:disabled ~ .select__arrow {
+    border-top-color: #000;
+  }

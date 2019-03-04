@@ -23,7 +23,7 @@ export class Dropout extends Layer {
         name.innerHTML = 'Rate:'
         name.setAttribute('data-name','rate')
         let value = document.createElement('input')
-        value.className = 'paramvalue'
+        value.className = 'paramvalue layerparamvalue'
         value.value = '0.5'
         line.appendChild(name);
         line.appendChild(value);
