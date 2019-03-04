@@ -5,7 +5,6 @@ import { Input } from '../ui/shapes/layers/input';
 import { displayError } from '../ui/error';
 import { pythonSkeleton } from './python_skeleton';
 import { juliaSkeleton } from './julia_skeleton';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 
 let typeToTensor: Map<string, any> = new Map();
@@ -159,7 +158,7 @@ export function generatePython(sorted: Layer[]){
 
         // TODO: Move this to BatchNorm and generalize layerstring to an array
         if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).activation != null) {
-            if(this.activation.activationType != "relu") {
+            if(this.activation != null && this.activation.activationType != "relu") {
                 displayError(new Error("Batch Normalization does not support activations other than ReLu"));
             }
             pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";

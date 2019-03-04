@@ -25,7 +25,7 @@ export class BatchNorm extends ActivationLayer {
         name1.setAttribute('data-name','momentum')
 
         let value1 = document.createElement('input')
-        value1.className = 'paramvalue'
+        value1.className = 'paramvalue layerparamvalue'
         value1.value = '0.99'
 
         line1.appendChild(name1);
@@ -44,8 +44,11 @@ export class BatchNorm extends ActivationLayer {
     }
 
     public initLineOfJulia(): string {
-        displayError(new Error('Batch Normalization is not yet supported for Julia.'));
-        return ``;
+        // displayError(new Error('Batch Normalization is not yet supported for Julia.'));
+        let params = this.getParams();
+        let activation = this.getActivationText();
+        let activationText = activation == null ? '' : `, ${activation}`;
+        return `x${this.uid} = insert!(net, (shape) -> BatchNorm(shape[3]${activationText}, momentum=Float32(${params["momentum"]})))\n`;
     }
 
     public clone() {

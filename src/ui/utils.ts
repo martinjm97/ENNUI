@@ -63,3 +63,13 @@ export function parseString(s: string){
 	s = s.replace('(','').replace(')','').replace('[','').replace(']','');
 	return s.split(',').map(x => parseInt(x));
 }
+
+export function get_svg_original_bounding_box(svg){
+
+	let width  = svg.width.baseVal.value;
+
+	let height = svg.height.baseVal.value;
+
+	return {'width':width, 'height':height};
+
+}
