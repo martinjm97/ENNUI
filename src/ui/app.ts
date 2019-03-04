@@ -250,9 +250,9 @@ function bindRightMenuExpander(){
 			document.getElementById('right_expander_triangle').setAttribute('points',"0,15 10,30 10,0");
 
 			if(document.getElementById('menu').style.display == 'block'){
-				document.getElementById('middle').style.width = 'calc(100% - 250px)'
+				document.getElementById('middle').style.width = 'calc(100% - 230px)'
 			} else {
-				document.getElementById('middle').style.width = 'calc(100% - 70px)'
+				document.getElementById('middle').style.width = 'calc(100% - 50px)'
 			}
 
 
@@ -264,9 +264,12 @@ function bindRightMenuExpander(){
 }
 
 function resizeMiddleSVG(){
-	let ratio = document.getElementById('middle').clientWidth/1000;
 
-	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
+	const original_svg_width = 1000;
+
+	let ratio = document.getElementById('middle').clientWidth/original_svg_width;
+
+	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,original_svg_width*0.5*(ratio-1),0].join(',')+')';
 }
 
 function makeCollapsable(elmt){
