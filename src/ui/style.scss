@@ -222,12 +222,17 @@ body {
     float:left;
 }
 
+.layerparamvalue {
+    margin-top: 5px
+}
+
 .paramvalue{
     width:30%;
     text-align:center;
     height:20px;
     font-size:16px;
     font-family: Helvetica;
+    margin-right: 10px;
     float:right;
 }
 
@@ -517,12 +522,16 @@ label {
     // flex-basis: 7%;
 }
 
+.selectline {
+    margin-bottom: 10px;
+}
 
 .select {
     position: relative;
     display: inline-block;
     margin-bottom: 0px;
     width: 50%;
+    margin-right: 10px;
     float: right;
   }
   .select select {
