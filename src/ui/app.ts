@@ -208,7 +208,7 @@ function bindMenuExpander(){
 			if(document.getElementById('paramshell').style.display == 'block'){
 				document.getElementById('middle').style.width = 'calc(100% - 430px)'
 			} else {
-				document.getElementById('middle').style.width = 'calc(100% - 230px)'
+				document.getElementById('middle').style.width = 'calc(100% - 240px)'
 			}
 
 		} else {
@@ -217,9 +217,9 @@ function bindMenuExpander(){
 			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
 
 			if(document.getElementById('paramshell').style.display == 'block'){
-				document.getElementById('middle').style.width = 'calc(100% - 270px)'
+				document.getElementById('middle').style.width = 'calc(100% - 250px)'
 			} else {
-				document.getElementById('middle').style.width = 'calc(100% - 70px)'
+				document.getElementById('middle').style.width = 'calc(100% - 60px)'
 			}
 
 
@@ -250,9 +250,9 @@ function bindRightMenuExpander(){
 			document.getElementById('right_expander_triangle').setAttribute('points',"0,15 10,30 10,0");
 
 			if(document.getElementById('menu').style.display == 'block'){
-				document.getElementById('middle').style.width = 'calc(100% - 230px)'
+				document.getElementById('middle').style.width = 'calc(100% - 240px)'
 			} else {
-				document.getElementById('middle').style.width = 'calc(100% - 50px)'
+				document.getElementById('middle').style.width = 'calc(100% - 60px)'
 			}
 
 
