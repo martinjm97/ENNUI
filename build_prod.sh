@@ -21,3 +21,5 @@ cp ./favicon.ico $folder
 
 # Uglify and copy bundle.js
 uglifyjs --compress --mangle --wrap -- dist/bundle.js > $folder/bundle.js
+
+cp -R ./dist/ $folder/dist/
