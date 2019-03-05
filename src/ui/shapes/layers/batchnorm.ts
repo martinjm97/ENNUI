@@ -25,7 +25,7 @@ export class BatchNorm extends ActivationLayer {
         name1.setAttribute('data-name','momentum')
 
         let value1 = document.createElement('input')
-        value1.className = 'paramvalue'
+        value1.className = 'paramvalue layerparamvalue'
         value1.value = '0.99'
 
         line1.appendChild(name1);

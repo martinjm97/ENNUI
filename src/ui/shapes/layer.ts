@@ -5,10 +5,9 @@ import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
-import { parseString } from "../utils";
+import { parseString, get_svg_original_bounding_box } from "../utils";
 import { defaults} from '../../model/build_network';
 import { displayError } from '../error';
-import { stratify } from 'd3';
 
 export interface LayerJson {
     layer_name: string
@@ -27,7 +26,7 @@ export abstract class Layer extends Draggable {
     protected tfjsLayer: tf.SymbolicTensor;
     protected readonly tfjsEmptyLayer;
     paramBox: HTMLElement;
-    
+
     block: Array<Shape>;
     children: Set<Layer> = new Set();
     parents: Set<Layer> = new Set();
@@ -313,7 +312,7 @@ export abstract class Layer extends Draggable {
  */
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
-    static defaultInitialLocation = new Point(100,100);
+    static defaultInitialLocation = new Point(100, 200);
 
     // Note: The activation will snap to the 0,0 point of an ActivationLayer
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) {
