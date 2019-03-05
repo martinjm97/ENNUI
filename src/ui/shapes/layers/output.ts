@@ -1,7 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import { ActivationLayer, Layer } from "../layer";
 import { Point, Rectangle } from "../shape";
-import { Softmax } from '../activation';
 import { displayError } from '../../error';
 import { get_svg_original_bounding_box } from '../../utils';
 
@@ -9,6 +8,7 @@ export class Output extends ActivationLayer {
     layerType = "Output";
     readonly tfjsEmptyLayer = tf.layers.dense ;
     private juliaFinalLineId = null;
+    readonly outputWiresAllowed: boolean = false;
 
     defaultLocation = new Point(get_svg_original_bounding_box(document.getElementById("svg")).width - 100, get_svg_original_bounding_box(document.getElementById("svg")).height/2);
     constructor(){
@@ -48,5 +48,10 @@ export class Output extends ActivationLayer {
 
     public addChild(child: Layer) {
         displayError(new Error("Output cannot have children. "))
+    }
+
+    public select() {
+        super.select()
+        Layer.hideWireGuide()
     }
 }

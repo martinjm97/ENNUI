@@ -32,8 +32,9 @@ export abstract class Layer extends Draggable {
     children: Set<Layer> = new Set();
     parents: Set<Layer> = new Set();
     wires: Set<Wire> = new Set();
-    wireCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-    wireCircleSelected: boolean = false;
+
+    readonly outputWiresAllowed: boolean = true;
+
     private static nextID: number = 0;
     uid: number;
     abstract lineOfPython(): string;
@@ -49,22 +50,6 @@ export abstract class Layer extends Draggable {
         for (let rect of this.block) {
             this.svgComponent.call(rect.svgAppender.bind(rect))
         }
-        this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
-                                        .attr("cx", this.center().x)
-                                        .attr("cy", this.center().y)
-                                        .attr("r", 10)
-                                        .style("fill", "black")
-                                        .style("stroke-width", "4")
-                                        .style("visibility", "hidden")
-
-        if(this.layerType == "Output"){
-            this.wireCircle.style("display", "none")
-        }
-
-        this.wireCircle.on("click", () => {
-            this.wireCircleSelected = true
-            this.wireCircle.style("stroke", "red")
-        })
 
         this.paramBox = document.createElement('div')
         this.paramBox.className = 'parambox'
@@ -91,30 +76,55 @@ export abstract class Layer extends Draggable {
         }
     }
 
+    public moveWireGuideToMouse(): void {
+        if (windowProperties.selectedElement instanceof Layer) {
+            let sourceCenter = windowProperties.selectedElement.getPosition().add(windowProperties.selectedElement.center())
+            let endCoords = d3.mouse(<any>d3.select("#svg").node())
+
+            windowProperties.wireGuide.attr('x1',sourceCenter.x)
+                .attr('y1',sourceCenter.y)
+                .attr('x2',endCoords[0])
+                .attr('y2',endCoords[1])
+
+            windowProperties.wireGuideCircle.attr("cx", sourceCenter.x)
+                .attr("cy", sourceCenter.y)
+        }
+    }
+
+    public static showWireGuide(): void {
+        windowProperties.wireGuide.style("display", null)
+        windowProperties.wireGuideCircle.style("display", null)
+        windowProperties.wireGuide.raise()
+        windowProperties.wireGuideCircle.raise()
+    }
+
+    public static hideWireGuide(): void {
+        windowProperties.wireGuide.style("display", "none")
+        windowProperties.wireGuideCircle.style("display", "none")
+    }
+
     public select() {
         let currSelected = windowProperties.selectedElement;
-        if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
+        if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.outputWiresAllowed) {
             currSelected.addChild(this)
         }
         for (let wire of this.wires) {
             wire.raise()
         }
         super.select()
-        this.raise()
-        this.wireCircle.style("visibility", "visible")
         document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
         this.svgComponent.selectAll("path").style("stroke", "yellow").style("stroke-width", "2")
+        Layer.showWireGuide();
+        this.moveWireGuideToMouse()
     }
 
     public unselect() {
         super.unselect()
-        this.wireCircle.style("visibility", "hidden")
-        this.wireCircleSelected = false
-        this.wireCircle.style("stroke", null)
         document.getElementById("defaultparambox").style.display = null
         this.paramBox.style.visibility = 'hidden'
         this.svgComponent.selectAll("path").style("stroke", null).style("stroke-width", null)
+        Layer.hideWireGuide()
     }
 
     /**

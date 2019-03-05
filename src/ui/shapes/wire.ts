@@ -34,9 +34,11 @@ export class Wire {
                             .attr('y2',destCenter.y)
                             .style('stroke','black')
                             .style('stroke-width',6)
+                            .style('cursor', "pointer")
 
         this.triangle = this.group.append<SVGGraphicsElement>("polygon")
                                 .attr("points", "0,16, 20,0, 0,-16")
+                                .style('cursor', 'pointer')
 
         this.updatePosition()
         this.source.raise()

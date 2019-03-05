@@ -5,7 +5,7 @@ import { get_svg_original_bounding_box } from "../utils";
 
 export abstract class Draggable {
     static readonly snapRadius: number = 400;
-    htmlComponent: any;
+    htmlComponent: HTMLElement;
     svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     hoverText: any = d3.select("body")
                        .append("div")
@@ -65,7 +65,7 @@ export abstract class Draggable {
                 }
                 // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
                 // instead of after actually dragging a little bit)
-                this.select()
+                // this.select()
                 firstDrag = false
             }
             let canvasBoundingBox = get_svg_original_bounding_box(document.getElementById("svg"))
@@ -76,6 +76,10 @@ export abstract class Draggable {
             this.svgComponent.attr("transform", "translate(" + (tx) + "," + (ty) + ")")
 
             this.dragAction(d)
+            // Dragging seems to force mousemove event to be ignored. Since we
+            // use the mousemove event on the svg to move the wire guide, just do that
+            // here unless we find a way to not ignore the mousemove event.
+            this.moveWireGuideToMouse()
         }
 
         let dragHandler = d3.drag().touchable(true).clickDistance(4)
@@ -87,6 +91,9 @@ export abstract class Draggable {
 
     // Special behavior when being dragged e.g. activations snap to Layers
     public dragAction(d) {}
+
+    // Empty for draggables, defined for layers
+    public moveWireGuideToMouse(): void {}
 
     // Bring in front of the other UI elements
     public raise(){
@@ -110,6 +117,7 @@ export abstract class Draggable {
 
     public unselect() {
         this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
+        windowProperties.wireGuide.style("display", "none")
     }
 
     public delete() {
