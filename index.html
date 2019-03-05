@@ -50,8 +50,16 @@
 <body>
 
 <h1 style="display:none">ENNUI ~ Elegant Neural Network User Interface ~</h1>
-<p style="display:none">Ennui help people learn about deep learning by building, training, and visualizing deep neural networks on the browser. It has an easy to use drag-and-drop interface. When you're ready to start coding you can export the code to produce you network to Python or Julia! </p>
+<p style="display:none">Ennui helps people learn about deep learning by building, training, and visualizing deep neural networks on the browser. It has an easy to use drag-and-drop interface. When you're ready to start coding you can export the network to produce code in Python or Julia! </p>
 
+
+<h6 style="display:none">About Ennui</h6>
+<p style="display:none">
+	Ennui provides several tools for all stages of deep learning development. The canvas gives space to design neural network architectures with a drag-and-drop interface. This design is easily sharable with friends and coworkers by exporting to a link. <br/>
+	Not only can you design neural networks, you can train them on several datasets: MNIST, CIFAR-10, and more! During training, you can track your network loss and accuracies in the Progress tab, as well as view of confusion matrix. <br/>
+	Once training is complete, Ennui provides a suite of neural network visualization tools to better understand your architecture. <br/>
+	Ennui is constantly updated with new features, so be sure to keep following!
+</p>
 <div id = 'main'>
 
 	<!-- The leftmost strip to select tabs -->
@@ -147,7 +155,7 @@
 	</div>
 
 	<div id = 'menu_expander'>
- 		<div id = 'this_will_be_a_triangle'>
+ 		<div id = 'menu_expander_handle'>
 			<svg>
 				<polygon id='expander_triangle' points="0,15 10,30 10,0" style="fill:#555;" />
 			</svg>
@@ -277,6 +285,14 @@
 		</div>
 
 	</div>
+
+	<div id = 'right_menu_expander'>
+ 		<div id = 'right_menu_expander_handle'>
+			<svg>
+				<polygon id='right_expander_triangle' points="20,15 10,30 10,0" style="fill:#555;" />
+			</svg>
+		</div>
+	 </div>
 
 
 	<!-- <div id = 'right_menu_expander'>

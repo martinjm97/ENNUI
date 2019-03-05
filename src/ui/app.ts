@@ -98,10 +98,12 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 	window.addEventListener('resize',resizeMiddleSVG);
+	window.addEventListener('resize', setupPlots);
 
 	resizeMiddleSVG();
 
 	bindMenuExpander();
+	bindRightMenuExpander();
 
 	document.getElementById('defaultOptimizer').classList.add('selected')
 	document.getElementById('defaultLoss').classList.add('selected')
@@ -222,20 +224,63 @@ async function trainOnClick() {
 }
 
 function bindMenuExpander(){
-	document.getElementById('menu_expander').addEventListener('click',function(e){
+	document.getElementById('menu').style.display = 'block';
+	document.getElementById('menu_expander_handle').addEventListener('click',function(e){
 		if(document.getElementById('menu').style.display == 'none'){
 
 			document.getElementById('menu').style.display = 'block'
 			document.getElementById('expander_triangle').setAttribute('points',"0,15 10,30 10,0");
 
-			document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			if(document.getElementById('paramshell').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 240px)'
+			}
 
 		} else {
 
 			document.getElementById('menu').style.display = 'none'
 			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
 
-			document.getElementById('middle').style.width = 'calc(100% - 270px)'
+			if(document.getElementById('paramshell').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 250px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 60px)'
+			}
+
+
+		}
+
+		resizeMiddleSVG();
+
+	});
+}
+
+function bindRightMenuExpander(){
+	document.getElementById('paramshell').style.display = 'block';
+	document.getElementById('right_menu_expander_handle').addEventListener('click',function(e){
+		if(document.getElementById('paramshell').style.display == 'none'){
+
+			document.getElementById('paramshell').style.display = 'block'
+			document.getElementById('right_expander_triangle').setAttribute('points',"20,15 10,30 10,0");
+
+			if(document.getElementById('menu').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 430px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 250px)'
+			}
+
+		} else {
+
+			document.getElementById('paramshell').style.display = 'none'
+			document.getElementById('right_expander_triangle').setAttribute('points',"0,15 10,30 10,0");
+
+			if(document.getElementById('menu').style.display == 'block'){
+				document.getElementById('middle').style.width = 'calc(100% - 240px)'
+			} else {
+				document.getElementById('middle').style.width = 'calc(100% - 60px)'
+			}
+
 
 		}
 
@@ -245,9 +290,12 @@ function bindMenuExpander(){
 }
 
 function resizeMiddleSVG(){
-	let ratio = document.getElementById('middle').clientWidth/800;
 
-	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,400*(ratio-1),0].join(',')+')';
+	const original_svg_width = 1000;
+
+	let ratio = document.getElementById('middle').clientWidth/original_svg_width;
+
+	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,original_svg_width*0.5*(ratio-1),0].join(',')+')';
 }
 
 function makeCollapsable(elmt){
