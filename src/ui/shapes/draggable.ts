@@ -1,11 +1,11 @@
 import { Point } from "./shape";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
-import { get_svg_original_bounding_box } from "../utils";
+import { getSvgOriginalBoundingBox } from "../utils";
 
 export abstract class Draggable {
     static readonly snapRadius: number = 400;
-    htmlComponent: any;
+    htmlComponent: HTMLElement;
     svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     hoverText: any = d3.select("body")
                        .append("div")
@@ -20,6 +20,7 @@ export abstract class Draggable {
                        .style("user-select","none")
                        .text(this.getHoverText());
     moveTimeout: any;
+    readonly wireGuidePresent: boolean = false;
 
     constructor(defaultLocation=new Point(50,100), invisible=false) {
         if(!invisible) {
@@ -65,10 +66,11 @@ export abstract class Draggable {
                 }
                 // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
                 // instead of after actually dragging a little bit)
-                this.select()
+                // this.select()
+                this.raise()
                 firstDrag = false
             }
-            let canvasBoundingBox = get_svg_original_bounding_box(document.getElementById("svg"))
+            let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"))
             // TODO: take into account the width of the object this.svgComponent
             let tx = Math.min(Math.max(0, d3.event.x - mousePosRelativeToCenter.x), canvasBoundingBox.width)
             let ty = Math.min(Math.max(0, d3.event.y - mousePosRelativeToCenter.y), canvasBoundingBox.height)
@@ -76,6 +78,10 @@ export abstract class Draggable {
             this.svgComponent.attr("transform", "translate(" + (tx) + "," + (ty) + ")")
 
             this.dragAction(d)
+            // Dragging seems to force mousemove event to be ignored. Since we
+            // use the mousemove event on the svg to move the wire guide, just do that
+            // here unless we find a way to not ignore the mousemove event.
+            Draggable.moveWireGuideToMouse()
         }
 
         let dragHandler = d3.drag().touchable(true).clickDistance(4)
@@ -88,8 +94,48 @@ export abstract class Draggable {
     // Special behavior when being dragged e.g. activations snap to Layers
     public dragAction(d) {}
 
+    public static showWireGuide(): void {
+        windowProperties.wireGuide.style("display", null)
+        windowProperties.wireGuideCircle.style("display", null)
+        windowProperties.wireGuide.raise()
+        windowProperties.wireGuideCircle.raise()
+    }
+
+    public static hideWireGuide(): void {
+        windowProperties.wireGuide.style("display", "none")
+        windowProperties.wireGuideCircle.style("display", "none")
+    }
+
+    public static moveWireGuideToMouse(): void {
+        if (windowProperties.selectedElement != null && 
+            windowProperties.selectedElement.wireGuidePresent && 
+            windowProperties.selectedElement instanceof Draggable) {
+
+            let sourceCenter = windowProperties.selectedElement.getPosition().add(windowProperties.selectedElement.center())
+            // Catch the error when there the mouse does not yet have a relative position
+            let endCoords;
+            try {
+                endCoords = d3.mouse(<any>d3.select("#svg").node())
+            } catch (error) {
+                endCoords = [0,0]
+            }           
+
+            windowProperties.wireGuide.attr('x1',sourceCenter.x)
+                .attr('y1',sourceCenter.y)
+                .attr('x2',endCoords[0])
+                .attr('y2',endCoords[1])
+
+            windowProperties.wireGuideCircle.attr("cx", sourceCenter.x)
+                .attr("cy", sourceCenter.y)
+        }
+    }
+
     // Bring in front of the other UI elements
     public raise(){
+        this.svgComponent.raise()
+    }
+
+    public raiseOnlyGroup() {
         this.svgComponent.raise()
     }
 
@@ -106,10 +152,21 @@ export abstract class Draggable {
         windowProperties.selectedElement = this
         this.raise()
         this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
+        if(this.wireGuidePresent) {
+            Draggable.moveWireGuideToMouse()
+            Draggable.showWireGuide();            
+        }
     }
 
     public unselect() {
+        if (windowProperties.selectedElement === this) {
+            windowProperties.selectedElement = null
+        }
         this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
+        windowProperties.wireGuide.style("display", "none")
+        if(this.wireGuidePresent) {
+            Draggable.hideWireGuide();
+        }
     }
 
     public delete() {

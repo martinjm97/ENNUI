@@ -15,14 +15,14 @@ import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { BatchNorm } from "./shapes/layers/batchnorm";
 import { clearError, displayError } from "./error";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
-import { pythonSkeleton } from "../model/python_skeleton";
 import { copyTextToClipboard } from "./utils";
-import { browserLocalStorage } from "@tensorflow/tfjs-core/dist/io/local_storage";
 import { Concatenate } from "./shapes/layers/concatenate";
 import { Flatten } from "./shapes/layers/flatten";
 import { Dropout } from "./shapes/layers/dropout";
+import * as d3 from "d3";
 
 import { changeDataset, dataset, Cifar10Data } from "../model/data";
+import { Layer } from "./shapes/layer";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -148,6 +148,31 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	};
 
+	windowProperties.wireGuide = d3.select("#svg").append<SVGGraphicsElement>("line")
+		.attr('x1',0)
+		.attr('y1',0)
+		.attr('x2',0)
+		.attr('y2',0)
+		.style('stroke','black')
+		.style('stroke-width',6)
+		.style("stroke-dasharray", ("8, 8"))
+		.style("display", "none")
+		.style("pointer-events", "none")
+
+	windowProperties.wireGuideCircle = d3.select("#svg").append<SVGGraphicsElement>("circle")
+		.attr("cx", 0)
+		.attr("cy", 0)
+		.attr("r", 10)
+		.style("fill", "black")
+		.style("stroke-width", "4")
+		.style("display", "none")
+		.style("pointer-events", "none")
+
+	d3.select("#svg").on("mousemove", function(d: any, i) {
+		if (windowProperties.selectedElement instanceof Layer) {
+			Draggable.moveWireGuideToMouse()
+		}
+	})
 
 	svgData = loadStateIfPossible()
 
@@ -463,7 +488,7 @@ function appendItem(options){
 	}
 
 	if (template == null) {
-		item.select()
+		// item.select()
 		svgData.draggable.push(item);
 	}
 }

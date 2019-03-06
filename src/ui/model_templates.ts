@@ -7,9 +7,14 @@ import { MaxPooling2D } from "./shapes/layers/maxpooling";
 import { Flatten } from "./shapes/layers/flatten";
 import { Concatenate } from "./shapes/layers/concatenate";
 import { BatchNorm } from "./shapes/layers/batchnorm";
-import { get_svg_original_bounding_box } from "./utils";
+import { windowProperties } from "./window";
+import { getSvgOriginalBoundingBox } from "./utils";
 
 export function resetWorkspace(svgData) {
+	// Deselect current element
+	if (windowProperties.selectedElement != null) {
+		windowProperties.selectedElement.unselect()
+	}
 	// Set input and output locations
 	if (svgData.input != null){
 		svgData.input.setPosition(svgData.input.defaultLocation)
@@ -22,14 +27,17 @@ export function resetWorkspace(svgData) {
     // Remove all other layers
     for (let layer of svgData.draggable) {
         layer.delete();
-    }
+	}
+
+	// Clear the current list of draggables
+	svgData.draggable = []
 }
 
 export function defaultTemplate(svgData) {
     resetWorkspace(svgData)
 
 	// Initialize each of the layers and activations
-	let canvasBoundingBox = get_svg_original_bounding_box(document.getElementById("svg"));
+	let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"));
 	let convStartingPosition = new Point(canvasBoundingBox.width/4, canvasBoundingBox.height/2.5)
 	let flatStartingPosition = new Point(canvasBoundingBox.width/1.75, canvasBoundingBox.height/2.5)
 	let denseStartingPosition = new Point(canvasBoundingBox.width*5/6.5, canvasBoundingBox.height/2.5)
@@ -66,7 +74,7 @@ export function complexTemplate(svgData) {
     resetWorkspace(svgData)
 
 	// Initialize each of the layers and activations
-	let canvasBoundingBox = get_svg_original_bounding_box(document.getElementById("svg"));
+	let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"));
 	let width = canvasBoundingBox.width;
 	let height = canvasBoundingBox.height;
 	let convStartingPosition = new Point(width/3.5, height/3);

@@ -1,20 +1,21 @@
 import * as tf from '@tensorflow/tfjs';
 import { ActivationLayer, Layer } from "../layer";
 import { Point, Rectangle } from "../shape";
-import { Softmax } from '../activation';
 import { displayError } from '../../error';
-import { get_svg_original_bounding_box } from '../../utils';
+import { getSvgOriginalBoundingBox } from '../../utils';
 
 export class Output extends ActivationLayer {
     layerType = "Output";
     readonly tfjsEmptyLayer = tf.layers.dense ;
     private juliaFinalLineId = null;
+    readonly outputWiresAllowed: boolean = false;
+    readonly wireGuidePresent: boolean = false;
 
-    defaultLocation = new Point(get_svg_original_bounding_box(document.getElementById("svg")).width - 100, get_svg_original_bounding_box(document.getElementById("svg")).height/2);
+    defaultLocation = new Point(getSvgOriginalBoundingBox(document.getElementById("svg")).width - 100, getSvgOriginalBoundingBox(document.getElementById("svg")).height/2);
     constructor(){
         super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')],
-               new Point(get_svg_original_bounding_box(document.getElementById("svg")).width - 100,
-               get_svg_original_bounding_box(document.getElementById("svg")).height/2));
+               new Point(getSvgOriginalBoundingBox(document.getElementById("svg")).width - 100,
+               getSvgOriginalBoundingBox(document.getElementById("svg")).height/2));
 
     }
 

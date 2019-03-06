@@ -64,7 +64,7 @@ export function parseString(s: string){
 	return s.split(',').map(x => parseInt(x));
 }
 
-export function get_svg_original_bounding_box(svg){
+export function getSvgOriginalBoundingBox(svg){
 
 	let width  = svg.width.baseVal.value;
 

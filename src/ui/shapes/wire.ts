@@ -14,6 +14,7 @@ export class Wire {
 
     static nextID: number = 0;
     id: number;
+    readonly wireGuidePresent: boolean = false;
 
     constructor(source: Layer, dest: Layer) {
         this.source = source
@@ -34,9 +35,11 @@ export class Wire {
                             .attr('y2',destCenter.y)
                             .style('stroke','black')
                             .style('stroke-width',6)
+                            .style('cursor', "pointer")
 
         this.triangle = this.group.append<SVGGraphicsElement>("polygon")
                                 .attr("points", "0,16, 20,0, 0,-16")
+                                .style('cursor', 'pointer')
 
         this.updatePosition()
         this.source.raise()
@@ -61,8 +64,8 @@ export class Wire {
 
     public raise() {
         this.group.raise()
-        this.source.raise()
-        this.dest.raise()
+        this.source.raiseOnlyGroup()
+        this.dest.raiseOnlyGroup()
     }
 
     public select() {

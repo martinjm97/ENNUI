@@ -5,9 +5,9 @@ import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
-import { parseString } from "../utils";
 import { defaults} from '../../model/build_network';
 import { displayError } from '../error';
+import { parseString } from '../utils';
 
 export interface LayerJson {
     layer_name: string
@@ -26,13 +26,15 @@ export abstract class Layer extends Draggable {
     protected tfjsLayer: tf.SymbolicTensor;
     protected readonly tfjsEmptyLayer;
     paramBox: HTMLElement;
-    
+
     block: Array<Shape>;
     children: Set<Layer> = new Set();
     parents: Set<Layer> = new Set();
     wires: Set<Wire> = new Set();
-    wireCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-    wireCircleSelected: boolean = false;
+
+    readonly outputWiresAllowed: boolean = true;
+    readonly wireGuidePresent: boolean = true;
+
     private static nextID: number = 0;
     uid: number;
     abstract lineOfPython(): string;
@@ -48,22 +50,6 @@ export abstract class Layer extends Draggable {
         for (let rect of this.block) {
             this.svgComponent.call(rect.svgAppender.bind(rect))
         }
-        this.wireCircle = this.svgComponent.append<SVGGraphicsElement>("circle")
-                                        .attr("cx", this.center().x)
-                                        .attr("cy", this.center().y)
-                                        .attr("r", 10)
-                                        .style("fill", "black")
-                                        .style("stroke-width", "4")
-                                        .style("visibility", "hidden")
-
-        if(this.layerType == "Output"){
-            this.wireCircle.style("display", "none")
-        }
-
-        this.wireCircle.on("click", () => {
-            this.wireCircleSelected = true
-            this.wireCircle.style("stroke", "red")
-        })
 
         this.paramBox = document.createElement('div')
         this.paramBox.className = 'parambox'
@@ -92,25 +78,21 @@ export abstract class Layer extends Draggable {
 
     public select() {
         let currSelected = windowProperties.selectedElement;
-        if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.wireCircleSelected) {
+        if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.outputWiresAllowed) {
             currSelected.addChild(this)
         }
         for (let wire of this.wires) {
             wire.raise()
         }
         super.select()
-        this.raise()
-        this.wireCircle.style("visibility", "visible")
         document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
         this.svgComponent.selectAll("path").style("stroke", "yellow").style("stroke-width", "2")
+        
     }
 
     public unselect() {
         super.unselect()
-        this.wireCircle.style("visibility", "hidden")
-        this.wireCircleSelected = false
-        this.wireCircle.style("stroke", null)
         document.getElementById("defaultparambox").style.display = null
         this.paramBox.style.visibility = 'hidden'
         this.svgComponent.selectAll("path").style("stroke", null).style("stroke-width", null)
@@ -302,7 +284,7 @@ export abstract class Layer extends Draggable {
  */
 export abstract class ActivationLayer extends Layer {
     activation: Activation = null;
-    static defaultInitialLocation = new Point(100,100);
+    static defaultInitialLocation = new Point(100, 200);
 
     // Note: The activation will snap to the 0,0 point of an ActivationLayer
     constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) {
@@ -325,6 +307,9 @@ export abstract class ActivationLayer extends Layer {
         super.raise()
         if (this.activation != null) {
             this.activation.raise();
+        }
+        for (let wire of this.wires) {
+            wire.raise()
         }
     }
 

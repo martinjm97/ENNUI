@@ -19,6 +19,8 @@ class WindowProperties
     yClickOffset: any;
     wireInputElement: any;
     defaultparambox: any;
+    wireGuide: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    wireGuideCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
 
     private constructor(){}
 
