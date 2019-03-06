@@ -170,10 +170,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	d3.select("#svg").on("mousemove", function(d: any, i) {
 		if (windowProperties.selectedElement instanceof Layer) {
-			windowProperties.selectedElement.moveWireGuideToMouse()
+			Draggable.moveWireGuideToMouse()
 		}
 	})
-
 
 	svgData = loadStateIfPossible()
 
