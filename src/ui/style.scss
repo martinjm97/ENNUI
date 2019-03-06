@@ -498,8 +498,8 @@ label {
 }
 
 .pred {
-    font-size: 20px;
-    line-height: 25px;
+    font-size: 1.2vw;
+    line-height: 1.5vw;
     width: 100%;
     font-family: Helvetica;
     text-align: center;
@@ -519,8 +519,7 @@ label {
 
 .pred-container {
     display: inline-block;
-    margin: 12px;
-    // flex-basis: 7%;
+    margin: 13%;
 }
 
 .selectline {

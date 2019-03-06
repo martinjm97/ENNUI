@@ -26,6 +26,7 @@ export class PathShape extends Shape {
                                      .attr("x", this.location.x)
                                      .attr("y", this.location.y)
                                      .style("fill", this.color)
+                                     .style("cursor", "pointer")
     }
 
 }
@@ -51,6 +52,7 @@ export class Rectangle extends Shape {
                                      .attr("width", this.width)
                                      .attr("height", this.height)
                                      .style("fill", this.color)
+                                     .style("cursor", "pointer")
                                      
     }
 }
@@ -73,6 +75,7 @@ export class Circle extends Shape {
                                      .attr("cy", this.location.y)
                                      .attr("r", this.radius)
                                      .style("fill", this.color)
+                                     .style("cursor", "pointer")
     }
 }
 
