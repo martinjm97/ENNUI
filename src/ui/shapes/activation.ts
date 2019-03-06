@@ -16,6 +16,7 @@ export abstract class Activation extends Draggable {
 
         this.body = this.svgComponent.append<SVGGraphicsElement>("path").attr("d", "M0 0 h10 v10 h8 v20 h-26 v-20 h8 v-10 Z")
                                                                         .style("fill", color)
+                                                                        .style("cursor", "pointer")
 
         this.makeDraggable()
     }
@@ -80,6 +81,7 @@ export class Relu extends Activation {
                                         .style("stroke", "black")
                                         .style("stroke-width", 3)
                                         .style("fill", "none")
+                                        .style("cursor", "pointer")
 
     }
 
@@ -97,6 +99,7 @@ export class Sigmoid extends Activation {
         .style("stroke", "black")
         .style("stroke-width", 3)
         .style("fill", "none")
+        .style("cursor", "pointer")
 
     }
 
@@ -114,6 +117,7 @@ export class Tanh extends Activation {
         .style("stroke", "black")
         .style("stroke-width", 3)
         .style("fill", "none")
+        .style("cursor", "pointer")
 
     }
 
@@ -131,6 +135,7 @@ export class Softmax extends Activation {
         .style("stroke", "black")
         .style("stroke-width", 3)
         .style("fill", "none")
+        .style("cursor", "pointer")
 
 
     }

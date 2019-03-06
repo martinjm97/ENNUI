@@ -14,6 +14,7 @@ export class Wire {
 
     static nextID: number = 0;
     id: number;
+    readonly wireGuidePresent: boolean = false;
 
     constructor(source: Layer, dest: Layer) {
         this.source = source
