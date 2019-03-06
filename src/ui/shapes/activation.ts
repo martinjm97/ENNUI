@@ -8,7 +8,7 @@ export abstract class Activation extends Draggable {
 
     layer: ActivationLayer = null;
     abstract activationType: string;
-    static defaultLocation: Point = new Point(50, 150);
+    static defaultLocation: Point = new Point(50, 250);
     body: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
 
     constructor(color: string, defaultLocation) {
