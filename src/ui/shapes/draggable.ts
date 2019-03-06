@@ -135,6 +135,10 @@ export abstract class Draggable {
         this.svgComponent.raise()
     }
 
+    public raiseOnlyGroup() {
+        this.svgComponent.raise()
+    }
+
     // The text to display when hovering over an object
     public getHoverText(): string { return "" }
 
