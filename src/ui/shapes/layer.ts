@@ -5,9 +5,9 @@ import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
-import { parseString, get_svg_original_bounding_box } from "../utils";
 import { defaults} from '../../model/build_network';
 import { displayError } from '../error';
+import { parseString } from '../utils';
 
 export interface LayerJson {
     layer_name: string
