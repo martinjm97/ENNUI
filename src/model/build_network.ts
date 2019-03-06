@@ -138,7 +138,7 @@ export function topologicalSort(input: Input): Layer[] {
         }
     }
 
-    // Either there are layers with no parents (other than input) or there is a cycle
+    // Either there are layers with no parents (other than input), there is a cycle, or output is never reached
     if (sorted[sorted.length - 1].layerType != "Output") {
 
         if (potentialBranch.size > 0) {
@@ -146,7 +146,7 @@ export function topologicalSort(input: Input): Layer[] {
         }
 
         else{
-            displayError(new Error("Cannot have backwards edges"));
+            displayError(new Error("Something is wrong with your network architecture."));
         }
     }
 
