@@ -489,7 +489,7 @@ function appendItem(options){
 	}
 
 	if (template == null) {
-		item.select()
+		// item.select()
 		svgData.draggable.push(item);
 	}
 }

@@ -8,8 +8,13 @@ import { Flatten } from "./shapes/layers/flatten";
 import { Concatenate } from "./shapes/layers/concatenate";
 import { BatchNorm } from "./shapes/layers/batchnorm";
 import { get_svg_original_bounding_box } from "./utils";
+import { windowProperties } from "./window";
 
 export function resetWorkspace(svgData) {
+	// Deselect current element
+	if (windowProperties.selectedElement != null) {
+		windowProperties.selectedElement.unselect()
+	}
 	// Set input and output locations
 	if (svgData.input != null){
 		svgData.input.setPosition(svgData.input.defaultLocation)
@@ -22,7 +27,10 @@ export function resetWorkspace(svgData) {
     // Remove all other layers
     for (let layer of svgData.draggable) {
         layer.delete();
-    }
+	}
+
+	// Clear the current list of draggables
+	svgData.draggable = []
 }
 
 export function defaultTemplate(svgData) {

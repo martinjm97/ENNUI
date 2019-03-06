@@ -116,6 +116,9 @@ export abstract class Draggable {
     }
 
     public unselect() {
+        if (windowProperties.selectedElement === this) {
+            windowProperties.selectedElement = null
+        }
         this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
         windowProperties.wireGuide.style("display", "none")
     }
