@@ -67,6 +67,7 @@ export abstract class Draggable {
                 // Perform on drag start here instead of using on("start", ...) since d3 calls drag starts weirdly (on mousedown,
                 // instead of after actually dragging a little bit)
                 // this.select()
+                this.raise()
                 firstDrag = false
             }
             let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"))
