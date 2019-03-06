@@ -308,6 +308,9 @@ export abstract class ActivationLayer extends Layer {
         if (this.activation != null) {
             this.activation.raise();
         }
+        for (let wire of this.wires) {
+            wire.raise()
+        }
     }
 
     public delete() {
