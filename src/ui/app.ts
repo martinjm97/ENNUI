@@ -42,24 +42,27 @@ document.addEventListener("DOMContentLoaded", function() {
 	setupPlots();
 	setupTestResults();
 
-	document.getElementById("all").classList.add("selected")
+	document.getElementById("all").classList.add("selected");
 
 	// Initialize the network tab to selected
 	document.getElementById("network").classList.add("tab-selected");
 
 	// Hide the progress and visualization tabs
-	document.getElementById("progressTab").style.display = "none"
-	document.getElementById("visualizationTab").style.display = "none"
-	document.getElementById("informationTab").style.display = "none"
-	document.getElementById("loadingDataTab").style.display = "none"
+	document.getElementById("progressTab").style.display = "none";
+	document.getElementById("visualizationTab").style.display = "none";
+	document.getElementById("informationTab").style.display = "none";
+	document.getElementById("loadingDataTab").style.display = "none";
+	document.getElementById("educationTab").style.display = "none";
 
 	// Hide the progress and visualization menus
 	document.getElementById("progressMenu").style.display = "none";
 	document.getElementById("visualizationMenu").style.display = "none";
+	document.getElementById("educationMenu").style.display = "none";
 
 	// Hide the progress and visualization paramshell
 	document.getElementById("progressParamshell").style.display = "none";
 	document.getElementById("visualizationParamshell").style.display = "none";
+	document.getElementById("educationParamshell").style.display = "none";
 
 	// Hide the error box
 	document.getElementById("error").style.display = "none";
@@ -472,8 +475,6 @@ function appendItem(options){
 			case "flatten": item = new Flatten(); console.log("Created Flatten Layer"); break;
 			case "concatenate": item = new Concatenate(); console.log("Created Concatenate Layer"); break;
 			case "dropout": item = new Dropout(); console.log("Created Dropout Layer"); break;
-
-
 		}
 		case 'activation': switch(options.detail.activationType) {
 			case 'relu': item = new Relu(); console.log("Created Relu"); break;
@@ -500,29 +501,33 @@ function switchClassExamples(options){
 
 function switchTab(tab) {
 	// Hide all tabs
-	document.getElementById("networkTab").style.display = "none"
-    document.getElementById("progressTab").style.display = "none"
-	document.getElementById("visualizationTab").style.display = "none"
+	document.getElementById("networkTab").style.display = "none";
+    document.getElementById("progressTab").style.display = "none";
+	document.getElementById("visualizationTab").style.display = "none";
+	document.getElementById("educationTab").style.display = "none";
 	document.getElementById("informationTab").style.display = "none";
 
 	// Hide all menus
 	document.getElementById("networkMenu").style.display = "none";
 	document.getElementById("progressMenu").style.display = "none";
 	document.getElementById("visualizationMenu").style.display = "none";
+	document.getElementById("educationMenu").style.display = "none";
 
 	// Hide all paramshells
 	document.getElementById("networkParamshell").style.display = "none";
 	document.getElementById("progressParamshell").style.display = "none";
 	document.getElementById("visualizationParamshell").style.display = "none";
+	document.getElementById("educationParamshell").style.display = "none";
 
 	// Unselect all tabs
-	document.getElementById("network").classList.remove("tab-selected")
-	document.getElementById("progress").classList.remove("tab-selected")
-	document.getElementById("visualization").classList.remove("tab-selected")
+	document.getElementById("network").classList.remove("tab-selected");
+	document.getElementById("progress").classList.remove("tab-selected");
+	document.getElementById("visualization").classList.remove("tab-selected");
+	document.getElementById("education").classList.remove("tab-selected");
 
 	// Display only the selected tab
 	document.getElementById(tab.detail.tabType + "Tab").style.display = null;
-	document.getElementById(tab.detail.tabType).classList.add("tab-selected")
+	document.getElementById(tab.detail.tabType).classList.add("tab-selected");
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
 
@@ -533,15 +538,16 @@ function switchTab(tab) {
 
 	// Give border radius to top and bottom neighbors
 	if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
-		document.getElementsByClassName("top_neighbor_tab-selected")[0].classList.remove("top_neighbor_tab-selected")
-		document.getElementsByClassName("bottom_neighbor_tab-selected")[0].classList.remove("bottom_neighbor_tab-selected")
+		document.getElementsByClassName("top_neighbor_tab-selected")[0].classList.remove("top_neighbor_tab-selected");
+		document.getElementsByClassName("bottom_neighbor_tab-selected")[0].classList.remove("bottom_neighbor_tab-selected");
 	}
 
-	let tabMapping = ["blanktab", "network", "progress", "visualization", "bottomblanktab"]
-	let index = tabMapping.indexOf(tab.detail.tabType)
+	let tabMapping = ["blanktab", "network", "progress", "visualization",
+					  "middleblanktab", "education", "information", "bottomblanktab"];
+	let index = tabMapping.indexOf(tab.detail.tabType);
 
-	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected")
-	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected")
+	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected");
+	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected");
 
 }
 
