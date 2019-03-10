@@ -247,7 +247,6 @@ function bindMenuExpander(){
 				document.getElementById('middle').style.width = 'calc(100% - 60px)'
 			}
 
-
 		}
 
 		resizeMiddleSVG();
@@ -268,7 +267,6 @@ function bindRightMenuExpander(){
 			} else {
 				document.getElementById('middle').style.width = 'calc(100% - 250px)'
 			}
-
 		} else {
 
 			document.getElementById('paramshell').style.display = 'none'
@@ -279,51 +277,56 @@ function bindRightMenuExpander(){
 			} else {
 				document.getElementById('middle').style.width = 'calc(100% - 60px)'
 			}
-
-
 		}
 
 		resizeMiddleSVG();
-
 	});
 }
 
 function resizeMiddleSVG(){
-
 	const original_svg_width = 1000;
 
-	let ratio = document.getElementById('middle').clientWidth/original_svg_width;
+	let svgWidth = document.getElementById('middle').clientWidth;
+	let svgHeight = document.getElementById('middle').clientHeight;
 
-	document.getElementById('svg').style.transform = 'matrix('+[ratio,0,0,ratio,original_svg_width*0.5*(ratio-1),0].join(',')+')';
+	let ratio = svgWidth/original_svg_width;
+
+	let xTranslate = Math.max(0, (svgWidth-original_svg_width)/2);
+	let yTranslate = Math.max(0, (svgHeight*ratio-svgHeight)/2);
+	
+	windowProperties.svgYOffset = yTranslate;
+	windowProperties.svgTransformRatio = ratio;
+
+	document.getElementById('svg').setAttribute("transform", `translate(${xTranslate}, ${yTranslate}) scale(${ratio}, ${ratio})  `);
+
+	// Call crop position on each draggable to ensure it is within the new canvas boundary
+	if( svgData.input != null) {
+		svgData.input.cropPosition();
+	}
+	if (svgData.output != null) {
+		svgData.output.cropPosition();
+	}		
+	svgData.draggable.forEach(elem => {
+		elem.cropPosition()
+	});	
 }
 
 function makeCollapsable(elmt){
-
 	elmt.addEventListener('click', function(e){
-
 		var arr = Array.prototype.slice.call( elmt.parentElement.children ).slice(1);
 
 		if(elmt.getAttribute('data-expanded') == 'false'){
-
 			for(let sib of arr){
-
 				sib.style.display = 'block';
-
 			}
 
 			elmt.setAttribute('data-expanded','true');
-
 		} else {
-
 			for(let sib of arr){
-
 				sib.style.display = 'none';
-
 			}
-
 			elmt.setAttribute('data-expanded','false');
 		}
-
 	})
 }
 
