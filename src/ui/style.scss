@@ -437,7 +437,6 @@ a {
     right: 15%;
     cursor: pointer;
     vertical-align : bottom;
-
     font-family: Helvetica;
 }
 
@@ -445,14 +444,23 @@ a {
     text-align: center;
     color: $color-menu-bg;
     font-size: 24;
+    font-family: Helvetica;
 }
 
-#educationTitle {
+.educationContent {
     margin-left: 5%;
+    font-family: Helvetica;
+    text-align: center;
 }
 
-#educationBody {
-    margin-left: 5%;
+.educationVideo {
+    margin-right: 5%;
+    // object-fit: contain;
+    width: 70%;
+    height: 50%;
+    display: table;
+    margin: 0 auto;
+    overflow:hidden !important;
 }
 
 #error {
