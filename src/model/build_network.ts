@@ -100,11 +100,17 @@ export function topologicalSort(input: Input): Layer[] {
     let sorted: Layer[] = [];
     let visited: Set<Layer> = new Set();
     let frontier: Layer[] = [input];
+    let potentialBranch: Set<Number> = new Set(); // This is to detect if we have a branch that doesn't start from input
 
     while (frontier.length > 0) {
         let layer = frontier.pop();
         visited.add(layer);
         sorted.push(layer);
+
+        if (potentialBranch.has(layer.uid)) {
+            potentialBranch.delete(layer.uid)
+        }
+
         for (let child of layer.children) {
 
             // Check not a loop
@@ -120,6 +126,7 @@ export function topologicalSort(input: Input): Layer[] {
 
                 canAdd = visited.has(parent);
                 if (!canAdd) {
+                    potentialBranch.add(parent.uid)
                     break;
                 }
             }
@@ -131,10 +138,16 @@ export function topologicalSort(input: Input): Layer[] {
         }
     }
 
-    // Second cycle check
-
+    // Either there are layers with no parents (other than input), there is a cycle, or output is never reached
     if (sorted[sorted.length - 1].layerType != "Output") {
-        displayError(new Error("Cannot have backwards edges"));
+
+        if (potentialBranch.size > 0) {
+            displayError(new Error("All layers must have input as an ancestor."));
+        }
+
+        else{
+            displayError(new Error("Something is wrong with your network architecture."));
+        }
     }
 
     return sorted
