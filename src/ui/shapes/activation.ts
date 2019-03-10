@@ -34,20 +34,26 @@ export abstract class Activation extends Draggable {
         // Remove the activation from the layer then delete the activation.
         if(this.layer != null) {
             this.layer.removeActivation()
+            this.layer = null;
         }
         super.delete()
     }
 
-    public dragAction(d) {
-        // Find the closest layer and its distances
+    public moveAction() {
+        let closestLayer: ActivationLayer;
         let minDist = Infinity
-        let closestLayer: ActivationLayer = null
-        for (let activationLayer of windowProperties.activationLayers) {
-            let dist = activationLayer.getPosition().distance(this.getPosition())
-            if (dist < minDist) {
-                minDist = dist
-                closestLayer = activationLayer
+        if (this.layer == null) {
+            // Find the closest layer and its distances
+            for (let activationLayer of windowProperties.activationLayers) {
+                let dist = activationLayer.getPosition().distance(this.getPosition())
+                if (dist < minDist) {
+                    minDist = dist
+                    closestLayer = activationLayer
+                }
             }
+        } else {
+            closestLayer = this.layer
+            minDist = this.layer.getPosition().distance(this.getPosition())
         }
 
         // Snap activations if they are close enough

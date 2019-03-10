@@ -1,6 +1,7 @@
 import { Draggable } from "./shapes/draggable";
 import { Wire } from "./shapes/wire";
 import { ActivationLayer } from "./shapes/layer";
+import { WireGuide } from "./shapes/wireguide";
 
 export enum Mode {
     Move,
@@ -19,8 +20,7 @@ class WindowProperties
     yClickOffset: any;
     wireInputElement: any;
     defaultparambox: any;
-    wireGuide: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-    wireGuideCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    wireGuide: WireGuide;
     svgTransformRatio: number = 1;
     svgYOffset: number = 0;
 

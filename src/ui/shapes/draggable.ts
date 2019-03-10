@@ -73,10 +73,11 @@ export abstract class Draggable {
 
             this.setPosition(new Point(d3.event.x - mousePosRelativeToCenter.x, d3.event.y - mousePosRelativeToCenter.y))
             this.cropPosition()
+            this.moveAction()
             // Dragging seems to force mousemove event to be ignored. Since we
             // use the mousemove event on the svg to move the wire guide, just do that
             // here unless we find a way to not ignore the mousemove event.
-            Draggable.moveWireGuideToMouse()
+            windowProperties.wireGuide.moveToMouse()
         }
 
         let dragHandler = d3.drag().touchable(true).clickDistance(4)
@@ -88,42 +89,6 @@ export abstract class Draggable {
 
     // Special behavior when being dragged e.g. activations snap to Layers
     public moveAction() {}
-
-    public static showWireGuide(): void {
-        windowProperties.wireGuide.style("display", null)
-        windowProperties.wireGuideCircle.style("display", null)
-        windowProperties.wireGuide.raise()
-        windowProperties.wireGuideCircle.raise()
-    }
-
-    public static hideWireGuide(): void {
-        windowProperties.wireGuide.style("display", "none")
-        windowProperties.wireGuideCircle.style("display", "none")
-    }
-
-    public static moveWireGuideToMouse(): void {
-        if (windowProperties.selectedElement != null && 
-            windowProperties.selectedElement.wireGuidePresent && 
-            windowProperties.selectedElement instanceof Draggable) {
-
-            let sourceCenter = windowProperties.selectedElement.getPosition().add(windowProperties.selectedElement.center())
-            // Catch the error when there the mouse does not yet have a relative position
-            let endCoords;
-            try {
-                endCoords = d3.mouse(<any>d3.select("#svg").node())
-            } catch (error) {
-                endCoords = [0,0]
-            }           
-
-            windowProperties.wireGuide.attr('x1',sourceCenter.x)
-                .attr('y1',sourceCenter.y)
-                .attr('x2',endCoords[0])
-                .attr('y2',endCoords[1])
-
-            windowProperties.wireGuideCircle.attr("cx", sourceCenter.x)
-                .attr("cy", sourceCenter.y)
-        }
-    }
 
     // Bring in front of the other UI elements
     public raise(){
@@ -148,20 +113,17 @@ export abstract class Draggable {
         this.raise()
         this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
         if(this.wireGuidePresent) {
-            Draggable.moveWireGuideToMouse()
-            Draggable.showWireGuide();            
+            windowProperties.wireGuide.moveToMouse()
+            windowProperties.wireGuide.show();            
         }
     }
 
     public unselect() {
         if (windowProperties.selectedElement === this) {
             windowProperties.selectedElement = null
+            windowProperties.wireGuide.hide();
         }
-        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
-        windowProperties.wireGuide.style("display", "none")
-        if(this.wireGuidePresent) {
-            Draggable.hideWireGuide();
-        }
+        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)        
     }
 
     public delete() {
@@ -175,7 +137,7 @@ export abstract class Draggable {
         return new Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2)
     }
 
-    private static nodeBoundingBox(node: SVGGraphicsElement): {top: number, bottom: number, left: number, right: number} {
+    protected static nodeBoundingBox(node: SVGGraphicsElement): {top: number, bottom: number, left: number, right: number} {
         let nodeBbox = node.getBBox()
         return {top: nodeBbox.y, bottom: nodeBbox.y+nodeBbox.height, left: nodeBbox.x, right: nodeBbox.x+nodeBbox.width}
     }
@@ -217,6 +179,5 @@ export abstract class Draggable {
 
     setPosition(position: Point) {
         this.svgComponent.attr('transform','translate('+position.x+','+position.y+')')
-        this.moveAction()
     }
 }

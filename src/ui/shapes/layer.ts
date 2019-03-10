@@ -322,10 +322,23 @@ export abstract class ActivationLayer extends Layer {
         }
     }
 
+    public outerBoundingBox(): {top: number, bottom: number, left: number, right: number} {
+        let bbox = super.outerBoundingBox();
+        if (this.activation != null) {
+            let nodeBbox = Draggable.nodeBoundingBox(this.activation.svgComponent.node())
+
+            bbox.top = Math.min(nodeBbox.top, bbox.top)
+            bbox.bottom = Math.max(nodeBbox.bottom, bbox.bottom)
+            bbox.left = Math.min(nodeBbox.left, bbox.left)
+            bbox.right = Math.max(nodeBbox.right, nodeBbox.right)
+
+        }
+        return bbox
+    }
+
     public addActivation(activation: Activation) {
         if (this.activation != null && this.activation != activation) {
             this.activation.delete();
-            this.activation.layer = null;
         }
         this.activation = activation;
         this.activation.layer = this;
