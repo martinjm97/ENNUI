@@ -1,14 +1,13 @@
 import { Draggable } from "./draggable";
-import { Point, Rectangle } from "./shape";
+import { Point } from "./shape";
 import { ActivationLayer } from "./layer";
 import { windowProperties } from "../window";
-import { clone } from "@tensorflow/tfjs";
 
 export abstract class Activation extends Draggable {
 
     layer: ActivationLayer = null;
     abstract activationType: string;
-    static defaultLocation: Point = new Point(50, 250);
+    static defaultLocation: Point = new Point(50, 150);
     body: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
 
     constructor(color: string, defaultLocation) {
