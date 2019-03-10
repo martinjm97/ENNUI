@@ -70,14 +70,9 @@ export abstract class Draggable {
                 this.raise()
                 firstDrag = false
             }
-            let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"))
-            // TODO: take into account the width of the object this.svgComponent
-            let tx = Math.min(Math.max(0, d3.event.x - mousePosRelativeToCenter.x), canvasBoundingBox.width)
-            let ty = Math.min(Math.max(0, d3.event.y - mousePosRelativeToCenter.y), canvasBoundingBox.height)
 
-            this.svgComponent.attr("transform", "translate(" + (tx) + "," + (ty) + ")")
-
-            this.dragAction(d)
+            this.setPosition(new Point(d3.event.x - mousePosRelativeToCenter.x, d3.event.y - mousePosRelativeToCenter.y))
+            this.cropPosition()
             // Dragging seems to force mousemove event to be ignored. Since we
             // use the mousemove event on the svg to move the wire guide, just do that
             // here unless we find a way to not ignore the mousemove event.
@@ -92,7 +87,7 @@ export abstract class Draggable {
     }
 
     // Special behavior when being dragged e.g. activations snap to Layers
-    public dragAction(d) {}
+    public moveAction() {}
 
     public static showWireGuide(): void {
         windowProperties.wireGuide.style("display", null)
@@ -135,7 +130,7 @@ export abstract class Draggable {
         this.svgComponent.raise()
     }
 
-    public raiseOnlyGroup() {
+    public raiseGroup() {
         this.svgComponent.raise()
     }
 
@@ -180,6 +175,25 @@ export abstract class Draggable {
         return new Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2)
     }
 
+    private static nodeBoundingBox(node: SVGGraphicsElement): {top: number, bottom: number, left: number, right: number} {
+        let nodeBbox = node.getBBox()
+        return {top: nodeBbox.y, bottom: nodeBbox.y+nodeBbox.height, left: nodeBbox.x, right: nodeBbox.x+nodeBbox.width}
+    }
+
+    public outerBoundingBox(): {top: number, bottom: number, left: number, right: number} {
+        let bbox: {top, bottom, left, right} = Draggable.nodeBoundingBox(this.svgComponent.nodes()[0])
+
+        for(let node of this.svgComponent.nodes().slice(1)) {
+            let nodeBbox = Draggable.nodeBoundingBox(node)
+
+            bbox.top = Math.min(nodeBbox.top, bbox.top)
+            bbox.bottom = Math.max(nodeBbox.bottom, bbox.bottom)
+            bbox.left = Math.min(nodeBbox.left, bbox.left)
+            bbox.right = Math.max(nodeBbox.right, nodeBbox.right)
+        }
+        return bbox
+    }
+
 
     getPosition(): Point {
 		let transformation = this.svgComponent.attr('transform')
@@ -187,7 +201,22 @@ export abstract class Draggable {
         return new Point(numArr[0], numArr[1])
     }
 
+    public cropPosition() {
+        let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"))
+        let componentBBox  = this.outerBoundingBox()
+        
+        let bottomBoundary = (canvasBoundingBox.height-componentBBox.bottom) - windowProperties.svgYOffset*2/windowProperties.svgTransformRatio;
+
+        let position = this.getPosition()
+
+        position.x = Math.min(Math.max(-componentBBox.left, position.x), canvasBoundingBox.width-componentBBox.right)
+        position.y = Math.min(Math.max(-componentBBox.top, position.y), bottomBoundary)
+
+        this.setPosition(position)
+    }
+
     setPosition(position: Point) {
-		this.svgComponent.attr('transform','translate('+position.x+','+position.y+')')
+        this.svgComponent.attr('transform','translate('+position.x+','+position.y+')')
+        this.moveAction()
     }
 }

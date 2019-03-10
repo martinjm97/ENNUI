@@ -28,6 +28,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "scss": "node-sass src/ui -o src/ui",
     "scss-watch": "node-sass --watch src/ui -o src/ui",
+    "ts-watch": "tsc --skipLibCheck --watch",
+    "webpack-watch": "webpack --watch --mode development",
     "build": "tsc --skipLibCheck && webpack --mode development && node-sass src/ui -o src/ui",
     "watch": "tsc --skipLibCheck && webpack --mode development && node-sass src/ui -o src/ui && tsc --skipLibCheck --watch & webpack --watch --mode development & node-sass --watch src/ui -o src/ui"
   },

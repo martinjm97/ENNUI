@@ -64,8 +64,12 @@ export class Wire {
 
     public raise() {
         this.group.raise()
-        this.source.raiseOnlyGroup()
-        this.dest.raiseOnlyGroup()
+        this.source.raiseGroup()
+        this.dest.raiseGroup()
+    }
+
+    public raiseGroup() {
+        this.group.raise()
     }
 
     public select() {

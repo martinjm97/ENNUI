@@ -70,19 +70,23 @@ export abstract class Layer extends Draggable {
 
     populateParamBox() {}
 
-    public dragAction(d) {
+    public moveAction() {
         for (let wire of this.wires) {
             wire.updatePosition()
         }
+    }
+
+    public raise() {
+        this.wires.forEach(w => w.raiseGroup());
+        this.parents.forEach(p => p.raiseGroup());
+        this.children.forEach(c => c.raiseGroup());
+        this.raiseGroup();
     }
 
     public select() {
         let currSelected = windowProperties.selectedElement;
         if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.outputWiresAllowed) {
             currSelected.addChild(this)
-        }
-        for (let wire of this.wires) {
-            wire.raise()
         }
         super.select()
         document.getElementById("defaultparambox").style.display = "none"
@@ -295,22 +299,17 @@ export abstract class ActivationLayer extends Layer {
     }
 
 
-    public dragAction(d) {
-        super.dragAction(d);
+    public moveAction() {
+        super.moveAction();
         if (this.activation != null) {
             let p = this.getPosition();
-            this.activation.svgComponent.attr("transform", "translate(" + (p.x) + "," + (p.y) + ")");
+            this.activation.setPosition(p)
         }
     }
 
-    public raise() {
-        super.raise()
-        if (this.activation != null) {
-            this.activation.raise();
-        }
-        for (let wire of this.wires) {
-            wire.raise()
-        }
+    public raiseGroup() {
+        super.raiseGroup()
+        if (this.activation != null) { this.activation.raiseGroup()}
     }
 
     public delete() {

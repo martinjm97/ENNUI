@@ -21,6 +21,8 @@ class WindowProperties
     defaultparambox: any;
     wireGuide: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
     wireGuideCircle: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    svgTransformRatio: number = 1;
+    svgYOffset: number = 0;
 
     private constructor(){}
 
