@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Hide the progress and visualization tabs
 	document.getElementById("progressTab").style.display = "none";
 	document.getElementById("visualizationTab").style.display = "none";
-	document.getElementById("informationTab").style.display = "none";
+	// document.getElementById("informationTab").style.display = "none";
 	document.getElementById("loadingDataTab").style.display = "none";
 	document.getElementById("educationTab").style.display = "none";
 
@@ -91,13 +91,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 	window.addEventListener('switch', function( e: any ) {
-		if (e.detail.tabType == 'information') {
-			console.log("clicked on information")
-			showInformationOverlay()
-		} else {
+		// if (e.detail.tabType == 'information') {
+		// 	console.log("clicked on information")
+		// 	showInformationOverlay()
+		// } else {
 			console.log("switching tabs!")
 			switchTab(e);
-		}
+		// }
 	});
 
 	window.addEventListener('resize',resizeMiddleSVG);
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById('defaultLoss').classList.add('selected')
 
 	document.getElementById('train').onclick = trainOnClick
-	document.getElementById("informationTab").onclick = (_) => document.getElementById("informationTab").style.display = "none";
+	// document.getElementById("informationTab").onclick = (_) => document.getElementById("informationTab").style.display = "none";
 	document.getElementById("x").onclick = (_) => clearError()
 
 	document.getElementById("svg").addEventListener("click", function(event) {
@@ -127,10 +127,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	window.onkeyup = function(event){
 		switch(event.key){
 			case 'Escape' :
-				if (document.getElementById("informationTab").style.display != "none") {
-					showInformationOverlay();
-				}
-				else if(windowProperties.selectedElement){
+				// if (document.getElementById("informationTab").style.display != "none") {
+				// 	showInformationOverlay();
+				// }
+				if(windowProperties.selectedElement){
 					windowProperties.selectedElement.unselect();
 					windowProperties.selectedElement = null;
 				}
@@ -144,9 +144,9 @@ document.addEventListener("DOMContentLoaded", function() {
 					deleteSelected();
 				break;
 			case 'Enter' :
-				if (document.getElementById("informationTab").style.display != "none") {
-					showInformationOverlay();
-				}
+				// if (document.getElementById("informationTab").style.display != "none") {
+				// 	showInformationOverlay();
+				// }
 				break;
 		}
 	};
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	svgData.input.select();
 
 	// Begin page with info tab
-	showInformationOverlay();
+	// showInformationOverlay();
 });
 
 function deleteSelected(){
@@ -378,8 +378,8 @@ export function tabSelected(): string {
 		return "progressTab";
 	} else if (document.getElementById("visualizationTab").style.display != "none") {
 		return "visualizationTab";
-	} else if (document.getElementById("informationTab").style.display != "none") {
-		return "informationTab";
+	} else if (document.getElementById("educationTab").style.display != "none") {
+		return "educationTab";
 	} else {
 		throw new Error("No tab selection found");
 	}
@@ -505,7 +505,6 @@ function switchTab(tab) {
     document.getElementById("progressTab").style.display = "none";
 	document.getElementById("visualizationTab").style.display = "none";
 	document.getElementById("educationTab").style.display = "none";
-	document.getElementById("informationTab").style.display = "none";
 
 	// Hide all menus
 	document.getElementById("networkMenu").style.display = "none";
@@ -530,10 +529,12 @@ function switchTab(tab) {
 	document.getElementById(tab.detail.tabType).classList.add("tab-selected");
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
+	document.getElementById("paramshell").style.display = null;
 
 	switch(tab.detail.tabType){
 		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
 		case 'visualization': showPredictions(); break;
+		case 'education': document.getElementById("paramshell").style.display = "none";
 	}
 
 	// Give border radius to top and bottom neighbors
@@ -543,7 +544,7 @@ function switchTab(tab) {
 	}
 
 	let tabMapping = ["blanktab", "network", "progress", "visualization",
-					  "middleblanktab", "education", "information", "bottomblanktab"];
+					  "middleblanktab", "education", "bottomblanktab"];
 	let index = tabMapping.indexOf(tab.detail.tabType);
 
 	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected");
@@ -551,11 +552,11 @@ function switchTab(tab) {
 
 }
 
-function showInformationOverlay() {
-	if (document.getElementById("informationTab").style.display == "none") {
-		document.getElementById("informationTab").style.display = "block";
-	} else {
-		document.getElementById("informationTab").style.display = "none";
-	}
-}
+// function showInformationOverlay() {
+// 	if (document.getElementById("informationTab").style.display == "none") {
+// 		document.getElementById("informationTab").style.display = "block";
+// 	} else {
+// 		document.getElementById("informationTab").style.display = "none";
+// 	}
+// }
 
