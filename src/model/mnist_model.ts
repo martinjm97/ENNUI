@@ -1,7 +1,7 @@
 // Adapted from https://github.com/tensorflow/tfjs-examples/tree/master/mnist
 
 import * as tf from '@tensorflow/tfjs';
-import {plotAccuracy, plotLoss, showPredictions, setupPlots, setupTestResults, showConfusionMatrix} from './graphs';
+import {plotAccuracy, plotLoss, showPredictions, setupPlots, setupTestResults, showConfusionMatrix, resetPlotValues} from './graphs';
 
 import {dataset} from './data';
 import { model } from './paramsObject';
@@ -17,6 +17,7 @@ export async function train() {
     // TODO: start method
     // ui.logStatus('Training model...');
     // TODO: This is where we should do caching.
+    resetPlotValues();
     setupPlots();
     setupTestResults();
     await dataset.load();
