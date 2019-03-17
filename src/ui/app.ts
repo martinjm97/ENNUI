@@ -1,5 +1,5 @@
 import { Draggable } from "./shapes/draggable";
-import { Relu, Sigmoid, Tanh } from "./shapes/activation";
+import { Relu, Sigmoid, Tanh, Activation } from "./shapes/activation";
 import { windowProperties } from "./window";
 import { buildNetworkDAG, topologicalSort, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
@@ -22,7 +22,7 @@ import { Dropout } from "./shapes/layers/dropout";
 import * as d3 from "d3";
 
 import { changeDataset, dataset, Cifar10Data } from "../model/data";
-import { Layer } from "./shapes/layer";
+import { Layer, ActivationLayer } from "./shapes/layer";
 import { WireGuide } from "./shapes/wireguide";
 
 export interface DraggableData {
@@ -274,13 +274,18 @@ function resizeMiddleSVG(){
 
 	let ratio = svgWidth/original_svg_width;
 
-	let xTranslate = Math.max(0, (svgWidth-original_svg_width)/2);
+	let xTranslate = (svgWidth-original_svg_width)/2
 	let yTranslate = Math.max(0, (svgHeight*ratio-svgHeight)/2);
+
+	// Modify initialization heights for random locations for layers/activations so they don't appear above the svg
+	let yOffsetDelta = yTranslate/ratio - windowProperties.svgYOffset;
+	ActivationLayer.defaultInitialLocation.y += yOffsetDelta
+	Activation.defaultLocation.y += yOffsetDelta
 	
-	windowProperties.svgYOffset = yTranslate;
+	windowProperties.svgYOffset = yTranslate/ratio;
 	windowProperties.svgTransformRatio = ratio;
 
-	document.getElementById('svg').setAttribute("transform", `translate(${xTranslate}, ${yTranslate}) scale(${ratio}, ${ratio})  `);
+	document.getElementById('svg').setAttribute("transform", `translate(${xTranslate}, 0) scale(${ratio}, ${ratio})  `);
 
 	// Call crop position on each draggable to ensure it is within the new canvas boundary
 	if( svgData.input != null) {

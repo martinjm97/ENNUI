@@ -330,7 +330,7 @@ export abstract class ActivationLayer extends Layer {
             bbox.top = Math.min(nodeBbox.top, bbox.top)
             bbox.bottom = Math.max(nodeBbox.bottom, bbox.bottom)
             bbox.left = Math.min(nodeBbox.left, bbox.left)
-            bbox.right = Math.max(nodeBbox.right, nodeBbox.right)
+            bbox.right = Math.max(nodeBbox.right, bbox.right)
 
         }
         return bbox
