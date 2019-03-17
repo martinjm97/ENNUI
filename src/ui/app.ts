@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Hide the progress and visualization tabs
 	document.getElementById("progressTab").style.display = "none";
 	document.getElementById("visualizationTab").style.display = "none";
-	// document.getElementById("informationTab").style.display = "none";
 	document.getElementById("loadingDataTab").style.display = "none";
 	document.getElementById("educationTab").style.display = "none";
 
@@ -91,13 +90,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 	window.addEventListener('switch', function( e: any ) {
-		// if (e.detail.tabType == 'information') {
-		// 	console.log("clicked on information")
-		// 	showInformationOverlay()
-		// } else {
-			console.log("switching tabs!")
-			switchTab(e);
-		// }
+		console.log("switching tabs!")
+		switchTab(e);
 	});
 
 	window.addEventListener('resize',resizeMiddleSVG);
@@ -108,11 +102,17 @@ document.addEventListener("DOMContentLoaded", function() {
 	bindMenuExpander();
 	bindRightMenuExpander();
 
-	document.getElementById('defaultOptimizer').classList.add('selected')
-	document.getElementById('defaultLoss').classList.add('selected')
+	document.getElementById("defaultOptimizer").classList.add('selected')
+	document.getElementById("defaultLoss").classList.add('selected')
 
-	document.getElementById('train').onclick = trainOnClick
-	// document.getElementById("informationTab").onclick = (_) => document.getElementById("informationTab").style.display = "none";
+	document.getElementById("train").onclick = trainOnClick
+	document.getElementById("informationEducation").onclick = (_)  => {
+		document.getElementById("informationOverlay").style.display = "none";
+		switchTab({"detail": {"tabType": "education"}})
+		console.log("Switching the tab")
+
+	}
+	document.getElementById("informationOverlay").onclick = (_) => document.getElementById("informationOverlay").style.display = "none";
 	document.getElementById("x").onclick = (_) => clearError()
 
 	document.getElementById("svg").addEventListener("click", function(event) {
@@ -127,9 +127,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	window.onkeyup = function(event){
 		switch(event.key){
 			case 'Escape' :
-				// if (document.getElementById("informationTab").style.display != "none") {
-				// 	showInformationOverlay();
-				// }
 				if(windowProperties.selectedElement){
 					windowProperties.selectedElement.unselect();
 					windowProperties.selectedElement = null;
@@ -144,9 +141,6 @@ document.addEventListener("DOMContentLoaded", function() {
 					deleteSelected();
 				break;
 			case 'Enter' :
-				// if (document.getElementById("informationTab").style.display != "none") {
-				// 	showInformationOverlay();
-				// }
 				break;
 		}
 	};
@@ -530,11 +524,17 @@ function switchTab(tab) {
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
 	document.getElementById("paramshell").style.display = null;
+	document.getElementById("menu").style.display = null;
+	document.getElementById("menu_expander").style.display = null;
 
 	switch(tab.detail.tabType){
 		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
 		case 'visualization': showPredictions(); break;
-		case 'education': document.getElementById("paramshell").style.display = "none";
+		case 'education':
+			document.getElementById("paramshell").style.display = "none";
+			document.getElementById("menu").style.display = "none";
+			document.getElementById("menu_expander").style.display = "none";
+			break;
 	}
 
 	// Give border radius to top and bottom neighbors
@@ -551,12 +551,4 @@ function switchTab(tab) {
 	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected");
 
 }
-
-// function showInformationOverlay() {
-// 	if (document.getElementById("informationTab").style.display == "none") {
-// 		document.getElementById("informationTab").style.display = "block";
-// 	} else {
-// 		document.getElementById("informationTab").style.display = "none";
-// 	}
-// }
 
