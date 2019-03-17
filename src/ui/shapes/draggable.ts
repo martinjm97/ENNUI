@@ -22,31 +22,29 @@ export abstract class Draggable {
     moveTimeout: any;
     readonly wireGuidePresent: boolean = false;
 
-    constructor(defaultLocation=new Point(50,100), invisible=false) {
-        if(!invisible) {
-            this.svgComponent = d3.select<SVGGraphicsElement, {}>("#svg")
-                                .append<SVGGraphicsElement>("g")
-                                .attr('transform','translate('+defaultLocation.x+','+defaultLocation.y+')')
-                                .on("click", () => {
-                                    this.select()
-                                    window.clearTimeout(this.moveTimeout)
-                                    this.hoverText.style("visibility", "hidden")
-                                    })
-                                .on("contextmenu", () => {
-                                    window.clearTimeout(this.moveTimeout)
-                                    this.hoverText.style("visibility", "hidden")
-                                    })
-                                .on("mousemove", () => {
-                                    this.hoverText.style("visibility", "hidden")
-                                    clearTimeout(this.moveTimeout);
-                                    this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 280);
-                                    this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
-                                .on("mouseout", () => {
-                                    clearTimeout(this.moveTimeout)
-                                    this.hoverText.style("visibility", "hidden")
+    constructor(defaultLocation=new Point(50,100)) {
+        this.svgComponent = d3.select<SVGGraphicsElement, {}>("#svg")
+                            .append<SVGGraphicsElement>("g")
+                            .attr('transform','translate('+defaultLocation.x+','+defaultLocation.y+')')
+                            .on("click", () => {
+                                this.select()
+                                window.clearTimeout(this.moveTimeout)
+                                this.hoverText.style("visibility", "hidden")
                                 })
-            this.makeDraggable()
-        }
+                            .on("contextmenu", () => {
+                                window.clearTimeout(this.moveTimeout)
+                                this.hoverText.style("visibility", "hidden")
+                                })
+                            .on("mousemove", () => {
+                                this.hoverText.style("visibility", "hidden")
+                                clearTimeout(this.moveTimeout);
+                                this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 280);
+                                this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
+                            .on("mouseout", () => {
+                                clearTimeout(this.moveTimeout)
+                                this.hoverText.style("visibility", "hidden")
+                            })
+        this.makeDraggable()
     }
 
     public makeDraggable(){
@@ -170,12 +168,12 @@ export abstract class Draggable {
         let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"))
         let componentBBox  = this.outerBoundingBox()
         
-        let bottomBoundary = (canvasBoundingBox.height-componentBBox.bottom) - windowProperties.svgYOffset*2/windowProperties.svgTransformRatio;
+        let bottomBoundary = (canvasBoundingBox.height-componentBBox.bottom) - windowProperties.svgYOffset;
 
         let position = this.getPosition()
 
         position.x = Math.min(Math.max(-componentBBox.left, position.x), canvasBoundingBox.width-componentBBox.right)
-        position.y = Math.min(Math.max(-componentBBox.top, position.y), bottomBoundary)
+        position.y = Math.min(Math.max(-componentBBox.top + windowProperties.svgYOffset, position.y), bottomBoundary)
 
         this.setPosition(position)
     }
