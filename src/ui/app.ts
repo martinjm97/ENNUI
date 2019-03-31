@@ -24,6 +24,7 @@ import * as d3 from "d3";
 import { changeDataset, dataset, Cifar10Data } from "../model/data";
 import { Layer } from "./shapes/layer";
 import { WireGuide } from "./shapes/wireguide";
+import { showPerClassAccuracy } from "@tensorflow/tfjs-vis/dist/show/quality";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -297,13 +298,19 @@ function resizeMiddleSVG(){
 	});	
 }
 
+function toggleExpanderTriangle(categoryTitle){
+		categoryTitle.getElementsByClassName('expander')[0].classList.toggle("expanded");	
+}
+
 function makeCollapsable(elmt){
 	elmt.addEventListener('click', function(e){
+		toggleExpanderTriangle(elmt)
 		var arr = Array.prototype.slice.call( elmt.parentElement.children ).slice(1);
 
 		if(elmt.getAttribute('data-expanded') == 'false'){
 			for(let sib of arr){
-				sib.style.display = 'block';
+				if (sib.id != 'defaultparambox')
+					sib.style.display = 'block';
 			}
 
 			elmt.setAttribute('data-expanded','true');
