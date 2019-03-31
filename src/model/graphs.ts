@@ -141,6 +141,10 @@ export function showTestResults(batch, predictions, labels) {
 let lossValues = [[], []];
 export function plotLoss(batch, loss, set) {
   const series = set === 'train' ? 0 : 1;
+  // Set the first validation loss as the first training loss
+  if (series == 0 && lossValues[1].length == 0) {
+    lossValues[1].push({x: batch, y: loss});
+  }
   lossValues[series].push({x: batch, y: loss});
   if (tabSelected() == "progressTab") {
     renderLossPlot();
@@ -160,7 +164,13 @@ export function renderLossPlot() {
       });
 }
 
-let accuracyValues = [[], []];
+export function resetPlotValues() {
+  // set initial accuracy values to 0,0 for validation
+  accuracyValues = [[], [{x: 0, y: 0}]];
+  lossValues = [[], []];
+}
+
+let accuracyValues = [[], [{x: 0, y: 0}]];
 export function plotAccuracy(epochs, accuracy, set) {
   const series = set === 'train' ? 0 : 1;
   accuracyValues[series].push({x: epochs, y: accuracy});

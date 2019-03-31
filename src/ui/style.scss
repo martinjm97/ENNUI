@@ -90,20 +90,24 @@ body {
 }
 
 #blanktab {
-    min-height: 80px;
+    min-height: calc(25% - 100px);
     width: 100%;
     background-color: #A8A8BD;
 }
 
-#bottomblanktab {
-    height: 100%;
+#middleblanktab {
+    min-height: calc(75% - 200px);
     width: 100%;
-
-
     vertical-align: middle;
     background-color: #A8A8BD;
-    //width: 50px;
-    //height: 70px;
+    float:left;
+}
+
+#bottomblanktab {
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+    background-color: #A8A8BD;
     float:left;
 }
 
@@ -381,42 +385,53 @@ div.top_neighbor_tab-selected {
 }
 
 #images {
-   display: grid;
-   grid-template-columns: repeat(10, 1fr);
-  grid-template-rows:  repeat(6, 1fr);
-  width: 100%;
-  height: 100%;
-//    flex-wrap: wrap;
-//    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows:  repeat(6, 1fr);
+    width: 100%;
+    height: 100%;
 }
 
-a {
+.informationRow {
+    display: flex;
+}
+.informationColumn {
+    font-size: 36;
+    cursor: pointer;
+    float: left;
+    width: 49%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    background-color: rgba(168,168,189,0.85);
+}
+
+.informationBlankColumn {
+    float: left;
+    height: 10%;
+    width: 2%;
+}
+
+.informationColumn:hover {
+    background-color: rgba(168,168,189,0.5);
+}
+
+a.overlayLinks {
     color: lightblue;
 }
 
-#embeddedYoutube {
-    width: 50%;
-    height: 50%;
-    padding: 10px;
-    position: absolute;
-    top: 0; right: 0;
-    bottom: 0; left: 0;
-    margin: auto;
-}
-
-#informationTab {
+#informationOverlay {
     position: fixed;
     padding: 5%;
     text-align: center;
     color: $color-menu-bg;
     font-size: 48;
     width: 90%;
-    height: 85%;
+    height: 100%;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0,0.85);
 
     cursor: pointer;
     font-family: Helvetica;
@@ -445,13 +460,8 @@ a {
     text-align: left;
     font-size: 18;
     display: inline-block;
-    width: 50%;
-    position: absolute;
-    bottom: 15%;
-    right: 15%;
+    padding: 3%;
     cursor: pointer;
-    vertical-align : bottom;
-
     font-family: Helvetica;
 }
 
@@ -459,6 +469,52 @@ a {
     text-align: center;
     color: $color-menu-bg;
     font-size: 24;
+    font-family: Helvetica;
+    padding-bottom: 5%;
+}
+
+#educationTab {
+    width: calc(100% - 50px);
+    height: 100%;
+    background: #F1FAFF;
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-top: 3%;
+    overflow-y : auto;
+}
+
+.educationTitle {
+    font-size: 40;
+    text-align: center;
+    padding-bottom: 30px;
+    font-family: Helvetica;
+    font-weight: bolder;
+}
+
+.educationSection {
+    font-size: 30;
+    line-height: 1.7em;
+    font-family: Helvetica;
+    font-weight: bold;
+}
+
+.educationContent {
+    font-size: 18;
+    word-wrap: break-word;
+    line-height: 1.7em;
+    font-family: Helvetica;
+}
+
+.educationVideo {
+    // margin-right: 5%;
+    // object-fit: contain;
+    padding: 20px;
+    width: 30%;
+    height: 25%;
+    display: table;
+    margin: 0 auto;
+    // text-align: left;
+    overflow:hidden !important;
 }
 
 #error {
