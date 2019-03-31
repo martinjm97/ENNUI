@@ -1,5 +1,5 @@
 import { Draggable } from "./shapes/draggable";
-import { Relu, Sigmoid, Tanh } from "./shapes/activation";
+import { Relu, Sigmoid, Tanh, Activation } from "./shapes/activation";
 import { windowProperties } from "./window";
 import { buildNetworkDAG, topologicalSort, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
 import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
@@ -22,7 +22,7 @@ import { Dropout } from "./shapes/layers/dropout";
 import * as d3 from "d3";
 
 import { changeDataset, dataset, Cifar10Data } from "../model/data";
-import { Layer } from "./shapes/layer";
+import { Layer, ActivationLayer } from "./shapes/layer";
 import { WireGuide } from "./shapes/wireguide";
 import { showPerClassAccuracy } from "@tensorflow/tfjs-vis/dist/show/quality";
 
@@ -44,24 +44,26 @@ document.addEventListener("DOMContentLoaded", function() {
 	setupPlots();
 	setupTestResults();
 
-	document.getElementById("all").classList.add("selected")
+	document.getElementById("all").classList.add("selected");
 
 	// Initialize the network tab to selected
 	document.getElementById("network").classList.add("tab-selected");
 
 	// Hide the progress and visualization tabs
-	document.getElementById("progressTab").style.display = "none"
-	document.getElementById("visualizationTab").style.display = "none"
-	document.getElementById("informationTab").style.display = "none"
-	document.getElementById("loadingDataTab").style.display = "none"
+	document.getElementById("progressTab").style.display = "none";
+	document.getElementById("visualizationTab").style.display = "none";
+	document.getElementById("loadingDataTab").style.display = "none";
+	document.getElementById("educationTab").style.display = "none";
 
 	// Hide the progress and visualization menus
 	document.getElementById("progressMenu").style.display = "none";
 	document.getElementById("visualizationMenu").style.display = "none";
+	document.getElementById("educationMenu").style.display = "none";
 
 	// Hide the progress and visualization paramshell
 	document.getElementById("progressParamshell").style.display = "none";
 	document.getElementById("visualizationParamshell").style.display = "none";
+	document.getElementById("educationParamshell").style.display = "none";
 
 	// Hide the error box
 	document.getElementById("error").style.display = "none";
@@ -90,13 +92,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 	window.addEventListener('switch', function( e: any ) {
-		if (e.detail.tabType == 'information') {
-			console.log("clicked on information")
-			showInformationOverlay()
-		} else {
-			console.log("switching tabs!")
-			switchTab(e);
-		}
+		console.log("switching tabs!")
+		switchTab(e);
 	});
 
 	window.addEventListener('resize',resizeMiddleSVG);
@@ -107,11 +104,17 @@ document.addEventListener("DOMContentLoaded", function() {
 	bindMenuExpander();
 	bindRightMenuExpander();
 
-	document.getElementById('defaultOptimizer').classList.add('selected')
-	document.getElementById('defaultLoss').classList.add('selected')
+	document.getElementById("defaultOptimizer").classList.add('selected')
+	document.getElementById("defaultLoss").classList.add('selected')
 
-	document.getElementById('train').onclick = trainOnClick
-	document.getElementById("informationTab").onclick = (_) => document.getElementById("informationTab").style.display = "none";
+	document.getElementById("train").onclick = trainOnClick
+	document.getElementById("informationEducation").onclick = (_)  => {
+		document.getElementById("informationOverlay").style.display = "none";
+		switchTab({"detail": {"tabType": "education"}})
+		console.log("Switching the tab")
+
+	}
+	document.getElementById("informationOverlay").onclick = (_) => document.getElementById("informationOverlay").style.display = "none";
 	document.getElementById("x").onclick = (_) => clearError()
 
 	document.getElementById("svg").addEventListener("click", function(event) {
@@ -126,10 +129,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	window.onkeyup = function(event){
 		switch(event.key){
 			case 'Escape' :
-				if (document.getElementById("informationTab").style.display != "none") {
-					showInformationOverlay();
-				}
-				else if(windowProperties.selectedElement){
+				if(windowProperties.selectedElement){
 					windowProperties.selectedElement.unselect();
 					windowProperties.selectedElement = null;
 				}
@@ -143,9 +143,6 @@ document.addEventListener("DOMContentLoaded", function() {
 					deleteSelected();
 				break;
 			case 'Enter' :
-				if (document.getElementById("informationTab").style.display != "none") {
-					showInformationOverlay();
-				}
 				break;
 		}
 	};
@@ -164,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	svgData.input.select();
 
 	// Begin page with info tab
-	showInformationOverlay();
+	// showInformationOverlay();
 });
 
 function deleteSelected(){
@@ -275,13 +272,18 @@ function resizeMiddleSVG(){
 
 	let ratio = svgWidth/original_svg_width;
 
-	let xTranslate = Math.max(0, (svgWidth-original_svg_width)/2);
+	let xTranslate = (svgWidth-original_svg_width)/2
 	let yTranslate = Math.max(0, (svgHeight*ratio-svgHeight)/2);
+
+	// Modify initialization heights for random locations for layers/activations so they don't appear above the svg
+	let yOffsetDelta = yTranslate/ratio - windowProperties.svgYOffset;
+	ActivationLayer.defaultInitialLocation.y += yOffsetDelta
+	Activation.defaultLocation.y += yOffsetDelta
 	
-	windowProperties.svgYOffset = yTranslate;
+	windowProperties.svgYOffset = yTranslate/ratio;
 	windowProperties.svgTransformRatio = ratio;
 
-	document.getElementById('svg').setAttribute("transform", `translate(${xTranslate}, ${yTranslate}) scale(${ratio}, ${ratio})  `);
+	document.getElementById('svg').setAttribute("transform", `translate(${xTranslate}, 0) scale(${ratio}, ${ratio})  `);
 
 	// Call crop position on each draggable to ensure it is within the new canvas boundary
 	if( svgData.input != null) {
@@ -371,8 +373,8 @@ export function tabSelected(): string {
 		return "progressTab";
 	} else if (document.getElementById("visualizationTab").style.display != "none") {
 		return "visualizationTab";
-	} else if (document.getElementById("informationTab").style.display != "none") {
-		return "informationTab";
+	} else if (document.getElementById("educationTab").style.display != "none") {
+		return "educationTab";
 	} else {
 		throw new Error("No tab selection found");
 	}
@@ -468,8 +470,6 @@ function appendItem(options){
 			case "flatten": item = new Flatten(); console.log("Created Flatten Layer"); break;
 			case "concatenate": item = new Concatenate(); console.log("Created Concatenate Layer"); break;
 			case "dropout": item = new Dropout(); console.log("Created Dropout Layer"); break;
-
-
 		}
 		case 'activation': switch(options.detail.activationType) {
 			case 'relu': item = new Relu(); console.log("Created Relu"); break;
@@ -496,56 +496,60 @@ function switchClassExamples(options){
 
 function switchTab(tab) {
 	// Hide all tabs
-	document.getElementById("networkTab").style.display = "none"
-    document.getElementById("progressTab").style.display = "none"
-	document.getElementById("visualizationTab").style.display = "none"
-	document.getElementById("informationTab").style.display = "none";
+	document.getElementById("networkTab").style.display = "none";
+    document.getElementById("progressTab").style.display = "none";
+	document.getElementById("visualizationTab").style.display = "none";
+	document.getElementById("educationTab").style.display = "none";
 
 	// Hide all menus
 	document.getElementById("networkMenu").style.display = "none";
 	document.getElementById("progressMenu").style.display = "none";
 	document.getElementById("visualizationMenu").style.display = "none";
+	document.getElementById("educationMenu").style.display = "none";
 
 	// Hide all paramshells
 	document.getElementById("networkParamshell").style.display = "none";
 	document.getElementById("progressParamshell").style.display = "none";
 	document.getElementById("visualizationParamshell").style.display = "none";
+	document.getElementById("educationParamshell").style.display = "none";
 
 	// Unselect all tabs
-	document.getElementById("network").classList.remove("tab-selected")
-	document.getElementById("progress").classList.remove("tab-selected")
-	document.getElementById("visualization").classList.remove("tab-selected")
+	document.getElementById("network").classList.remove("tab-selected");
+	document.getElementById("progress").classList.remove("tab-selected");
+	document.getElementById("visualization").classList.remove("tab-selected");
+	document.getElementById("education").classList.remove("tab-selected");
 
 	// Display only the selected tab
 	document.getElementById(tab.detail.tabType + "Tab").style.display = null;
-	document.getElementById(tab.detail.tabType).classList.add("tab-selected")
+	document.getElementById(tab.detail.tabType).classList.add("tab-selected");
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
+	document.getElementById("paramshell").style.display = null;
+	document.getElementById("menu").style.display = null;
+	document.getElementById("menu_expander").style.display = null;
 
 	switch(tab.detail.tabType){
 		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
 		case 'visualization': showPredictions(); break;
+		case 'education':
+			document.getElementById("paramshell").style.display = "none";
+			document.getElementById("menu").style.display = "none";
+			document.getElementById("menu_expander").style.display = "none";
+			break;
 	}
 
 	// Give border radius to top and bottom neighbors
 	if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
-		document.getElementsByClassName("top_neighbor_tab-selected")[0].classList.remove("top_neighbor_tab-selected")
-		document.getElementsByClassName("bottom_neighbor_tab-selected")[0].classList.remove("bottom_neighbor_tab-selected")
+		document.getElementsByClassName("top_neighbor_tab-selected")[0].classList.remove("top_neighbor_tab-selected");
+		document.getElementsByClassName("bottom_neighbor_tab-selected")[0].classList.remove("bottom_neighbor_tab-selected");
 	}
 
-	let tabMapping = ["blanktab", "network", "progress", "visualization", "bottomblanktab"]
-	let index = tabMapping.indexOf(tab.detail.tabType)
+	let tabMapping = ["blanktab", "network", "progress", "visualization",
+					  "middleblanktab", "education", "bottomblanktab"];
+	let index = tabMapping.indexOf(tab.detail.tabType);
 
-	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected")
-	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected")
+	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected");
+	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected");
 
-}
-
-function showInformationOverlay() {
-	if (document.getElementById("informationTab").style.display == "none") {
-		document.getElementById("informationTab").style.display = "block";
-	} else {
-		document.getElementById("informationTab").style.display = "none";
-	}
 }
 

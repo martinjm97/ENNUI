@@ -29,6 +29,8 @@ export abstract class ImageData {
 
     public dataLoaded : boolean = false;
 
+    public readonly classStrings: Array<string> = null;
+
     abstract async load(): Promise<void>;
     
     /**
@@ -130,6 +132,9 @@ export class Cifar10Data extends ImageData {
     NUM_CLASSES = 10;
 
     datasetName = "CIFAR-10";
+
+    public readonly classStrings: Array<string> = 
+        ["Airplane", "Automobile", "Bird", "Cat", "Deer", "Dog", "Frog", "Horse", "Ship", "Truck"]
 
     private static _instance: Cifar10Data;
     
@@ -266,4 +271,9 @@ export function changeDataset(newDataset: string) {
         case "mnist": dataset = MnistData.Instance; break;
         case "cifar": dataset = Cifar10Data.Instance; break;
     }
+
+    // Set the image visualizations divs with class name identifiers
+    Array.from(document.getElementsByClassName("data-class-option")).forEach(function (element, i) {
+        element.innerHTML = i + ( dataset.classStrings != null ? ` (${dataset.classStrings[i]})` : '' );
+    })
 }
