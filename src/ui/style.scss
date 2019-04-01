@@ -151,7 +151,7 @@ body {
     color: #eee;
     font-size:22px;
     font-family: Helvetica;
-    
+
     cursor: pointer;
 }
 
@@ -421,11 +421,11 @@ a.overlayLinks {
 
 #informationOverlay {
     position: fixed;
-    padding: 5%;
+    padding: 4%;
     text-align: center;
     color: $color-menu-bg;
     font-size: 48;
-    width: 90%;
+    width: 92%;
     height: 100%;
     top: 0;
     left: 0;
@@ -457,7 +457,7 @@ a.overlayLinks {
 }
 
 #acknowledgements {
-    text-align: left;
+    text-align: center;
     font-size: 18;
     display: inline-block;
     padding: 3%;
@@ -470,7 +470,7 @@ a.overlayLinks {
     color: $color-menu-bg;
     font-size: 24;
     font-family: Helvetica;
-    padding-bottom: 5%;
+    padding-bottom: 3%;
 }
 
 #educationTab {
