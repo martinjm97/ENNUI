@@ -151,7 +151,7 @@ body {
     color: #eee;
     font-size:22px;
     font-family: Helvetica;
-    
+
     cursor: pointer;
 }
 
@@ -474,11 +474,11 @@ a.overlayLinks {
 }
 
 #educationTab {
-    width: calc(100% - 50px);
+    width: calc(70% + 380px);
     height: 100%;
     background: #F1FAFF;
-    padding-left: 20%;
-    padding-right: 20%;
+    padding-left: 15%;
+    padding-right: 15%;
     padding-top: 3%;
     overflow-y : auto;
 }
