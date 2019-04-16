@@ -101,8 +101,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	resizeMiddleSVG();
 
-	bindMenuExpander();
-	bindRightMenuExpander();
+	// bindMenuExpander();
+	// bindRightMenuExpander();
 
 	document.getElementById("defaultOptimizer").classList.add('selected')
 	document.getElementById("defaultLoss").classList.add('selected')
@@ -279,7 +279,7 @@ function resizeMiddleSVG(){
 	let yOffsetDelta = yTranslate/ratio - windowProperties.svgYOffset;
 	ActivationLayer.defaultInitialLocation.y += yOffsetDelta
 	Activation.defaultLocation.y += yOffsetDelta
-	
+
 	windowProperties.svgYOffset = yTranslate/ratio;
 	windowProperties.svgTransformRatio = ratio;
 
@@ -293,15 +293,15 @@ function resizeMiddleSVG(){
 	if (svgData.output != null) {
 		svgData.output.cropPosition();
 		svgData.output.moveAction();
-	}		
+	}
 	svgData.draggable.forEach(elem => {
 		elem.cropPosition()
 		elem.moveAction()
-	});	
+	});
 }
 
 function toggleExpanderTriangle(categoryTitle){
-		categoryTitle.getElementsByClassName('expander')[0].classList.toggle("expanded");	
+		categoryTitle.getElementsByClassName('expander')[0].classList.toggle("expanded");
 }
 
 function makeCollapsable(elmt){
