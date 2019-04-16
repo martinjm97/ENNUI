@@ -100,8 +100,12 @@ export async function train() {
     });
 
     const testResult = model.architecture.evaluate(testData.xs, testData.labels);
-    const testAccPercent = testResult[1].dataSync()[0] * 100;
-    const finalValAccPercent = valAcc * 100;
+
+    let vaccBox = document.getElementById('ti_vacc');
+    let vlossBox = document.getElementById('ti_vloss');
+    vaccBox.children[1].innerHTML = String(Number((100*testResult[1].dataSync()[0] ).toFixed(2)))
+    vlossBox.children[1].innerHTML = String(Number((testResult[0].dataSync()[0]).toFixed(2)))
+
     
     // elmt.style.background = '#007400'
     // let trainingBox = document.getElementById('ti_training');
