@@ -406,6 +406,7 @@ function  dispatchCreationOnClick(elmt){
 				elmt.classList.add("selected");
 				updateNetworkParameters({itemType: itemType, setting : setting});
 			} else if (itemType == "share") {
+				changeDataset(svgData.input.getParams()["dataset"])
 				if (elmt.getAttribute('share-option') == "exportPython") {
 					download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
 				} else if (elmt.getAttribute('share-option') == "exportJulia") {
