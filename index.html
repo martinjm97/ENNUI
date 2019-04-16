@@ -88,14 +88,22 @@
 	<!-- The left panel (menu) -->
 	<div id = 'menu'>
 		<div id = 'networkMenu'>
-			<div title = 'Add in layers to build a neural network.' id = 'layers' class = 'category' data-itemType = 'layer'>
-				<div class = 'categoryTitle' data-expanded = 'true'>Layers</div>
-				<div title='Fully connected layer that is equivalent to a matrix multiplation of shape input_size * units.'
-					 class = 'option' data-layerType = 'dense'> Dense </div>
-				<div title='Elementwise multiply by a sliding window with the given kernel size.'
-					 class = 'option' data-layerType = 'conv2D'> Convolution </div>
-				<div title = 'Take a region of dimension pool_size in the input and output the maximum value in that region.'
-					 class = 'option' data-layerType = 'maxPooling2D'> Max Pooling </div>
+			<div id = 'layers' class = 'category' data-itemType = 'layer'>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Layers
+					</div>
+				
+				</div>
+				<div class = 'option' data-layerType = 'dense'> Dense </div>
+
+				<div class = 'option' data-layerType = 'conv2D'> Convolution </div>
+				<div class = 'option' data-layerType = 'maxPooling2D'> Max Pooling </div>
 
 
 				<div class = 'option dropdown'>
@@ -117,17 +125,31 @@
 
 			</div>
 			<div id = 'activations' class = 'category' data-itemType = 'activation'>
-				<div title = 'Introduce a non-linear component for a layer.'
-					 class = 'categoryTitle' data-expanded = 'true'>Activations</div>
-				<div title = 'Negative inputs become 0 and positive inputs are not changed f(x) = max(0,x).'
-					 class = 'option' data-activationType = 'relu'> ReLU </div>
-				<div title = 'Map inputs between 0 and 1 with f(x) = 1/(1 + e^(-x)).'
-					 class = 'option' data-activationType = 'sigmoid'> Sigmoid </div>
-				<div title = 'Map inputs between -1 and 1 with f(x) = tanh(x).'
-					 class = 'option' data-activationType = 'tanh'> Tanh </div>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Activations
+					</div>
+				</div>
+				<div class = 'option' data-activationType = 'relu'> ReLU </div>
+				<div class = 'option' data-activationType = 'sigmoid'> Sigmoid </div>
+				<div class = 'option' data-activationType = 'tanh'> Tanh </div>
 			</div>
 			<div id = 'templates' class = 'bottomCategory' data-itemType = 'template'>
-				<div class = 'categoryTitle' data-expanded = 'true'>Templates</div>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Templates
+					</div>
+				</div>
 				<div class = 'option' data-templateType = 'blank'> Blank </div>
 				<div class = 'option' data-templateType = 'default'> Default </div>
 				<div class = 'option' data-templateType = 'complex'> Complex </div>
@@ -136,14 +158,32 @@
 
 		<div id = 'progressMenu'>
 			<div id = 'optimizers' class = 'category' data-itemType = 'optimizer'>
-				<div class = 'categoryTitle'>Optimizers</div>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Optimizers
+					</div>
+				</div>
 				<div id = "defaultOptimizer" class = 'option' id = 'sgd' data-trainType = 'sgd'> SGD </div>
 				<div id = 'rmsprop' class = 'option train-option' data-trainType = 'rmsprop'> RMSprop </div>
 				<div id = 'adagrad' class = 'option train-option' data-trainType = 'adagrad'> Adagrad </div>
 				<div id = 'adam' class = 'option train-option' data-trainType = 'adam'> Adam </div>
 			</div>
 			<div id = 'losses' class = 'category' data-itemType = 'loss'>
-				<div class = 'categoryTitle'>Losses</div>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Losses
+					</div>
+				</div>
 				<div id = 'defaultLoss' class = 'option loss-option' data-lossType = 'categoricalCrossentropy'>CrossEntropy</div>
 				<div id = 'hinge' class = 'option loss-option' data-lossType = 'hinge'> Hinge </div>
 				<div id = 'meanSquaredError' class = 'option loss-option' data-lossType = 'meanSquaredError'> MSE </div>
@@ -153,7 +193,16 @@
 
 		<div id = 'visualizationMenu'>
 			<div id = 'classes' class = 'category' data-itemType = 'classes'>
-				<div class = 'categoryTitle'>Classes</div>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Classes
+					</div>
+				</div>
 				<div id = 'all' class = 'option visualization-option' data-classesType = 'all'> All </div>
 				<div class = 'option visualization-option data-class-option' data-classesType = '0'> 0 </div>
 				<div class = 'option visualization-option data-class-option' data-classesType = '1'> 1 </div>
@@ -257,7 +306,7 @@
 				If you are new to Ennui, a good place to start is to watch
 				the quick tutorial below:
 			</div>
-			<iframe class="educationVideo" src="https://www.youtube.com/embed/cr-iD9877Lg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			<iframe class="educationVideo" src="https://www.youtube.com/embed/m0YnwAtPbb8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 			<div class="educationSection"> Foundations of Deep Learning </div>
 			<div class="educationContent">
 				If you are new to machine learning, the lecture video below is an excellent introduction.
@@ -290,7 +339,16 @@
 		</div>
 
 		<div class = 'category' id = 'kerasinfo'>
-			<div class = 'categoryTitle'>Model Status</div>
+			<div class = 'categoryTitle' data-expanded = 'true'>
+				<div class='expander'>
+					<svg height="24px" width="24px">
+						<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+					</svg>
+				</div>
+				<div class='categoryTitleText'>
+					Model Status
+				</div>
+			</div>
 			<div class = 'parambox'>
 				<div id = 'ti_training' class = 'paramline'>
 					<div class = 'paramname'>Training:</div>
@@ -315,7 +373,16 @@
 			</div>
 		</div>
 		<div class="category" id="sharebox" data-itemType="share">
-			<div class="categoryTitle">Share</div>
+			<div class = 'categoryTitle' data-expanded = 'true'>
+				<div class='expander'>
+					<svg height="24px" width="24px">
+						<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+					</svg>
+				</div>
+				<div class='categoryTitleText'>
+					Share
+				</div>
+			</div>
 			<div class="option right-option" share-option="exportPython">Export to Python</div>
 			<div class="option right-option" share-option="exportJulia">Export to Julia</div>
 			<div class="option right-option" share-option="copyModel">Copy model link</div>
@@ -323,7 +390,16 @@
 		<div id = 'networkParamshell'>
 
 			<div class = 'category' id='paramtruck'>
-				<div class = 'categoryTitle' id='parameterTitle'>Parameters</div>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Parameters
+					</div>
+				</div>
 				<div id='defaultparambox' class = 'parambox'>Click on a layer to view and change its parameters.</div>
 			</div>
 		</div>
@@ -334,7 +410,16 @@
 			</div>
 				 -->
 			<div class = 'category' id='paramtruck'>
-				<div class = 'categoryTitle' id='parameterTitle'>Hyperparams</div>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Hyperparams
+					</div>
+				</div>
 				<div class = 'parambox'>
 					<div class = 'paramline'>
 						<div class="paramname" data-name="lr">Learning rate: </div>
