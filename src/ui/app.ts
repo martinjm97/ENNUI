@@ -101,8 +101,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	resizeMiddleSVG();
 
-	bindMenuExpander();
-	bindRightMenuExpander();
+	// bindMenuExpander();
+	// bindRightMenuExpander();
 
 	document.getElementById("defaultOptimizer").classList.add('selected')
 	document.getElementById("defaultLoss").classList.add('selected')
@@ -279,7 +279,7 @@ function resizeMiddleSVG(){
 	let yOffsetDelta = yTranslate/ratio - windowProperties.svgYOffset;
 	ActivationLayer.defaultInitialLocation.y += yOffsetDelta
 	Activation.defaultLocation.y += yOffsetDelta
-	
+
 	windowProperties.svgYOffset = yTranslate/ratio;
 	windowProperties.svgTransformRatio = ratio;
 
@@ -293,15 +293,15 @@ function resizeMiddleSVG(){
 	if (svgData.output != null) {
 		svgData.output.cropPosition();
 		svgData.output.moveAction();
-	}		
+	}
 	svgData.draggable.forEach(elem => {
 		elem.cropPosition()
 		elem.moveAction()
-	});	
+	});
 }
 
 function toggleExpanderTriangle(categoryTitle){
-		categoryTitle.getElementsByClassName('expander')[0].classList.toggle("expanded");	
+		categoryTitle.getElementsByClassName('expander')[0].classList.toggle("expanded");
 }
 
 function makeCollapsable(elmt){
@@ -522,7 +522,7 @@ function switchTab(tab) {
 	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
 	document.getElementById("paramshell").style.display = null;
 	document.getElementById("menu").style.display = null;
-	document.getElementById("menu_expander").style.display = null;
+	// document.getElementById("menu_expander").style.display = null;
 
 	switch(tab.detail.tabType){
 		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
@@ -530,7 +530,7 @@ function switchTab(tab) {
 		case 'education':
 			document.getElementById("paramshell").style.display = "none";
 			document.getElementById("menu").style.display = "none";
-			document.getElementById("menu_expander").style.display = "none";
+			// document.getElementById("menu_expander").style.display = "none";
 			break;
 	}
 
