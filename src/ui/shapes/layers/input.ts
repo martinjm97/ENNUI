@@ -74,7 +74,8 @@ export class Input extends Layer {
     }
 
     public lineOfPython(): string {
-        return `Input(shape=(${dataset.IMAGE_HEIGHT},${dataset.IMAGE_WIDTH}, ${dataset.IMAGE_CHANNELS}))`
+        // Relies on an input_shape being defined in the python skeleton
+        return `Input(shape=input_shape)`
     }
 
     public initLineOfJulia(): string {
