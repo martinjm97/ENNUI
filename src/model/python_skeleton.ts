@@ -1,34 +1,35 @@
 import { model } from "./paramsObject";
 import { setModelHyperparameters } from "../ui/app";
+import { dataset } from "./data";
 
 export function pythonSkeleton(model_code): string {
     setModelHyperparameters();
     return `from __future__ import print_function
 import keras
-from keras.datasets import mnist
+from keras.datasets import ${dataset.pythonName}
 from keras.models import Model
 from keras.layers import Dense, Dropout, Flatten, Input, Concatenate, BatchNormalization
 from keras.layers import Conv2D, MaxPooling2D, ReLU
 from keras import backend as K
 
 batch_size = ${model.params.batchSize}
-num_classes = 10
+num_classes = ${dataset.NUM_CLASSES}
 epochs = ${model.params.epochs}
 
 # input image dimensions
-img_rows, img_cols = 28, 28
+img_rows, img_cols, channels = ${dataset.IMAGE_HEIGHT}, ${dataset.IMAGE_WIDTH}, ${dataset.IMAGE_CHANNELS}
 
 # the data, split between train and test sets
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+(x_train, y_train), (x_test, y_test) = ${dataset.pythonName}.load_data()
 
 if K.image_data_format() == 'channels_first':
-    x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
-    x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
-    input_shape = (1, img_rows, img_cols)
+    x_train = x_train.reshape(x_train.shape[0], channels, img_rows, img_cols)
+    x_test = x_test.reshape(x_test.shape[0], channels, img_rows, img_cols)
+    input_shape = (channels, img_rows, img_cols)
 else:
-    x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
-    x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
-    input_shape = (img_rows, img_cols, 1)
+    x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, channels)
+    x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, channels)
+    input_shape = (img_rows, img_cols, channels)
 
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')

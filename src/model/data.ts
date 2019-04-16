@@ -26,6 +26,7 @@ export abstract class ImageData {
     protected trainLabels: Tensor<Rank>;
     protected testLabels: Tensor<Rank>;
     protected datasetName: string;
+    public pythonName: string;
 
     public dataLoaded : boolean = false;
 
@@ -132,6 +133,7 @@ export class Cifar10Data extends ImageData {
     NUM_CLASSES = 10;
 
     datasetName = "CIFAR-10";
+    pythonName = "cifar10";
 
     public readonly classStrings: Array<string> = 
         ["Airplane", "Automobile", "Bird", "Cat", "Deer", "Dog", "Frog", "Horse", "Ship", "Truck"]
@@ -179,6 +181,7 @@ export class MnistData extends ImageData {
     NUM_CLASSES = 10;
 
     datasetName = "MNIST";
+    pythonName = "mnist";
 
     private static _instance: MnistData;
 
