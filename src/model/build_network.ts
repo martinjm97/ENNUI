@@ -22,9 +22,9 @@ typeToTensor.set("Concatenate", tf.layers.concatenate);
 // TODO: change this to classes
 export let defaults: Map<string, any> = new Map()
 defaults.set("Input", {})
-defaults.set("Dense", {units: 30})
+defaults.set("Dense", {units: 32})
 defaults.set("MaxPooling2D", {poolSize: [2,2], strides: [2,2]})
-defaults.set("Conv2D", {kernelSize: [5,5], filters: 10, strides: [2,2]})
+defaults.set("Conv2D", {kernelSize: [3,3], filters: 16, strides: [1,1]})
 defaults.set("Output", {units: 10, activation: 'softmax'})
 defaults.set("BatchNorm", {momentum: 0.99})
 defaults.set("Flatten", {})
