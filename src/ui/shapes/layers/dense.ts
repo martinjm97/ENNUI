@@ -19,7 +19,7 @@ export class Dense extends ActivationLayer {
         name.setAttribute('data-name','units')
         let value = document.createElement('input')
         value.className = 'paramvalue layerparamvalue'
-        value.value = '30'
+        value.value = '32'
         line.appendChild(name);
         line.appendChild(value);
         this.paramBox.append(line);

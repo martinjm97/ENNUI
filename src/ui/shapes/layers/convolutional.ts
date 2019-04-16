@@ -26,7 +26,7 @@ export class Conv2D extends ActivationLayer {
 
         let value1 = document.createElement('input')
         value1.className = 'paramvalue layerparamvalue'
-        value1.value = '10'
+        value1.value = '16'
 
         line1.appendChild(name1);
         line1.appendChild(value1);
@@ -41,7 +41,7 @@ export class Conv2D extends ActivationLayer {
         name2.setAttribute('data-name','kernelSize')
         let value2 = document.createElement('input')
         value2.className = 'paramvalue layerparamvalue'
-        value2.value = '5, 5'
+        value2.value = '3, 3'
         line2.appendChild(name2);
         line2.appendChild(value2);
         this.paramBox.append(line2);
@@ -54,7 +54,7 @@ export class Conv2D extends ActivationLayer {
         name3.setAttribute('data-name','strides')
         let value3 = document.createElement('input')
         value3.className = 'paramvalue layerparamvalue'
-        value3.value = '2, 2'
+        value3.value = '1, 1'
         line3.appendChild(name3);
         line3.appendChild(value3);
         this.paramBox.append(line3);
