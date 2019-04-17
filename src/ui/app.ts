@@ -408,7 +408,8 @@ function  dispatchCreationOnClick(elmt){
 			} else if (itemType == "share") {
 				changeDataset(svgData.input.getParams()["dataset"])
 				if (elmt.getAttribute('share-option') == "exportPython") {
-					download(generatePython(topologicalSort(svgData.input)), "mnist_model.py");
+					let filename = svgData.input.getParams()["dataset"] + "_model.py"
+					download(generatePython(topologicalSort(svgData.input)), filename);
 				} else if (elmt.getAttribute('share-option') == "exportJulia") {
 					if (svgData.input.getParams()["dataset"] == "cifar") {
 						let error : Error = Error("CIFAR-10 dataset exporting to Julia not currently supported. Select MNIST dataset instead.")
