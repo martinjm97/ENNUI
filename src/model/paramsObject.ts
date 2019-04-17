@@ -12,7 +12,7 @@ export interface HyperparameterData {
 class NetworkParameters
 {
     private paramNames : Set<string> = new Set(['optimizer', 'loss']);
-    learningRate: number = 0.1;
+    learningRate: number = 0.01;
     batchSize: number = 64;
     optimizer: string = 'sgd';
     epochs: number = 6;
