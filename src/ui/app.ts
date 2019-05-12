@@ -1,8 +1,8 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh, Activation } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, topologicalSort, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
-import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
+import { buildNetworkDAG, topologicalSort, generatePython, generateJulia } from "../model/build_network";
+import { blankTemplate, defaultTemplate, resnetTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots, showPredictions, setupTestResults, renderAccuracyPlot, renderLossPlot, showConfusionMatrix } from "../model/graphs";
@@ -21,10 +21,9 @@ import { Flatten } from "./shapes/layers/flatten";
 import { Dropout } from "./shapes/layers/dropout";
 import * as d3 from "d3";
 
-import { changeDataset, dataset, Cifar10Data } from "../model/data";
+import { changeDataset } from "../model/data";
 import { Layer, ActivationLayer } from "./shapes/layer";
 import { WireGuide } from "./shapes/wireguide";
-import { showPerClassAccuracy } from "@tensorflow/tfjs-vis/dist/show/quality";
 import { Add } from "./shapes/layers/add";
 
 export interface DraggableData {
@@ -478,7 +477,7 @@ function appendItem(options){
 		case 'template':  switch(options.detail.templateType) {
 			case 'blank': template = true; blankTemplate(svgData); console.log("Created Blank Template"); break;
 			case 'default': template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
-			case 'complex': template = true; complexTemplate(svgData); console.log("Created Complex Template"); break;
+			case 'resnet': template = true; resnetTemplate(svgData); console.log("Created ResNet Template"); break;
 		}
 	}
 

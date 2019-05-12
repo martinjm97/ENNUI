@@ -345,6 +345,8 @@ export abstract class ActivationLayer extends Layer {
         this.activation = activation;
         this.activation.layer = this;
         this.activation.setPosition(this.getPosition());
+        this.activation.draggedX = this.getPosition().x;
+        this.activation.draggedY = this.getPosition().y;
     }
 
     public getActivationText(): string {
