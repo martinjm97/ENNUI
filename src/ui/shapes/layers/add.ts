@@ -8,9 +8,9 @@ export class Add extends ActivationLayer {
     readonly tfjsEmptyLayer = tf.layers.add
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
-        super([new PathShape("m10,10 v-10 h-10 v10 a30,30 0 1,1 10,0Z", '#4a4'),
-               new Line(new Point(-10, -20), new Point(20, -20), 4, '#000'),
-               new Line(new Point(5, -35), new Point(5, -5), 4, '#000')], defaultLocation)
+        super([new PathShape("m10,10 v-10 h-10 v10 a30,30 0 1,1 10,0Z", '#73A665'),
+               new Line(new Point(-10, -20), new Point(20, -20), 5, '#040'),
+               new Line(new Point(5, -35), new Point(5, -5), 5, '#040')], defaultLocation)
         // Path for Layer plus: m15,10 h-5 v-10 h-10 v10 h-5 v-20 h-20 v-20 h20 v-20 h20 v20 h20 v20 h-20 v20Z
             
     }
