@@ -25,6 +25,7 @@ import { changeDataset, dataset, Cifar10Data } from "../model/data";
 import { Layer, ActivationLayer } from "./shapes/layer";
 import { WireGuide } from "./shapes/wireguide";
 import { showPerClassAccuracy } from "@tensorflow/tfjs-vis/dist/show/quality";
+import { Add } from "./shapes/layers/add";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -465,6 +466,7 @@ function appendItem(options){
 			case "batchnorm": item = new BatchNorm(); console.log("Created Batch Normalization Layer"); break;
 			case "flatten": item = new Flatten(); console.log("Created Flatten Layer"); break;
 			case "concatenate": item = new Concatenate(); console.log("Created Concatenate Layer"); break;
+			case "add": item = new Add(); console.log("Created Add Layer"); break;
 			case "dropout": item = new Dropout(); console.log("Created Dropout Layer"); break;
 		}
 		case 'activation': switch(options.detail.activationType) {
