@@ -95,7 +95,7 @@ export function cloneNetwork(input: Input, newInput: Input) {
     }
 }
 
-export function topologicalSort(input: Input): Layer[] {
+export function topologicalSort(input: Input, showErrors=true): Layer[] {
     // Kahn's algorithm
     let sorted: Layer[] = [];
     let visited: Set<Layer> = new Set();
@@ -139,7 +139,7 @@ export function topologicalSort(input: Input): Layer[] {
     }
 
     // Either there are layers with no parents (other than input), there is a cycle, or output is never reached
-    if (sorted[sorted.length - 1].layerType != "Output") {
+    if (sorted[sorted.length - 1].layerType != "Output" && showErrors) {
 
         if (potentialBranch.size > 0) {
             displayError(new Error("All layers must have input as an ancestor."));
@@ -199,7 +199,7 @@ export function generateJulia(sorted: Layer[]): string {
  * Creates corresponding python code.
  * @param sorted topologically sorted list of layers
  */
-function generateTfjsModel(sorted: Layer[]){
+export function generateTfjsModel(sorted: Layer[]){
     sorted.forEach(layer => layer.generateTfjsLayer());
     let input = sorted[0].getTfjsLayer();
     let output = sorted[sorted.length - 1].getTfjsLayer();

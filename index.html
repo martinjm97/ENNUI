@@ -218,31 +218,41 @@
 		</div>
 
 		<div id = 'educationMenu'>
-			<div id = 'layers' class = 'category' data-itemType = 'layer'>
-				<div class = 'categoryTitle' data-expanded = 'true'>Layers</div>
-				<div class = 'option' data-layerType = 'dense-education'> Dense </div>
-				<div class = 'option' data-layerType = 'conv2D-education'> Convolution </div>
-				<div class = 'option' data-layerType = 'maxPooling2D-education'> Max Pooling </div>
-
-
-				<div class = 'option dropdown'>
-					<div style="float:left">More</div>
-					<div style="float:right">〉</div>
-					<div class='dropdown-content left'>
-						<div class = 'option' data-layerType = 'batchnorm-education'> Batch Normalization</div>
-						<div class = 'option' data-layerType = 'dropout-education'> Dropout</div>
-						<div class = 'option' data-layerType = 'flatten-education'> Flatten</div>
-						<div class = 'option last-dropdown' data-layerType = 'concatenate-education'> Concatenate</div>
+			<div id = 'educationLayers' class = 'category' data-itemType = 'educationPage'>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
 					</div>
+					<div class='categoryTitleText'>
+						Layers
+					</div>
+
 				</div>
 
+				<div class = 'option education-option' data-articleType = 'Overview'> Overview </div>
+				<div class = 'option education-option' data-articleType = 'Dense'> Dense </div>
+				<div class = 'option education-option' data-articleType = 'Convolution'> Convolution </div>
+				<div class = 'option education-option' data-articleType = 'MaxPooling'> Max Pooling </div>
+				<!-- <div class = 'option dropdown'>
+					<div style="float:left">More</div>
+					<div style="float:right">〉</div>
+					<div class='dropdown-content left'> -->
+				<div class = 'option education-option' data-articleType = 'Batchnorm'> Batch Norm</div>
+				<div class = 'option education-option' data-articleType = 'Dropout'> Dropout</div>
+				<div class = 'option education-option' data-articleType = 'Flatten'> Flatten</div>
+				<div class = 'option education-option' data-articleType = 'Concatenate'> Concatenate</div>
+					<!-- </div> -->
+				<!-- </div> -->
+
 			</div>
-			<div id = 'activations' class = 'category' data-itemType = 'activation'>
+			<!-- <div id = 'activations' class = 'category' data-itemType = 'activation'>
 				<div class = 'categoryTitle' data-expanded = 'true'>Activations</div>
-				<div class = 'option' data-activationType = 'relu'> ReLU </div>
-				<div class = 'option' data-activationType = 'sigmoid'> Sigmoid </div>
-				<div class = 'option' data-activationType = 'tanh'> Tanh </div>
-			</div>
+				<div class = 'option' data-articleType = 'relu'> ReLU </div>
+				<div class = 'option' data-articleType = 'sigmoid'> Sigmoid </div>
+				<div class = 'option' data-articleType = 'tanh'> Tanh </div>
+			</div> -->
 		</div>
 
 	</div>
@@ -300,19 +310,31 @@
 		</div>
 
 		<div id = 'educationTab'>
-			<div class="educationTitle"> Learn About Deep Neural Networks </div>
-			<div class="educationSection"> Introduction to Ennui </div>
-			<div class="educationContent">
-				If you are new to Ennui, a good place to start is to watch
-				the quick tutorial below:
+			<div id="educationOverview">
+				<div class="educationTitle"> Learn About Deep Neural Networks </div>
+				<div class="educationSection"> Introduction to Ennui </div>
+				<div class="educationContent">
+					If you are new to Ennui, a good place to start is to watch
+					the quick tutorial below:
+				</div>
+				<iframe class="educationVideo" src="https://www.youtube.com/embed/m0YnwAtPbb8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				<div class="educationSection"> Foundations of Deep Learning </div>
+				<div class="educationContent">
+					If you are new to machine learning, the lecture video below is an excellent introduction.
+					This lecture is from the 18.065 class from Spring of 2019. If you want to learn more check out the <a href="http://math.mit.edu/~gs/learningfromdata/">learning from data textbook</a>.
+				</div>
+				<iframe class="educationVideo" src="https://video.odl.mit.edu/videos/9101a72a7d994d53800d1398fd885b88/embed/?start=339" scrolling="no" frameborder="0" allowfullscreen></iframe>
 			</div>
-			<iframe class="educationVideo" src="https://www.youtube.com/embed/m0YnwAtPbb8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-			<div class="educationSection"> Foundations of Deep Learning </div>
-			<div class="educationContent">
-				If you are new to machine learning, the lecture video below is an excellent introduction.
-				This lecture is from the 18.065 class from Spring of 2019. If you want to learn more check out the <a href="http://math.mit.edu/~gs/learningfromdata/">learning from data textbook</a>.
+
+			<div id="educationConvolution">
+				<div class="educationTitle"> Convolutional Neural Networks (CNNs) </div>
+				<div class="educationSection"> Introduction to Ennui </div>
+
+				<div class="educationContent">
+
+				</div>
 			</div>
-			<iframe class="educationVideo" src="https://video.odl.mit.edu/videos/9101a72a7d994d53800d1398fd885b88/embed/?start=339" scrolling="no" frameborder="0" allowfullscreen></iframe>
+			<div style="height:100px;"> </div>
 
 
 		</div>
@@ -407,8 +429,7 @@
 		<div id = 'progressParamshell'>
 			<!-- <div class = 'trainbox' id = 'trainbox'>
 				<div id = 'train' class = 'train' data-actionType = 'json'> Train </div>
-			</div>
-				 -->
+			</div>-->
 			<div class = 'category' id='paramtruck'>
 				<div class = 'categoryTitle' data-expanded = 'true'>
 					<div class='expander'>
