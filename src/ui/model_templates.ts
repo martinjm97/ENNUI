@@ -9,6 +9,8 @@ import { Concatenate } from "./shapes/layers/concatenate";
 import { BatchNorm } from "./shapes/layers/batchnorm";
 import { windowProperties } from "./window";
 import { getSvgOriginalBoundingBox } from "./utils";
+import { Add } from "./shapes/layers/add";
+import { Dropout } from "./shapes/layers/dropout";
 
 export function resetWorkspace(svgData) {
 	// Deselect current element
@@ -68,6 +70,81 @@ export function defaultTemplate(svgData) {
 
 export function blankTemplate(svgData) {
     resetWorkspace(svgData)
+}
+
+export function resnetTemplate(svgData) {
+	resetWorkspace(svgData)
+
+	// Initialize each of the layers and activations
+	let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"));
+	let width = canvasBoundingBox.width;
+	let height = canvasBoundingBox.height;
+
+	let conv1Pos = new Point(width*0.169, height*0.372);
+	let conv2Pos = new Point(width*0.294, height*0.372);
+	let conv3Pos = new Point(width*0.414, height*0.372);
+	let conv4Pos = new Point(width*0.541, height*0.372);
+	let add1Pos = new Point(width*0.276, height*0.546);
+	let add2Pos = new Point(width*0.521, height*0.547);
+	let flattenPos = new Point(width*0.708, height*0.615);
+	let densePos = new Point(width*0.702, height*0.576);
+	let dropoutPos = new Point(width*0.778, height*0.484);
+
+	let conv1: ActivationLayer = new Conv2D(conv1Pos);
+	let conv2: ActivationLayer = new Conv2D(conv2Pos);
+	let conv3: ActivationLayer = new Conv2D(conv3Pos);
+	let conv4: ActivationLayer = new Conv2D(conv4Pos);
+	let conv1Relu: Activation = new Relu(conv1Pos);
+	let conv3Relu: Activation = new Relu(conv3Pos);
+	let add1: ActivationLayer = new Add(add1Pos);
+	let add2: ActivationLayer = new Add(add2Pos);
+	let add1Relu: Activation = new Relu(add1Pos);
+	let add2Relu: Activation = new Relu(add2Pos);
+	let flatten: Flatten = new Flatten(flattenPos);
+	let dense: ActivationLayer = new Dense(densePos);
+	let denseRelu: Activation = new Relu(densePos);
+	let dropout: Layer = new Dropout(dropoutPos);
+
+	// Add activations to layers
+	conv1.addActivation(conv1Relu);
+	conv3.addActivation(conv3Relu);
+	add1.addActivation(add1Relu);
+	add2.addActivation(add2Relu);
+	dense.addActivation(denseRelu);
+
+	// Add relationships among layers and activations
+	svgData.input.addChild(conv1);
+	svgData.input.addChild(add1);
+
+	conv1.addChild(conv2);
+	conv2.addChild(add1);
+
+	add1.addChild(conv3);
+	add1.addChild(add2);
+
+	conv3.addChild(conv4);
+	conv4.addChild(add2);
+
+	add2.addChild(flatten);
+	flatten.addChild(dense);
+	dense.addChild(dropout);
+	dropout.addChild(svgData.output);
+
+	// Store the new network
+	svgData.draggable.push(conv1);
+	svgData.draggable.push(conv2);
+	svgData.draggable.push(conv3);
+	svgData.draggable.push(conv4);
+	svgData.draggable.push(add1);
+	svgData.draggable.push(add2);
+	svgData.draggable.push(flatten);
+	svgData.draggable.push(dense);
+	svgData.draggable.push(dropout);
+	svgData.draggable.push(conv1Relu);
+	svgData.draggable.push(conv3Relu);
+	svgData.draggable.push(add1Relu);
+	svgData.draggable.push(add2Relu);
+	svgData.draggable.push(denseRelu);
 }
 
 export function complexTemplate(svgData) {
