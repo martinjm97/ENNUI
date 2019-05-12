@@ -14,6 +14,7 @@ import { HyperparameterData, model } from "./paramsObject";
 import { displayError } from "../ui/error";
 import { BatchNorm } from "../ui/shapes/layers/batchnorm";
 import { Dropout } from "../ui/shapes/layers/dropout";
+import { Add } from "../ui/shapes/layers/add";
 
 export interface SerializedNetwork {
 	graph: Array<LayerJson>
@@ -207,6 +208,8 @@ function createLayerInstanceFromName(svgData: DraggableData, lj: LayerJson): Lay
 					layer = new BatchNorm(location); break;
 				case "Dropout":
 					layer = new Dropout(location); break;
+				case "Add":
+					layer = new Add(location); break;
 				default:
 					 displayError(new Error(`The specified layer "${lj}" was not recognized. `));
 			}

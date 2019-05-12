@@ -92,6 +92,7 @@ export abstract class Layer extends Draggable {
         document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
         this.svgComponent.selectAll("path").style("stroke", "yellow").style("stroke-width", "2")
+        this.svgComponent.selectAll(".outerShape").style("stroke", "yellow").style("stroke-width", "2")
         
     }
 
@@ -100,6 +101,7 @@ export abstract class Layer extends Draggable {
         document.getElementById("defaultparambox").style.display = null
         this.paramBox.style.visibility = 'hidden'
         this.svgComponent.selectAll("path").style("stroke", null).style("stroke-width", null)
+        this.svgComponent.selectAll(".outerShape").style("stroke", null).style("stroke-width", null)
     }
 
     /**
