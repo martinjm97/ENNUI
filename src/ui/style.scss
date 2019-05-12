@@ -474,11 +474,11 @@ a.overlayLinks {
 }
 
 #educationTab {
-    width: calc(70% + 380px);
+    width: 90%;
     height: 100%;
     background: #F1FAFF;
-    padding-left: 15%;
-    padding-right: 15%;
+    padding-left: 5%;
+    padding-right: calc(5% + 200px);
     padding-top: 3%;
     overflow-y : auto;
 }
@@ -509,8 +509,8 @@ a.overlayLinks {
     // margin-right: 5%;
     // object-fit: contain;
     padding: 20px;
-    width: 30%;
-    height: 25%;
+    width: 40%;
+    height: 34%;
     display: table;
     margin: 0 auto;
     // text-align: left;

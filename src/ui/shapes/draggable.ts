@@ -38,7 +38,7 @@ export abstract class Draggable {
                             .on("mousemove", () => {
                                 this.hoverText.style("visibility", "hidden")
                                 clearTimeout(this.moveTimeout);
-                                this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 280);
+                                this.moveTimeout = setTimeout(() => {this.hoverText.style("display", ""); this.hoverText.style("visibility", "visible")}, 280);
                                 this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
                             .on("mouseout", () => {
                                 clearTimeout(this.moveTimeout)
@@ -115,7 +115,7 @@ export abstract class Draggable {
         this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
         if(this.wireGuidePresent) {
             windowProperties.wireGuide.moveToMouse()
-            windowProperties.wireGuide.show();            
+            windowProperties.wireGuide.show();
         }
     }
 
@@ -124,7 +124,7 @@ export abstract class Draggable {
             windowProperties.selectedElement = null
             windowProperties.wireGuide.hide();
         }
-        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)        
+        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
     }
 
     public delete() {
@@ -167,7 +167,7 @@ export abstract class Draggable {
     public cropPosition() {
         let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"))
         let componentBBox  = this.outerBoundingBox()
-        
+
         let bottomBoundary = (canvasBoundingBox.height-componentBBox.bottom) - windowProperties.svgYOffset;
 
         let position = this.getPosition()

@@ -32,7 +32,7 @@ export interface DraggableData {
 	output: Output
 }
 
-let svgData: DraggableData = {
+export let svgData: DraggableData = {
 	draggable : [],
 	input: null,
 	output: null
@@ -381,7 +381,7 @@ export function tabSelected(): string {
 }
 
 
-function  dispatchCreationOnClick(elmt){
+function dispatchCreationOnClick(elmt){
 	if (!elmt.classList.contains('dropdown'))
 		elmt.addEventListener('click', function(e){
 			let itemType
@@ -391,6 +391,7 @@ function  dispatchCreationOnClick(elmt){
 			else {
 				itemType = elmt.parentElement.getAttribute('data-itemType')
 			}
+
 			if (model.params.isParam(itemType)){
 				let setting;
 				if (elmt.hasAttribute('data-trainType')) {
@@ -424,17 +425,16 @@ function  dispatchCreationOnClick(elmt){
 					copyTextToClipboard(baseUrl + "#" + urlParam);
 				}
 			} else if (itemType == "classes") {
-				let selected = elmt.parentElement.getElementsByClassName("selected");
-				if (selected.length > 0) {
-					selected[0].classList.remove("selected");
-				}
-
-				elmt.classList.add("selected");
-
+				selectOption(elmt)
 				if (model.architecture != null){
 					showPredictions()
 				}
-			} else {
+			} else if (itemType == "educationPage") {
+				selectOption(elmt);
+				let target: HTMLElement = document.getElementById('education' + elmt.getAttribute("data-articleType"));
+				(<Element> target.parentNode).scrollTop = target.offsetTop;
+			}
+			else {
 				let detail = { itemType : itemType}
 				detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
 				let event = new CustomEvent('create', { detail : detail } );
@@ -443,6 +443,15 @@ function  dispatchCreationOnClick(elmt){
 		});
 }
 
+
+function selectOption(elmt: HTMLElement) {
+	let selected = elmt.parentElement.getElementsByClassName("selected");
+	if (selected.length > 0) {
+		selected[0].classList.remove("selected");
+	}
+
+	elmt.classList.add("selected");
+}
 
 function updateNetworkParameters(params){
 	switch(params.itemType){
@@ -530,7 +539,7 @@ function switchTab(tab) {
 		case 'visualization': showPredictions(); break;
 		case 'education':
 			document.getElementById("paramshell").style.display = "none";
-			document.getElementById("menu").style.display = "none";
+			// document.getElementById("menu").style.display = "none";
 			// document.getElementById("menu_expander").style.display = "none";
 			break;
 	}
