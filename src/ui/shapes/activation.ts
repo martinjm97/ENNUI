@@ -66,6 +66,9 @@ export abstract class Activation extends Draggable {
             }
             closestLayer.addActivation(this)
             this.layer = closestLayer
+            this.draggedX = this.layer.draggedX
+            this.draggedY = this.layer.draggedY
+
         } else if (this.layer != null) { // otherwise, if we unsnap update as appropriate
             this.layer.removeActivation()
             this.layer = null

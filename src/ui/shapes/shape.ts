@@ -61,12 +61,14 @@ export class Circle extends Shape {
     location: Point;
     radius: number;
     svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    outerShape: boolean;
 
-    constructor(location: Point, radius: number, color: string) {
+    constructor(location: Point, radius: number, color: string, outerShape=false) {
         super()
         this.color = color;
         this.location = location;
         this.radius = radius;
+        this.outerShape = outerShape;
     }
 
     svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>) {
@@ -75,6 +77,36 @@ export class Circle extends Shape {
                                      .attr("cy", this.location.y)
                                      .attr("r", this.radius)
                                      .style("fill", this.color)
+                                     .style("cursor", "pointer")
+
+        if (this.outerShape) {
+            this.svgComponent.attr("class", "outerShape");
+        }
+    }
+}
+
+export class Line extends Shape {
+    location: Point;
+    endPoint: Point;
+    lineWidth: number;
+    svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+
+    constructor(location: Point, endPoint: Point, lineWidth: number, color: string) {
+        super()
+        this.color = color;
+        this.location = location;
+        this.endPoint = endPoint;
+        this.lineWidth = lineWidth;
+    }
+
+    svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>) {
+        this.svgComponent = selection.append<SVGGraphicsElement>("line")
+                                     .attr("x1", this.location.x)
+                                     .attr("y1", this.location.y)
+                                     .attr("x2", this.endPoint.x)
+                                     .attr("y2", this.endPoint.y)
+                                     .style("stroke-width", this.lineWidth)
+                                     .style("stroke", this.color)
                                      .style("cursor", "pointer")
     }
 }
