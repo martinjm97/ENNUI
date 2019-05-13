@@ -447,9 +447,12 @@ function dispatchCreationOnClick(elmt){
 
 
 function selectOption(elmt: HTMLElement) {
-	let selected = elmt.parentElement.getElementsByClassName("selected");
-	if (selected.length > 0) {
-		selected[0].classList.remove("selected");
+	
+	let parents = Array.from(document.querySelectorAll(`[data-itemType="${elmt.parentElement.getAttribute("data-itemType")}"]`).values()) ;
+	for (let parent of parents) {
+		for (let option of parent.getElementsByClassName("option")) {
+			option.classList.remove("selected");
+		}
 	}
 
 	elmt.classList.add("selected");
