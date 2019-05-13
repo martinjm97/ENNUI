@@ -3,6 +3,7 @@ import { DraggableData } from "../ui/app";
 import { Input } from "../ui/shapes/layers/input";
 import { Output } from "../ui/shapes/layers/output";
 import { defaultTemplate, resetWorkspace } from "../ui/model_templates";
+import { getSvgOriginalBoundingBox } from "../ui/utils";
 
 export function storeNetworkInUrl(state: SerializedNetwork): string{
     // To encode in URL
@@ -41,6 +42,17 @@ export function loadStateIfPossible() {
         defaultTemplate(svgData)
         throw err
     }
+
+
+    // Used for getting positions of each draggable in terms of percents of svg canvas; useful if creating a new template
+    // let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"));
+	// let width = canvasBoundingBox.width;
+    // let height = canvasBoundingBox.height;
+    
+    // for (let draggable of svgData.draggable) {
+    //     let pos = draggable.getPosition()
+    //     console.log(pos.x / width, pos.y / height, draggable.getHoverText())
+    // }
     
     history.replaceState(null, null, ' ');
 

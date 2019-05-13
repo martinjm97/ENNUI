@@ -2,6 +2,7 @@ import { Draggable } from "./shapes/draggable";
 import { Wire } from "./shapes/wire";
 import { ActivationLayer } from "./shapes/layer";
 import { WireGuide } from "./shapes/wireguide";
+import { TextBox } from "./shapes/textbox";
 
 export enum Mode {
     Move,
@@ -23,6 +24,7 @@ class WindowProperties
     wireGuide: WireGuide;
     svgTransformRatio: number = 1;
     svgYOffset: number = 0;
+    shapeTextBox: TextBox;
 
     private constructor(){}
 
