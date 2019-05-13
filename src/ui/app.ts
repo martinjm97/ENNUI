@@ -432,7 +432,7 @@ function dispatchCreationOnClick(elmt){
 					showPredictions()
 				}
 			} else if (itemType == "educationPage") {
-				selectOption(elmt);
+				// selectOption(elmt); // TODO uncomment this line to add back in selections
 				let target: HTMLElement = document.getElementById('education' + elmt.getAttribute("data-articleType"));
 				(<Element> target.parentNode).scrollTop = target.offsetTop;
 			}
