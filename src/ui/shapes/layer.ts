@@ -61,6 +61,7 @@ export abstract class Layer extends Draggable {
         this.block = block;
 
 
+
         for (let rect of this.block) {
             this.svgComponent.call(rect.svgAppender.bind(rect));
         }
@@ -85,12 +86,14 @@ export abstract class Layer extends Draggable {
                              window.clearTimeout(this.moveTimeout)
                              this.hoverText.style("visibility", "hidden")
 
-                             this.selectText.style("display", null);
-                             this.selectText.style("top", (d3.event.pageY+"px")).style("left",(d3.event.pageX+"px"));
-                             this.selectText.style("visibility", "visible");
-                             console.log(this.selectText)
-                             this.selectText.text("[" + this.layerShape().toString() + "]");
-                             console.log(this.layerShape().toString())
+                            
+
+                            //  this.selectText.style("display", null);
+                            //  this.selectText.style("top", (d3.event.pageY+"px")).style("left",(d3.event.pageX+"px"));
+                            //  this.selectText.style("visibility", "visible");
+                            //  console.log(this.selectText)
+                            //  this.selectText.text("[" + this.layerShape().toString() + "]");
+                            //  console.log(this.layerShape().toString())
                             })
         this.populateParamBox()
     }
@@ -107,6 +110,10 @@ export abstract class Layer extends Draggable {
         for (let wire of this.wires) {
             wire.updatePosition()
         }
+        
+        if (windowProperties.selectedElement === this) {
+            windowProperties.shapeTextBox.setPosition(this.getPosition());
+        }        
     }
 
     public raise() {
@@ -125,7 +132,13 @@ export abstract class Layer extends Draggable {
         document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
         this.svgComponent.selectAll("path").style("stroke", "yellow").style("stroke-width", "2")
+        this.svgComponent.selectAll(".outerShape").style("stroke", "yellow").style("stroke-width", "2")
 
+        let bbox = this.outerBoundingBox();
+        windowProperties.shapeTextBox.setOffset(new Point((bbox.left+bbox.right)/2, bbox.bottom+25));
+        windowProperties.shapeTextBox.setText("[" + this.layerShape().toString() + "]");
+        windowProperties.shapeTextBox.setPosition(this.getPosition());
+        windowProperties.shapeTextBox.show();
     }
 
     public unselect() {
@@ -133,7 +146,10 @@ export abstract class Layer extends Draggable {
         document.getElementById("defaultparambox").style.display = null
         this.paramBox.style.visibility = 'hidden'
         this.svgComponent.selectAll("path").style("stroke", null).style("stroke-width", null)
+        this.svgComponent.selectAll(".outerShape").style("stroke", null).style("stroke-width", null)
         this.selectText.style("visibility", "hidden");
+        windowProperties.shapeTextBox.hide();
+        
     }
 
     /**
@@ -350,6 +366,8 @@ export abstract class ActivationLayer extends Layer {
         if (this.activation != null) {
             let p = this.getPosition();
             this.activation.setPosition(p)
+            this.activation.draggedX = this.draggedX
+            this.activation.draggedY = this.draggedY
         }
     }
 
@@ -389,6 +407,8 @@ export abstract class ActivationLayer extends Layer {
         this.activation = activation;
         this.activation.layer = this;
         this.activation.setPosition(this.getPosition());
+        this.activation.draggedX = this.draggedX
+        this.activation.draggedY = this.draggedY
     }
 
     public getActivationText(): string {
