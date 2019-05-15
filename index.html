@@ -233,12 +233,12 @@
 
 				<div class = 'option education-option' data-articleType = 'Overview'> Overview </div>
 				<!-- <div class = 'option education-option' data-articleType = 'Dense'> Dense </div> -->
+				<div class = 'option education-option' data-articleType = 'Concatenate'> Concatenate</div>
 				<div class = 'option education-option' data-articleType = 'Convolution'> Convolution </div>
 				<!-- <div class = 'option education-option' data-articleType = 'MaxPooling'> Max Pooling </div> -->
 				<!-- <div class = 'option education-option' data-articleType = 'Batchnorm'> Batch Norm</div> -->
 				<!-- <div class = 'option education-option' data-articleType = 'Dropout'> Dropout</div> -->
-				<!-- <div class = 'option education-option' data-articleType = 'Flatten'> Flatten</div> -->
-				<!-- <div class = 'option education-option' data-articleType = 'Concatenate'> Concatenate</div> -->
+				<div class = 'option education-option' data-articleType = 'Flatten'> Flatten</div>
 				<!-- Temporarily -->
 				<div class = 'option education-option' data-articleType = 'ResNets'> ResNets </div>
 
@@ -343,7 +343,7 @@
 				<div class="educationAuthor">by <i>Gilbert Strang</i></div>
 
 				<div class="educationContent">
-					The words <strong>weight sharing</strong> give the key idea of CNNs. The weight matrix <span class="math inline">\(A\)</span> that connects one layer to the next layer has only a small number of independent entries. So optimizing those weights is much faster than for a fully-connected (dense) architecture.</p>
+					<p>The words <strong>weight sharing</strong> give the key idea of CNNs. The weight matrix <span class="math inline">\(A\)</span> that connects one layer to the next layer has only a small number of independent entries. So optimizing those weights is much faster than for a fully-connected (dense) architecture.</p>
 					<p>In a one-dimensional problem, suppose the inputs (layer zero) are given by a vector <span class="math inline">\(v = (v_1,...,v_n)\)</span>. A convolution will multiply <span class="math inline">\(v\)</span> by a weight matrix <span class="math inline">\(A\)</span> with constant diagonals. Then the same set of weights (say 3 weights) is repeated all along the layer :</p>
 					<p><span class="math display">\[A=
 					\begin{bmatrix}
@@ -351,18 +351,41 @@
 						&amp; a_{-1} &amp; a_0 &amp; a_1 &amp;  \\
 						&amp; &amp; a_{-1} &amp; a_0 &amp; a_1 \\
 					\end{bmatrix}\]</span> This <span class="math inline">\(A\)</span> has <span class="math inline">\(n = 5\)</span> inputs and <span class="math inline">\(m = 3\)</span> outputs. A is <strong>shift-invariant</strong>: a convolution = filter = Toeplitz matrix. Convolutions are especially important for images with many pixels. The <span class="math inline">\(3\)</span> independent weights <span class="math inline">\(a_{-1}, a_0, a_1\)</span> might change to <span class="math inline">\(3 \times 3=9\)</span> weights in 2D. Those 9 numbers are <span class="math inline">\(a_{ij}\)</span> for <span class="math inline">\(i = -1,0,1\)</span> and <span class="math inline">\(j = -1,0,1\)</span>. An input with its 8 neighbors (in a <span class="math inline">\(3 \times 3\)</span> square) is multiplied by <span class="math inline">\(a_{00}\)</span> and its <span class="math inline">\(8\)</span> neighbors–that sum of 9 terms gives one output in <span class="math inline">\(Av\)</span>. As usual, a bias vector <span class="math inline">\(b\)</span> is added and each component of <span class="math inline">\(Av + b\)</span> is activated (or not) by a function like ReLU : the new layer contains <span class="math inline">\(\textrm{ReLU}(Av + b)\)</span>.</p>
-					<p>This 2D matrix <span class="math inline">\(A\)</span> is not so easy to display. You should see that a <span class="math inline">\(3 \times 3\)</span> square around an input vector <span class="math inline">\(v\)</span> of size <span class="math inline">\(n \times n\)</span> will produce an output <span class="math inline">\(Av\)</span> of size <span class="math inline">\((n - 2) \times (n - 2)\)</span>, in the same way that 5 inputs gave 3 outputs in 1D. Notice that we only had <span class="math inline">\(3 \times 3 = 9\)</span> (or maybe <span class="math inline">\(5 \times 5 = 25\)</span>) independent weights in 2D, because the convolution not only <strong>shares weights</strong> but it is <strong>local</strong>.
+					<p>This 2D matrix <span class="math inline">\(A\)</span> is not so easy to display. You should see that a <span class="math inline">\(3 \times 3\)</span> square around an input vector <span class="math inline">\(v\)</span> of size <span class="math inline">\(n \times n\)</span> will produce an output <span class="math inline">\(Av\)</span> of size <span class="math inline">\((n - 2) \times (n - 2)\)</span>, in the same way that 5 inputs gave 3 outputs in 1D. Notice that we only had <span class="math inline">\(3 \times 3 = 9\)</span> (or maybe <span class="math inline">\(5 \times 5 = 25\)</span>) independent weights in 2D, because the convolution not only <strong>shares weights</strong> but it is <strong>local</strong>.</p>
 				</div>
 			</div>
 
 			<div id="educationResNets">
-					<div class="educationTitle"> Residual Networks (ResNets) </div>
-					<div class="educationAuthor">by <i>Zack Holbrook</i> and <i>Jesse Michel</i></div>
+				<div class="educationTitle"> Residual Networks (ResNets) </div>
+				<div class="educationAuthor">by <i>Zack Holbrook</i> and <i>Jesse Michel</i></div>
 
-					<div class="educationContent">
-
-					</div>
+				<div class="educationContent">
+					<p>In 2015, a research team at Microsoft won the <a href="http://www.image-net.org/challenges/LSVRC/">ImageNet Large Scale Visual Recognition Challenge</a> with record performance using a ResNet. Since 2015, variants of ResNets have dominated the competition, exceeding human performance in the given task. They have become a popular choice of architecture for a broad variety of image recognition tasks and are relatively easy to implement and train.</p>
+					<div class="educationSection">ResNet Architecture</div>
+					<p>ResNets are a type of convolutional neural network (CNN) that have <strong>identity shortcuts</strong>, which are paths through the network that skip layers, thereby creating shortcuts through the network. We provide a typical example of a ResNet below: Identity shortcuts mean that the learned parameters are residuals. Mathematically, if <span class="math inline">\(R(x)\)</span> is a sequence of convolutional layers with ReLUs, known as a <strong>residual block</strong>, for example, let <span class="math display">\[R(x) = \textrm{Conv}(\textrm{ReLU}(\textrm{Conv}(x))).\]</span> Then the output of the residual block will be <span class="math inline">\(R(x) + x\)</span>, where <span class="math inline">\(x\)</span> is the identity pass-through. If the neural network is trying to approximate some function <span class="math inline">\(F(x)\)</span>, then a perfect residual block <span class="math inline">\(R^*(x)\)</span> will be such that <span class="math inline">\(R^*(x) = F(x) - x\)</span>, which is exactly a residual after subtracting the input image.</p>
+					<div class="educationSection">Advantages of ResNets</div>
+					<p>The amazing property of ResNets is it’s ability to scale well, leading to deeper neural networks that still train well. As networks get larger, a number of problems arise.</p>
+					<p>Large networks tend to train slowly, but the <strong>weight sharing</strong> of CNNs mean that each residual block has relatively few parameters to train. Large networks also tend to have the problem of the <strong>vanishing gradient</strong> – where weight updates from gradient descent diminish to the point where the network does not improve even with more training time. The identity shortcuts in ResNets give a path for the gradients to flow, avoiding the problem of the vanishing gradient.</p>
 				</div>
+			</div>
+
+			<div id="educationFlatten">
+				<div class="educationTitle"> Flatten Layers </div>
+				<div class="educationAuthor">by <i>Zack Holbrook</i> and <i>Jesse Michel</i></div>
+
+				<div class="educationContent">
+					<p>The flatten layer takes in a multidimensional input and produces a single dimensional output. For example, the CIFAR dataset is a collection of images which is 3-dimensional since it is a collection of 2-dimensional images that are 32x32 pixels and has 3 color channels (Red, Green, Blue). A Flatten layer could take data from this dataset as an input, and would produce a 1 dimensional vector of size $32*32*3 = 3072$.</p>
+				</div>
+			</div>
+
+			<div id="educationConcatenate">
+				<div class="educationTitle"> Concatenate Layers </div>
+				<div class="educationAuthor">by <i>Zack Holbrook</i> and <i>Jesse Michel</i></div>
+
+				<div class="educationContent">
+					<p>A concatenate layer takes two or more layers and concatenates the outputs into a single output by stacking the inputs. For example, it would concatenate two vectors of size 10 into a vector of size 20 by stacking one on top of the other.</p>
+				</div>
+			</div>
 
 			<div style="height:100px;"> </div>
 
