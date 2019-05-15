@@ -541,6 +541,7 @@ function switchTab(tab) {
 	// document.getElementById("menu_expander").style.display = null;
 
 	switch(tab.detail.tabType){
+		case 'network': resizeMiddleSVG(); break;
 		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
 		case 'visualization': showPredictions(); break;
 		case 'education':

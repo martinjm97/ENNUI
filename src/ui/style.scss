@@ -517,6 +517,16 @@ a.overlayLinks {
     overflow:hidden !important;
 }
 
+.educationImage {
+    padding: 20px;
+    // width: 40%;
+    // height: 34%;
+    display: table;
+    margin: 0 auto;
+    // text-align: left;
+    overflow:hidden !important;
+}
+
 .educationAuthor{
     font-size: 14;
     font-family: Helvetica;
@@ -549,6 +559,13 @@ a.overlayLinks {
     height: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.modelLink {
+    margin: 0 auto;
+    position: relative;
+top: 50%;
+transform: translateY(-50%); 
 }
 
 label {
