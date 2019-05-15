@@ -518,7 +518,8 @@ a.overlayLinks {
 }
 
 .educationImage {
-    padding: 20px;
+    padding-top: 15px;
+    // padding: 20px;
     // width: 40%;
     // height: 34%;
     display: table;
@@ -564,6 +565,8 @@ a.overlayLinks {
 .modelLink {
     margin: 0 auto;
     position: relative;
+    text-align: center;
+    padding-bottom: 15px;
 top: 50%;
 transform: translateY(-50%); 
 }
