@@ -362,8 +362,8 @@
 				<div class="educationContent">
 					<p>In 2015, a research team at Microsoft won the <a href="http://www.image-net.org/challenges/LSVRC/">ImageNet Large Scale Visual Recognition Challenge</a> with record performance using a ResNet. Since 2015, variants of ResNets have dominated the competition, exceeding human performance in the given task. They have become a popular choice of architecture for a broad variety of image recognition tasks and are relatively easy to implement and train.</p>
 					<div class="educationSection">ResNet Architecture</div>
-					<p>ResNets are a type of convolutional neural network (CNN) that have <strong>identity shortcuts</strong>, which are paths through the network that skip layers, thereby creating shortcuts through the network. We provide a typical example of a ResNet below: 
-						
+					<p>ResNets are a type of convolutional neural network (CNN) that have <strong>identity shortcuts</strong>, which are paths through the network that skip layers, thereby creating shortcuts through the network. We provide a typical example of a ResNet below:
+
 						<img class="educationImage" src="dist/resnet.png" alt="Resnet image" height="225" width="600">
 
 						<div class="modelLink">
@@ -371,10 +371,10 @@
 								Model Link
 							</a>
 						</div>
-						
+
 						Identity shortcuts mean that the learned parameters are residuals. Mathematically, if <span class="math inline">\(R(x)\)</span> is a sequence of convolutional layers with ReLUs, known as a <strong>residual block</strong>, for example, let <span class="math display">\[R(x) = \textrm{Conv}(\textrm{ReLU}(\textrm{Conv}(x))).\]</span> Then the output of the residual block will be <span class="math inline">\(R(x) + x\)</span>, where <span class="math inline">\(x\)</span> is the identity pass-through. If the neural network is trying to approximate some function <span class="math inline">\(F(x)\)</span>, then a perfect residual block <span class="math inline">\(R^*(x)\)</span> will be such that <span class="math inline">\(R^*(x) = F(x) - x\)</span>, which is exactly a residual after subtracting the input image.</p>
 					<div class="educationSection">Advantages of ResNets</div>
-					<p>The amazing property of ResNets is it’s ability to scale well, leading to deeper neural networks that still train well. As networks get larger, a number of problems arise.</p>
+					<p>The amazing property of ResNets is its ability to scale well, leading to deeper neural networks that still train well. As networks get larger, a number of problems arise.</p>
 					<p>Large networks tend to train slowly, but the <strong>weight sharing</strong> of CNNs mean that each residual block has relatively few parameters to train. Large networks also tend to have the problem of the <strong>vanishing gradient</strong> – where weight updates from gradient descent diminish to the point where the network does not improve even with more training time. The identity shortcuts in ResNets give a path for the gradients to flow, avoiding the problem of the vanishing gradient.</p>
 				</div>
 			</div>
