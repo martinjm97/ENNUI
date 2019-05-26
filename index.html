@@ -399,12 +399,12 @@
 
 			<div id="educationDropout">
 				<div class="educationTitle"> Dropout Layers </div>
-				<div class="educationAuthor">by <i>Jesse Michel</i></div>
+				<div class="educationAuthor">by <i>Jesse Michel</i> and <i>Stefan Grosser</i></div>
 
 				<div class="educationContent">
-					<p>Dropout layers ignore a random fraction rate of the input units during training time. If the rate is 0.1 then the dropout layer will assign a new random subset of 10% of the weights to 0 on each forward pass during training. Adding a dropout layer with a rate of 0 will make no change to the network, while with a rate of 1 the dropout layer will output 0.</p>
+					<p>A dropout layers will have the network ignore a certain percentage of units in the previous layer at a specified rate during training time. For example, if the rate is 0.1 then the dropout layer will assign a new random subset of 10% of the weights to 0 on each forward pass. Adding a dropout layer with a rate of 0 will make no change to the network, while a rate of 1 will have the dropout layer output 0.</p>
 
-					<p>Dropout is commonly used to prevent overfitting. One may think of dropout of having the network to learn a collection of weak classifiers that during testing come together to create a more powerful classifier (for more details see our write-up on overfitting). For those who are familiar with this terminology, it is boosting using an ensamble model. It also has the convenient property of speeding up training since fewer weights are required during training. .</p>
+					<p>Dropout is commonly used to prevent overfitting. One may think of dropout as having the network learn a collection of weak classifiers that during testing come together to create a more powerful classifier (for more details see our write-up on overfitting). For those who are familiar with this terminology, it is boosting using an ensemble model. It also has the convenient property of speeding up training since fewer weights are required in each forward pass.</p>
 				</div>
 			</div>
 
