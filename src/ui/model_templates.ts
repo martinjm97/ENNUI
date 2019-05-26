@@ -80,16 +80,18 @@ export function resnetTemplate(svgData) {
 	let width = canvasBoundingBox.width;
 	let height = canvasBoundingBox.height;
 
-	let conv1Pos = new Point(width*0.169, height*0.372);
-	let conv2Pos = new Point(width*0.294, height*0.372);
-	let conv3Pos = new Point(width*0.414, height*0.372);
-	let conv4Pos = new Point(width*0.541, height*0.372);
-	let add1Pos = new Point(width*0.276, height*0.546);
+	let conv0Pos = new Point(width*0.26, height*0.57);
+	let conv1Pos = new Point(width*0.26, height*0.372);
+	let conv2Pos = new Point(width*0.404, height*0.372);
+	let conv3Pos = new Point(width*0.404, height*0.78);
+	let conv4Pos = new Point(width*0.537, height*0.78);
+	let add1Pos = new Point(width*0.387, height*0.547);
 	let add2Pos = new Point(width*0.521, height*0.547);
-	let flattenPos = new Point(width*0.708, height*0.615);
-	let densePos = new Point(width*0.702, height*0.576);
-	let dropoutPos = new Point(width*0.778, height*0.484);
+	let flattenPos = new Point(width*0.708, height*0.606);
+	let densePos = new Point(width*0.702, height*0.566);
+	let dropoutPos = new Point(width*0.778, height*0.477);
 
+	let conv0: ActivationLayer = new Conv2D(conv0Pos);
 	let conv1: ActivationLayer = new Conv2D(conv1Pos);
 	let conv2: ActivationLayer = new Conv2D(conv2Pos);
 	let conv3: ActivationLayer = new Conv2D(conv3Pos);
@@ -113,8 +115,10 @@ export function resnetTemplate(svgData) {
 	dense.addActivation(denseRelu);
 
 	// Add relationships among layers and activations
-	svgData.input.addChild(conv1);
-	svgData.input.addChild(add1);
+	svgData.input.addChild(conv0);
+
+	conv0.addChild(add1);
+	conv0.addChild(conv1)
 
 	conv1.addChild(conv2);
 	conv2.addChild(add1);
@@ -131,6 +135,7 @@ export function resnetTemplate(svgData) {
 	dropout.addChild(svgData.output);
 
 	// Store the new network
+	svgData.draggable.push(conv0);
 	svgData.draggable.push(conv1);
 	svgData.draggable.push(conv2);
 	svgData.draggable.push(conv3);
