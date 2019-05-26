@@ -3,7 +3,8 @@ import { ActivationLayer, Layer } from "../layer";
 import { Point, PathShape } from "../shape";
 
 export class Concatenate extends Layer {
-    layerType = "Concatenate"
+    layerType = "Concatenate";
+    parameterDefaults = {};
     readonly tfjsEmptyLayer = tf.layers.concatenate
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {

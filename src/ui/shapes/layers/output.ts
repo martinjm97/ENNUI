@@ -6,6 +6,7 @@ import { getSvgOriginalBoundingBox } from '../../utils';
 
 export class Output extends ActivationLayer {
     layerType = "Output";
+    parameterDefaults = {units: 10, activation: 'softmax'};
     readonly tfjsEmptyLayer = tf.layers.dense ;
     private juliaFinalLineId = null;
     readonly outputWiresAllowed: boolean = false;

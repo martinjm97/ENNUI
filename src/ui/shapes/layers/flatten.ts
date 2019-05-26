@@ -4,6 +4,7 @@ import { Point, PathShape } from "../shape";
 
 export class Flatten extends Layer {
     layerType = "Flatten";
+    parameterDefaults = {};
     readonly tfjsEmptyLayer  = tf.layers.flatten;
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {

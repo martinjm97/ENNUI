@@ -3,7 +3,8 @@ import { ActivationLayer } from "../layer";
 import { Point, PathShape } from "../shape";
 
 export class Dense extends ActivationLayer {
-    layerType = "Dense"
+    layerType = "Dense";
+    parameterDefaults = {units: 32};
     readonly tfjsEmptyLayer = tf.layers.dense
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {

@@ -5,7 +5,8 @@ import { SymbolicTensor } from '@tensorflow/tfjs';
 import { displayError } from '../../error';
 
 export class BatchNorm extends ActivationLayer {
-    layerType = "BatchNorm"
+    layerType = "BatchNorm";
+    parameterDefaults = {momentum: 0.99};
     protected tfjsEmptyLayer  = tf.layers.batchNormalization
 
     static readonly blockSize: number = 50;

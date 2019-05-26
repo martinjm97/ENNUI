@@ -18,21 +18,6 @@ typeToTensor.set("Dropout", tf.layers.dropout);
 typeToTensor.set("Flatten", tf.layers.flatten);
 typeToTensor.set("Concatenate", tf.layers.concatenate);
 
-
-// TODO: change this to classes
-export let defaults: Map<string, any> = new Map()
-defaults.set("Input", {})
-defaults.set("Dense", {units: 32})
-defaults.set("MaxPooling2D", {poolSize: [2,2], strides: [2,2]})
-defaults.set("Conv2D", {kernelSize: [3,3], filters: 16, strides: [1,1]})
-defaults.set("Output", {units: 10, activation: 'softmax'})
-defaults.set("BatchNorm", {momentum: 0.99})
-defaults.set("Flatten", {})
-defaults.set("Concatenate", {})
-defaults.set("Dropout", {rate: 0.5})
-
-
-
 export function buildNetworkDAG(input: Input) {
     let toposorted = topologicalSort(input);
     try {

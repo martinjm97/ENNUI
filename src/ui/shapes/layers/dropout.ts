@@ -3,7 +3,8 @@ import { ActivationLayer, Layer } from "../layer";
 import { Point, PathShape } from "../shape";
 
 export class Dropout extends Layer {
-    layerType = "Dropout"
+    layerType = "Dropout";
+    parameterDefaults = {rate: 0.5};
     readonly tfjsEmptyLayer = tf.layers.dropout
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {

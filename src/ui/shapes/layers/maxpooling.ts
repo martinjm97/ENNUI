@@ -3,7 +3,8 @@ import { ActivationLayer, Layer } from "../layer";
 import { Point, Rectangle, PathShape } from "../shape";
 
 export class MaxPooling2D extends Layer {
-    layerType = "MaxPooling2D"
+    layerType = "MaxPooling2D";
+    parameterDefaults = {poolSize: [2,2], strides: [2,2]};
     readonly tfjsEmptyLayer = tf.layers.maxPool2d;
     static readonly blockSize: number = 30;
 

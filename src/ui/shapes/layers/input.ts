@@ -5,7 +5,8 @@ import { dataset } from '../../../model/data';
 import { getSvgOriginalBoundingBox } from '../../utils';
 
 export class Input extends Layer {
-    layerType = "Input"
+    layerType = "Input";
+    parameterDefaults = {};
     readonly tfjsEmptyLayer = tf.input;
 
     defaultLocation = new Point(100, getSvgOriginalBoundingBox(document.getElementById("svg")).height/2)

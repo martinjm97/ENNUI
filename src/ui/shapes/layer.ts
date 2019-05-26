@@ -5,7 +5,6 @@ import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
-import { defaults} from '../../model/build_network';
 import { displayError } from '../error';
 import { parseString } from '../utils';
 
@@ -14,7 +13,7 @@ export interface LayerJson {
     id: number
     children_ids: Array<number>
     parent_ids: Array<number>
-    params: Map<string, any>
+    params: any
     xPosition: number
     yPosition: number
 }
@@ -23,6 +22,7 @@ export interface LayerJson {
 
 export abstract class Layer extends Draggable {
     layerType: string = ""; // TODO change this
+    parameterDefaults;
     protected tfjsLayer: tf.SymbolicTensor;
     protected readonly tfjsEmptyLayer;
     paramBox: HTMLElement;
@@ -143,9 +143,9 @@ export abstract class Layer extends Draggable {
         }
     }
 
-    public getParams(): Map<string, any> {
-        let params: Map<string, any> = new Map()
-        let defaultParams = defaults.get(this.layerType);
+    public getParams() {
+        let params = {}
+        let defaultParams = this.parameterDefaults;
         for(let line of this.paramBox.children){
             let name = line.children[0].getAttribute('data-name');
             if (line.children[1].className == "select") {
@@ -159,7 +159,7 @@ export abstract class Layer extends Draggable {
                 }
 
                 else {
-                    params[name] = parseString(value);
+                    params[name] = parseString(value);  
                 }
             }
         }
@@ -243,11 +243,8 @@ export abstract class Layer extends Draggable {
 
     public generateTfjsLayer(){
         // TODO change defaults to class level
-        let parameters = defaults.get(this.layerType)
-        let config = this.getParams()
-        for (let param in config) {
-            parameters[param] = config[param]
-        }
+        let parameters = this.getParams()
+
         let parent:Layer = null
         for (let p of this.parents){ parent = p; break }
         // Concatenate layers handle fan-in
@@ -362,13 +359,11 @@ export abstract class ActivationLayer extends Layer {
     }
 
     public generateTfjsLayer(){
-        // TODO change defaults to class level
-        let parameters = defaults.get(this.layerType);
+        let parameters = this.parameterDefaults;
         let config = this.getParams();
         for (let param in config) {
             parameters[param] = config[param];
         }
-
         if (this.activation != null) {
             parameters.activation = this.activation.activationType;
         }

@@ -652,3 +652,7 @@ label {
   .select select:disabled ~ .select__arrow {
     border-top-color: #000;
   }
+
+  .hidden_div {
+      display: none;
+  }
