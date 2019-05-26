@@ -6,7 +6,7 @@ import { displayError } from "../../error";
 export class Conv2D extends ActivationLayer {
     layerType = "Conv2D";
     protected tfjsEmptyLayer  = tf.layers.conv2d;
-    parameterDefaults = {kernelSize: [3,3], filters: 16, strides: [1,1], kernelRegularizer: 'none', regScale: 0.1};
+    parameterDefaults = {kernelSize: [3,3], filters: 16, strides: [1,1], kernelRegularizer: 'none', regScale: 0.1, padding: 'same'};
     static readonly blockSize: number = 50;
 
     constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {

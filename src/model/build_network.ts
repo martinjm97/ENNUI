@@ -6,18 +6,6 @@ import { displayError } from '../ui/error';
 import { pythonSkeleton } from './python_skeleton';
 import { juliaSkeleton } from './julia_skeleton';
 
-
-let typeToTensor: Map<string, any> = new Map();
-
-typeToTensor.set("Input", tf.input);
-typeToTensor.set("Dense", tf.layers.dense);
-typeToTensor.set("MaxPooling2D", tf.layers.maxPooling2d);
-typeToTensor.set("Conv2D", tf.layers.conv2d);
-typeToTensor.set("BatchNorm", tf.layers.batchNormalization);
-typeToTensor.set("Dropout", tf.layers.dropout);
-typeToTensor.set("Flatten", tf.layers.flatten);
-typeToTensor.set("Concatenate", tf.layers.concatenate);
-
 export function buildNetworkDAG(input: Input) {
     let toposorted = topologicalSort(input);
     try {
