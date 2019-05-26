@@ -8,7 +8,7 @@ export function pythonSkeleton(model_code): string {
 import keras
 from keras.datasets import ${dataset.pythonName}
 from keras.models import Model
-from keras.layers import Dense, Dropout, Flatten, Input, Concatenate, BatchNormalization
+from keras.layers import Dense, Dropout, Flatten, Input, Concatenate, BatchNormalization, Add
 from keras.layers import Conv2D, MaxPooling2D, ReLU
 from keras import backend as K
 

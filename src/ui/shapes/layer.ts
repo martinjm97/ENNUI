@@ -5,8 +5,11 @@ import { Activation } from "./activation";
 import { Wire } from "./wire";
 import * as d3 from "d3";
 import { windowProperties } from "../window";
+import { topologicalSort, generateTfjsModel} from '../../model/build_network';
 import { displayError } from '../error';
 import { parseString } from '../utils';
+import { svgData } from '../app';
+import { changeDataset } from '../../model/data';
 
 export interface LayerJson {
     layer_name: string
@@ -26,6 +29,17 @@ export abstract class Layer extends Draggable {
     protected tfjsLayer: tf.SymbolicTensor;
     protected readonly tfjsEmptyLayer;
     paramBox: HTMLElement;
+    selectText: any = d3.select("body")
+                        .append("div")
+                        .style("position", "absolute")
+                        .style("padding", "6px")
+                        .style("background", "rgba(0, 0, 0, 0.8)")
+                        .style("color", "#eee")
+                        .style("border-radius", "2px")
+                        .style("display", "none")
+                        .style("font-family", "Helvetica")
+                        .style("user-select","none")
+    shape: number[];  // The shape/dimensions of the layer.
 
     block: Array<Shape>;
     children: Set<Layer> = new Set();
@@ -42,23 +56,46 @@ export abstract class Layer extends Draggable {
     abstract clone(): Layer;
 
     constructor(block: Array<Shape>, defaultLocation) {
-        super(defaultLocation)
-        this.uid = Layer.nextID
-        Layer.nextID += 1
-        this.block = block
+        super(defaultLocation);
+        this.uid = Layer.nextID;
+        Layer.nextID += 1;
+        this.block = block;
+
+
 
         for (let rect of this.block) {
-            this.svgComponent.call(rect.svgAppender.bind(rect))
+            this.svgComponent.call(rect.svgAppender.bind(rect));
         }
 
-        this.paramBox = document.createElement('div')
-        this.paramBox.className = 'parambox'
-        this.paramBox.style.visibility = 'hidden'
-        this.paramBox.style.position = 'absolute'
-        this.paramBox.style.position = 'absolute'
-        this.paramBox.style.position = 'absolute'
+        this.paramBox = document.createElement('div');
+        this.paramBox.className = 'parambox';
+        this.paramBox.style.visibility = 'hidden';
+        this.paramBox.style.position = 'absolute';
         document.getElementById("paramtruck").appendChild(this.paramBox);
 
+        // function SVGToScreen(svg, svgX, svgY) {
+        //     let p = svg.createSVGPoint()
+        //      p.x = svgX
+        //      p.y = svgY
+        //      return p.matrixTransform(svg.getScreenCTM());
+        // }
+        // console.log("THIS IS", SVGToScreen(document.getElementById("svg"), this.getPosition().x, this.getPosition().y))
+
+        // let p = SVGToScreen(document.getElementById("svg"), this.getPosition().x, this.getPosition().y)
+        this.svgComponent.on("click", () => {
+                             this.select()
+                             window.clearTimeout(this.moveTimeout)
+                             this.hoverText.style("visibility", "hidden")
+
+                            
+
+                            //  this.selectText.style("display", null);
+                            //  this.selectText.style("top", (d3.event.pageY+"px")).style("left",(d3.event.pageX+"px"));
+                            //  this.selectText.style("visibility", "visible");
+                            //  console.log(this.selectText)
+                            //  this.selectText.text("[" + this.layerShape().toString() + "]");
+                            //  console.log(this.layerShape().toString())
+                            })
         this.populateParamBox()
     }
 
@@ -74,6 +111,10 @@ export abstract class Layer extends Draggable {
         for (let wire of this.wires) {
             wire.updatePosition()
         }
+        
+        if (windowProperties.selectedElement === this) {
+            windowProperties.shapeTextBox.setPosition(this.getPosition());
+        }        
     }
 
     public raise() {
@@ -92,7 +133,13 @@ export abstract class Layer extends Draggable {
         document.getElementById("defaultparambox").style.display = "none"
         this.paramBox.style.visibility = 'visible'
         this.svgComponent.selectAll("path").style("stroke", "yellow").style("stroke-width", "2")
-        
+        this.svgComponent.selectAll(".outerShape").style("stroke", "yellow").style("stroke-width", "2")
+
+        let bbox = this.outerBoundingBox();
+        windowProperties.shapeTextBox.setOffset(new Point((bbox.left+bbox.right)/2, bbox.bottom+25));
+        windowProperties.shapeTextBox.setText("[" + this.layerShape().toString() + "]");
+        windowProperties.shapeTextBox.setPosition(this.getPosition());
+        windowProperties.shapeTextBox.show();
     }
 
     public unselect() {
@@ -100,6 +147,10 @@ export abstract class Layer extends Draggable {
         document.getElementById("defaultparambox").style.display = null
         this.paramBox.style.visibility = 'hidden'
         this.svgComponent.selectAll("path").style("stroke", null).style("stroke-width", null)
+        this.svgComponent.selectAll(".outerShape").style("stroke", null).style("stroke-width", null)
+        this.selectText.style("visibility", "hidden");
+        windowProperties.shapeTextBox.hide();
+        
     }
 
     /**
@@ -256,6 +307,19 @@ export abstract class Layer extends Draggable {
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer())
     }
 
+    public layerShape(): number[]{
+        // Computes all of the predecessors to determine shape
+        if (this.layerType == "Input") {
+            changeDataset(svgData.input.getParams()["dataset"])
+        }
+        try {
+            generateTfjsModel(topologicalSort(svgData.input, false))
+            return this.getTfjsLayer().shape;
+        } catch(err){  // Hide errors while building the network
+            return null
+        }
+    }
+
     public initLineOfJulia(): string {
         return '';
     }
@@ -295,12 +359,13 @@ export abstract class ActivationLayer extends Layer {
         windowProperties.activationLayers.add(this);
     }
 
-
     public moveAction() {
         super.moveAction();
         if (this.activation != null) {
             let p = this.getPosition();
             this.activation.setPosition(p)
+            this.activation.draggedX = this.draggedX
+            this.activation.draggedY = this.draggedY
         }
     }
 
@@ -340,6 +405,8 @@ export abstract class ActivationLayer extends Layer {
         this.activation = activation;
         this.activation.layer = this;
         this.activation.setPosition(this.getPosition());
+        this.activation.draggedX = this.draggedX
+        this.activation.draggedY = this.draggedY
     }
 
     public getActivationText(): string {

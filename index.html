@@ -110,16 +110,16 @@
 					<div style="float:left">More</div>
 					<div style="float:right">〉</div>
 					<div class='dropdown-content left'>
-						<div title = 'Modify batches of data during training to make them more similar,
-									  resulting in faster convergence and better results.'
+						<div title = 'Modify batches of data during training to make them more similar, resulting in faster convergence and better results.'
 							 class = 'option' data-layerType = 'batchnorm'> Batch Normalization</div>
-						<div title = 'Ignore a different random portion of the weights each batch
-									  for better generalization and faster training.'
+						<div title = 'Ignore a different random portion of the weights each batch for better generalization and faster training.'
 							 class = 'option' data-layerType = 'dropout'> Dropout</div>
 						<div title = 'Flatten a list of 2D images into a 1D feature vector.'
 							 class = 'option' data-layerType = 'flatten'> Flatten</div>
 						<div title = 'Concatenate two or more inputs that are all 1D or all 2D.'
-							 class = 'option last-dropdown' data-layerType = 'concatenate'> Concatenate</div>
+							 class = 'option' data-layerType = 'concatenate'> Concatenate</div>
+						<div title = 'Add two or more inputs together.'
+							 class = 'option last-dropdown' data-layerType = 'add'> Add</div>
 					</div>
 				</div>
 
@@ -152,7 +152,7 @@
 				</div>
 				<div class = 'option' data-templateType = 'blank'> Blank </div>
 				<div class = 'option' data-templateType = 'default'> Default </div>
-				<div class = 'option' data-templateType = 'complex'> Complex </div>
+				<div class = 'option' data-templateType = 'resnet'> ResNet </div>
 			</div>
 		</div>
 
@@ -218,31 +218,53 @@
 		</div>
 
 		<div id = 'educationMenu'>
-			<div id = 'layers' class = 'category' data-itemType = 'layer'>
-				<div class = 'categoryTitle' data-expanded = 'true'>Layers</div>
-				<div class = 'option' data-layerType = 'dense-education'> Dense </div>
-				<div class = 'option' data-layerType = 'conv2D-education'> Convolution </div>
-				<div class = 'option' data-layerType = 'maxPooling2D-education'> Max Pooling </div>
-
-
-				<div class = 'option dropdown'>
-					<div style="float:left">More</div>
-					<div style="float:right">〉</div>
-					<div class='dropdown-content left'>
-						<div class = 'option' data-layerType = 'batchnorm-education'> Batch Normalization</div>
-						<div class = 'option' data-layerType = 'dropout-education'> Dropout</div>
-						<div class = 'option' data-layerType = 'flatten-education'> Flatten</div>
-						<div class = 'option last-dropdown' data-layerType = 'concatenate-education'> Concatenate</div>
+			<div id = 'educationLayers' class = 'category' data-itemType = 'educationPage'>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
 					</div>
+					<div class='categoryTitleText'>
+						Articles
+					</div>
+
 				</div>
 
+				<div class = 'option education-option' data-articleType = 'Overview'> Overview </div>
+				<!-- <div class = 'option education-option' data-articleType = 'Dense'> Dense </div> -->
+				<div class = 'option education-option' data-articleType = 'Concatenate'> Concatenate</div>
+				<div class = 'option education-option' data-articleType = 'Convolution'> Convolution </div>
+				<!-- <div class = 'option education-option' data-articleType = 'MaxPooling'> Max Pooling </div> -->
+				<!-- <div class = 'option education-option' data-articleType = 'Batchnorm'> Batch Norm</div> -->
+				<div class = 'option education-option' data-articleType = 'Dropout'> Dropout</div>
+				<div class = 'option education-option' data-articleType = 'Flatten'> Flatten</div>
+				<!-- Temporarily -->
+				<div class = 'option education-option' data-articleType = 'ResNets'> ResNets </div>
+
 			</div>
-			<div id = 'activations' class = 'category' data-itemType = 'activation'>
+
+			<!-- <div id = 'educationStory' class = 'category' data-itemType = 'educationPage'>
+				<div class = 'categoryTitle' data-expanded = 'true'>
+					<div class='expander'>
+						<svg height="24px" width="24px">
+							<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" style="fill:#FFFFFF;"></path>
+						</svg>
+					</div>
+					<div class='categoryTitleText'>
+						Stories
+					</div>
+
+					<div class = 'option education-option' data-articleType = 'ResNets'> ResNets </div>
+				</div>
+			</div> -->
+
+			<!-- <div id = 'activations' class = 'category' data-itemType = 'activation'>
 				<div class = 'categoryTitle' data-expanded = 'true'>Activations</div>
-				<div class = 'option' data-activationType = 'relu'> ReLU </div>
-				<div class = 'option' data-activationType = 'sigmoid'> Sigmoid </div>
-				<div class = 'option' data-activationType = 'tanh'> Tanh </div>
-			</div>
+				<div class = 'option' data-articleType = 'relu'> ReLU </div>
+				<div class = 'option' data-articleType = 'sigmoid'> Sigmoid </div>
+				<div class = 'option' data-articleType = 'tanh'> Tanh </div>
+			</div> -->
 		</div>
 
 	</div>
@@ -300,19 +322,93 @@
 		</div>
 
 		<div id = 'educationTab'>
-			<div class="educationTitle"> Learn About Deep Neural Networks </div>
-			<div class="educationSection"> Introduction to Ennui </div>
-			<div class="educationContent">
-				If you are new to Ennui, a good place to start is to watch
-				the quick tutorial below:
+			<div id="educationOverview">
+				<div class="educationTitle" style="padding-top: 0px"> Learn About Deep Neural Networks </div>
+				<div class="educationSection"> Introduction to Ennui </div>
+				<div class="educationContent">
+					If you are new to Ennui, a good place to start is to watch
+					the quick tutorial below:
+				</div>
+				<iframe class="educationVideo" src="https://www.youtube.com/embed/m0YnwAtPbb8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				<div class="educationSection"> Foundations of Deep Learning </div>
+				<div class="educationContent">
+					If you are new to machine learning, the lecture video below is an excellent introduction.
+					This lecture is from the 18.065 class from Spring of 2019. If you want to learn more check out the <a href="http://math.mit.edu/~gs/learningfromdata/">learning from data textbook</a>.
+				</div>
+				<iframe class="educationVideo" src="https://video.odl.mit.edu/videos/9101a72a7d994d53800d1398fd885b88/embed/?start=339" scrolling="no" frameborder="0" allowfullscreen></iframe>
 			</div>
-			<iframe class="educationVideo" src="https://www.youtube.com/embed/m0YnwAtPbb8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-			<div class="educationSection"> Foundations of Deep Learning </div>
-			<div class="educationContent">
-				If you are new to machine learning, the lecture video below is an excellent introduction.
-				This lecture is from the 18.065 class from Spring of 2019. If you want to learn more check out the <a href="http://math.mit.edu/~gs/learningfromdata/">learning from data textbook</a>.
+
+			<div id="educationConvolution">
+				<div class="educationTitle"> Convolutional Nets </div>
+				<div class="educationAuthor">by <i>Gilbert Strang</i></div>
+
+				<div class="educationContent">
+					<p>The words <strong>weight sharing</strong> give the key idea of CNNs. The weight matrix <span class="math inline">\(A\)</span> that connects one layer to the next layer has only a small number of independent entries. So optimizing those weights is much faster than for a fully-connected (dense) architecture.</p>
+					<p>In a one-dimensional problem, suppose the inputs (layer zero) are given by a vector <span class="math inline">\(v = (v_1,...,v_n)\)</span>. A convolution will multiply <span class="math inline">\(v\)</span> by a weight matrix <span class="math inline">\(A\)</span> with constant diagonals. Then the same set of weights (say 3 weights) is repeated all along the layer :</p>
+					<p><span class="math display">\[A=
+					\begin{bmatrix}
+						a_{-1} &amp; a_0 &amp; a_1 &amp;  &amp;  \\
+						&amp; a_{-1} &amp; a_0 &amp; a_1 &amp;  \\
+						&amp; &amp; a_{-1} &amp; a_0 &amp; a_1 \\
+					\end{bmatrix}\]</span> This <span class="math inline">\(A\)</span> has <span class="math inline">\(n = 5\)</span> inputs and <span class="math inline">\(m = 3\)</span> outputs. A is <strong>shift-invariant</strong>: a convolution = filter = Toeplitz matrix. Convolutions are especially important for images with many pixels. The <span class="math inline">\(3\)</span> independent weights <span class="math inline">\(a_{-1}, a_0, a_1\)</span> might change to <span class="math inline">\(3 \times 3=9\)</span> weights in 2D. Those 9 numbers are <span class="math inline">\(a_{ij}\)</span> for <span class="math inline">\(i = -1,0,1\)</span> and <span class="math inline">\(j = -1,0,1\)</span>. An input with its 8 neighbors (in a <span class="math inline">\(3 \times 3\)</span> square) is multiplied by <span class="math inline">\(a_{00}\)</span> and its <span class="math inline">\(8\)</span> neighbors–that sum of 9 terms gives one output in <span class="math inline">\(Av\)</span>. As usual, a bias vector <span class="math inline">\(b\)</span> is added and each component of <span class="math inline">\(Av + b\)</span> is activated (or not) by a function like ReLU : the new layer contains <span class="math inline">\(\textrm{ReLU}(Av + b)\)</span>.</p>
+					<p>This 2D matrix <span class="math inline">\(A\)</span> is not so easy to display. You should see that a <span class="math inline">\(3 \times 3\)</span> square around an input vector <span class="math inline">\(v\)</span> of size <span class="math inline">\(n \times n\)</span> will produce an output <span class="math inline">\(Av\)</span> of size <span class="math inline">\((n - 2) \times (n - 2)\)</span>, in the same way that 5 inputs gave 3 outputs in 1D. Notice that we only had <span class="math inline">\(3 \times 3 = 9\)</span> (or maybe <span class="math inline">\(5 \times 5 = 25\)</span>) independent weights in 2D, because the convolution not only <strong>shares weights</strong> but it is <strong>local</strong>.</p>
+				</div>
 			</div>
-			<iframe class="educationVideo" src="https://video.odl.mit.edu/videos/9101a72a7d994d53800d1398fd885b88/embed/?start=339" scrolling="no" frameborder="0" allowfullscreen></iframe>
+
+			<div id="educationResNets">
+				<div class="educationTitle"> Residual Networks (ResNets) </div>
+				<div class="educationAuthor">by <i>Zack Holbrook</i> and <i>Jesse Michel</i></div>
+
+				<div class="educationContent">
+					<p>In 2015, a research team at Microsoft won the <a href="http://www.image-net.org/challenges/LSVRC/">ImageNet Large Scale Visual Recognition Challenge</a> with record performance using a ResNet. Since 2015, variants of ResNets have dominated the competition, exceeding human performance in the given task. They have become a popular choice of architecture for a broad variety of image recognition tasks and are relatively easy to implement and train.</p>
+					<div class="educationSection">ResNet Architecture</div>
+					<p>ResNets are a type of convolutional neural network (CNN) that have <strong>identity shortcuts</strong>, which are paths through the network that skip layers, thereby creating shortcuts through the network. We provide a typical example of a ResNet below:
+
+						<img class="educationImage" src="dist/resnet.png" alt="Resnet image" height="225" width="600">
+
+						<div class="modelLink">
+							<a class="modelLink" target="_newtab" href="http://math.mit.edu/ennui/#%7B%22graph%22:%5B%7B%22layer_name%22:%22Input%22,%22children_ids%22:%5B5,9%5D,%22parent_ids%22:%5B%5D,%22params%22:%7B%22dataset%22:%22mnist%22%7D,%22id%22:0,%22xPosition%22:100,%22yPosition%22:377%7D,%7B%22layer_name%22:%22Conv2D%22,%22children_ids%22:%5B6%5D,%22parent_ids%22:%5B0%5D,%22params%22:%7B%22filters%22:16,%22kernelSize%22:%5B3,3%5D,%22strides%22:%5B1,1%5D,%22activation%22:%22relu%22%7D,%22id%22:5,%22xPosition%22:169,%22yPosition%22:280%7D,%7B%22layer_name%22:%22Add%22,%22children_ids%22:%5B7,10%5D,%22parent_ids%22:%5B0,6%5D,%22params%22:%7B%22activation%22:%22relu%22%7D,%22id%22:9,%22xPosition%22:276,%22yPosition%22:411%7D,%7B%22layer_name%22:%22Conv2D%22,%22children_ids%22:%5B9%5D,%22parent_ids%22:%5B5%5D,%22params%22:%7B%22filters%22:16,%22kernelSize%22:%5B3,3%5D,%22strides%22:%5B1,1%5D%7D,%22id%22:6,%22xPosition%22:294,%22yPosition%22:280%7D,%7B%22layer_name%22:%22Conv2D%22,%22children_ids%22:%5B8%5D,%22parent_ids%22:%5B9%5D,%22params%22:%7B%22filters%22:16,%22kernelSize%22:%5B3,3%5D,%22strides%22:%5B1,1%5D,%22activation%22:%22relu%22%7D,%22id%22:7,%22xPosition%22:414,%22yPosition%22:280%7D,%7B%22layer_name%22:%22Add%22,%22children_ids%22:%5B11%5D,%22parent_ids%22:%5B9,8%5D,%22params%22:%7B%22activation%22:%22relu%22%7D,%22id%22:10,%22xPosition%22:521,%22yPosition%22:412%7D,%7B%22layer_name%22:%22Conv2D%22,%22children_ids%22:%5B10%5D,%22parent_ids%22:%5B7%5D,%22params%22:%7B%22filters%22:16,%22kernelSize%22:%5B3,3%5D,%22strides%22:%5B1,1%5D%7D,%22id%22:8,%22xPosition%22:541,%22yPosition%22:280%7D,%7B%22layer_name%22:%22Flatten%22,%22children_ids%22:%5B12%5D,%22parent_ids%22:%5B10%5D,%22params%22:%7B%7D,%22id%22:11,%22xPosition%22:708,%22yPosition%22:463%7D,%7B%22layer_name%22:%22Dense%22,%22children_ids%22:%5B13%5D,%22parent_ids%22:%5B11%5D,%22params%22:%7B%22units%22:32,%22activation%22:%22relu%22%7D,%22id%22:12,%22xPosition%22:702,%22yPosition%22:434%7D,%7B%22layer_name%22:%22Dropout%22,%22children_ids%22:%5B1%5D,%22parent_ids%22:%5B12%5D,%22params%22:%7B%22rate%22:0.5%7D,%22id%22:13,%22xPosition%22:778,%22yPosition%22:365%7D,%7B%22layer_name%22:%22Output%22,%22children_ids%22:%5B%5D,%22parent_ids%22:%5B13%5D,%22params%22:%7B%7D,%22id%22:1,%22xPosition%22:900,%22yPosition%22:377%7D%5D,%22hyperparameters%22:%7B%22learningRate%22:0.01,%22batchSize%22:64,%22optimizer_id%22:%22defaultOptimizer%22,%22epochs%22:6,%22loss_id%22:%22defaultLoss%22%7D%7D">
+								Model Link
+							</a>
+						</div>
+
+						Identity shortcuts mean that the learned parameters are residuals. Mathematically, if <span class="math inline">\(R(x)\)</span> is a sequence of convolutional layers with ReLUs, known as a <strong>residual block</strong>, for example, let <span class="math display">\[R(x) = \textrm{Conv}(\textrm{ReLU}(\textrm{Conv}(x))).\]</span> Then the output of the residual block will be <span class="math inline">\(R(x) + x\)</span>, where <span class="math inline">\(x\)</span> is the identity pass-through. If the neural network is trying to approximate some function <span class="math inline">\(F(x)\)</span>, then a perfect residual block <span class="math inline">\(R^*(x)\)</span> will be such that <span class="math inline">\(R^*(x) = F(x) - x\)</span>, which is exactly a residual after subtracting the input image.</p>
+					<div class="educationSection">Advantages of ResNets</div>
+					<p>The amazing property of ResNets is its ability to scale well, leading to deeper neural networks that still train well. As networks get larger, a number of problems arise.</p>
+					<p>Large networks tend to train slowly, but the <strong>weight sharing</strong> of CNNs mean that each residual block has relatively few parameters to train. Large networks also tend to have the problem of the <strong>vanishing gradient</strong> – where weight updates from gradient descent diminish to the point where the network does not improve even with more training time. The identity shortcuts in ResNets give a path for the gradients to flow, avoiding the problem of the vanishing gradient.</p>
+				</div>
+			</div>
+
+			<div id="educationFlatten">
+				<div class="educationTitle"> Flatten Layers </div>
+				<div class="educationAuthor">by <i>Zack Holbrook</i> and <i>Jesse Michel</i></div>
+
+				<div class="educationContent">
+					<p>The flatten layer takes in a multidimensional input and produces a single dimensional output. For example, the CIFAR dataset is a collection of images which is 3-dimensional since it is a collection of 2-dimensional images that are 32x32 pixels and has 3 color channels (Red, Green, Blue). A Flatten layer could take data from this dataset as an input, and would produce a 1 dimensional vector of size 32*32*3 = 3072.</p>
+				</div>
+			</div>
+
+			<div id="educationConcatenate">
+				<div class="educationTitle"> Concatenate Layers </div>
+				<div class="educationAuthor">by <i>Zack Holbrook</i> and <i>Jesse Michel</i></div>
+
+				<div class="educationContent">
+					<p>A concatenate layer takes two or more layers and concatenates the outputs into a single output by stacking the inputs. For example, it would concatenate two vectors of size 10 into a vector of size 20 by stacking one on top of the other.</p>
+				</div>
+			</div>
+
+			<div id="educationDropout">
+				<div class="educationTitle"> Dropout Layers </div>
+				<div class="educationAuthor">by <i>Jesse Michel</i></div>
+
+				<div class="educationContent">
+					<p>Dropout layers ignore a random fraction rate of the input units during training time. If the rate is 0.1 then the dropout layer will assign a new random subset of 10% of the weights to 0 on each forward pass during training. Adding a dropout layer with a rate of 0 will make no change to the network, while with a rate of 1 the dropout layer will output 0.</p>
+
+					<p>Dropout is commonly used to prevent overfitting. One may think of dropout of having the network to learn a collection of weak classifiers that during testing come together to create a more powerful classifier (for more details see our write-up on overfitting). For those who are familiar with this terminology, it is boosting using an ensamble model. It also has the convenient property of speeding up training since fewer weights are required during training. .</p>
+				</div>
+			</div>
+
+			<div style="height:100px;"> </div>
 
 
 		</div>
@@ -407,8 +503,7 @@
 		<div id = 'progressParamshell'>
 			<!-- <div class = 'trainbox' id = 'trainbox'>
 				<div id = 'train' class = 'train' data-actionType = 'json'> Train </div>
-			</div>
-				 -->
+			</div>-->
 			<div class = 'category' id='paramtruck'>
 				<div class = 'categoryTitle' data-expanded = 'true'>
 					<div class='expander'>

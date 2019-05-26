@@ -85,7 +85,6 @@ export class Input extends Layer {
 
     public clone() {
         let newLayer = new Input();
-
         return newLayer;
     }
 }

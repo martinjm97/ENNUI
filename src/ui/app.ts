@@ -1,8 +1,8 @@
 import { Draggable } from "./shapes/draggable";
 import { Relu, Sigmoid, Tanh, Activation } from "./shapes/activation";
 import { windowProperties } from "./window";
-import { buildNetworkDAG, topologicalSort, cloneNetwork, generatePython, generateJulia } from "../model/build_network";
-import { blankTemplate, defaultTemplate, complexTemplate } from "./model_templates";
+import { buildNetworkDAG, topologicalSort, generatePython, generateJulia } from "../model/build_network";
+import { blankTemplate, defaultTemplate, resnetTemplate } from "./model_templates";
 import { graphToJson, download } from "../model/export_model";
 import { train } from "../model/mnist_model";
 import { setupPlots, showPredictions, setupTestResults, renderAccuracyPlot, renderLossPlot, showConfusionMatrix } from "../model/graphs";
@@ -21,10 +21,11 @@ import { Flatten } from "./shapes/layers/flatten";
 import { Dropout } from "./shapes/layers/dropout";
 import * as d3 from "d3";
 
-import { changeDataset, dataset, Cifar10Data } from "../model/data";
+import { changeDataset } from "../model/data";
 import { Layer, ActivationLayer } from "./shapes/layer";
 import { WireGuide } from "./shapes/wireguide";
-import { showPerClassAccuracy } from "@tensorflow/tfjs-vis/dist/show/quality";
+import { Add } from "./shapes/layers/add";
+import { TextBox } from "./shapes/textbox";
 
 export interface DraggableData {
 	draggable: Array<Draggable>
@@ -32,7 +33,7 @@ export interface DraggableData {
 	output: Output
 }
 
-let svgData: DraggableData = {
+export let svgData: DraggableData = {
 	draggable : [],
 	input: null,
 	output: null
@@ -148,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	};
 
 	windowProperties.wireGuide = new WireGuide()
+	windowProperties.shapeTextBox = new TextBox()
 
 	d3.select("#svg").on("mousemove", function(d: any, i) {
 		if (windowProperties.selectedElement instanceof Layer) {
@@ -381,7 +383,7 @@ export function tabSelected(): string {
 }
 
 
-function  dispatchCreationOnClick(elmt){
+function dispatchCreationOnClick(elmt){
 	if (!elmt.classList.contains('dropdown'))
 		elmt.addEventListener('click', function(e){
 			let itemType
@@ -391,6 +393,7 @@ function  dispatchCreationOnClick(elmt){
 			else {
 				itemType = elmt.parentElement.getAttribute('data-itemType')
 			}
+
 			if (model.params.isParam(itemType)){
 				let setting;
 				if (elmt.hasAttribute('data-trainType')) {
@@ -424,17 +427,16 @@ function  dispatchCreationOnClick(elmt){
 					copyTextToClipboard(baseUrl + "#" + urlParam);
 				}
 			} else if (itemType == "classes") {
-				let selected = elmt.parentElement.getElementsByClassName("selected");
-				if (selected.length > 0) {
-					selected[0].classList.remove("selected");
-				}
-
-				elmt.classList.add("selected");
-
+				selectOption(elmt)
 				if (model.architecture != null){
 					showPredictions()
 				}
-			} else {
+			} else if (itemType == "educationPage") {
+				// selectOption(elmt); // TODO uncomment this line to add back in selections
+				let target: HTMLElement = document.getElementById('education' + elmt.getAttribute("data-articleType"));
+				(<Element> target.parentNode).scrollTop = target.offsetTop;
+			}
+			else {
 				let detail = { itemType : itemType}
 				detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
 				let event = new CustomEvent('create', { detail : detail } );
@@ -443,6 +445,18 @@ function  dispatchCreationOnClick(elmt){
 		});
 }
 
+
+function selectOption(elmt: HTMLElement) {
+	
+	let parents = Array.from(document.querySelectorAll(`[data-itemType="${elmt.parentElement.getAttribute("data-itemType")}"]`).values()) ;
+	for (let parent of parents) {
+		for (let option of parent.getElementsByClassName("option")) {
+			option.classList.remove("selected");
+		}
+	}
+
+	elmt.classList.add("selected");
+}
 
 function updateNetworkParameters(params){
 	switch(params.itemType){
@@ -466,6 +480,7 @@ function appendItem(options){
 			case "batchnorm": item = new BatchNorm(); console.log("Created Batch Normalization Layer"); break;
 			case "flatten": item = new Flatten(); console.log("Created Flatten Layer"); break;
 			case "concatenate": item = new Concatenate(); console.log("Created Concatenate Layer"); break;
+			case "add": item = new Add(); console.log("Created Add Layer"); break;
 			case "dropout": item = new Dropout(); console.log("Created Dropout Layer"); break;
 		}
 		case 'activation': switch(options.detail.activationType) {
@@ -476,7 +491,7 @@ function appendItem(options){
 		case 'template':  switch(options.detail.templateType) {
 			case 'blank': template = true; blankTemplate(svgData); console.log("Created Blank Template"); break;
 			case 'default': template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
-			case 'complex': template = true; complexTemplate(svgData); console.log("Created Complex Template"); break;
+			case 'resnet': template = true; resnetTemplate(svgData); console.log("Created ResNet Template"); break;
 		}
 	}
 
@@ -526,11 +541,12 @@ function switchTab(tab) {
 	// document.getElementById("menu_expander").style.display = null;
 
 	switch(tab.detail.tabType){
+		case 'network': resizeMiddleSVG(); break;
 		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
 		case 'visualization': showPredictions(); break;
 		case 'education':
 			document.getElementById("paramshell").style.display = "none";
-			document.getElementById("menu").style.display = "none";
+			// document.getElementById("menu").style.display = "none";
 			// document.getElementById("menu_expander").style.display = "none";
 			break;
 	}

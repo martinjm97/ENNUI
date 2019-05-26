@@ -125,7 +125,7 @@ export class Conv2D extends ActivationLayer {
         let params = this.getParams();
         let activation = this.getActivationText();
         let activationText = activation == null ? "" : `, activation='${activation}'`;
-        return `Conv2D(${params["filters"]}, (${params["kernelSize"]}), strides=(${params["strides"]})${activationText})`
+        return `Conv2D(${params["filters"]}, (${params["kernelSize"]}), strides=(${params["strides"]})${activationText}, padding='same')`
     }
 
     public initLineOfJulia(): string {

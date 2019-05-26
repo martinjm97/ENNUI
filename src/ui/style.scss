@@ -474,11 +474,11 @@ a.overlayLinks {
 }
 
 #educationTab {
-    width: calc(70% + 380px);
+    width: 90%;
     height: 100%;
     background: #F1FAFF;
-    padding-left: 15%;
-    padding-right: 15%;
+    padding-left: 5%;
+    padding-right: calc(5% + 200px);
     padding-top: 3%;
     overflow-y : auto;
 }
@@ -486,7 +486,8 @@ a.overlayLinks {
 .educationTitle {
     font-size: 40;
     text-align: center;
-    padding-bottom: 30px;
+    padding-top: 30px;
+    padding-bottom: 10px;
     font-family: Helvetica;
     font-weight: bolder;
 }
@@ -509,13 +510,33 @@ a.overlayLinks {
     // margin-right: 5%;
     // object-fit: contain;
     padding: 20px;
-    width: 30%;
-    height: 25%;
+    width: 40%;
+    height: 34%;
     display: table;
     margin: 0 auto;
     // text-align: left;
     overflow:hidden !important;
 }
+
+.educationImage {
+    padding-top: 15px;
+    // padding: 20px;
+    // width: 40%;
+    // height: 34%;
+    display: table;
+    margin: 0 auto;
+    // text-align: left;
+    overflow:hidden !important;
+}
+
+.educationAuthor{
+    font-size: 14;
+    font-family: Helvetica;
+    text-align: center;
+    padding-bottom: 10px;
+
+}
+
 
 #error {
     width: 200px;
@@ -540,6 +561,15 @@ a.overlayLinks {
     height: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.modelLink {
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    padding-bottom: 15px;
+top: 50%;
+transform: translateY(-50%); 
 }
 
 label {

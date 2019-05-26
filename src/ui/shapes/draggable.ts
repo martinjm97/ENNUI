@@ -22,6 +22,9 @@ export abstract class Draggable {
     moveTimeout: any;
     readonly wireGuidePresent: boolean = false;
 
+    draggedX = null; // Use these to let draggables return to user dragged position after cropping
+    draggedY = null;
+
     constructor(defaultLocation=new Point(50,100)) {
         this.svgComponent = d3.select<SVGGraphicsElement, {}>("#svg")
                             .append<SVGGraphicsElement>("g")
@@ -38,13 +41,15 @@ export abstract class Draggable {
                             .on("mousemove", () => {
                                 this.hoverText.style("visibility", "hidden")
                                 clearTimeout(this.moveTimeout);
-                                this.moveTimeout = setTimeout(() => {this.hoverText.style("display", "");this.hoverText.style("visibility", "visible")}, 280);
+                                this.moveTimeout = setTimeout(() => {this.hoverText.style("display", ""); this.hoverText.style("visibility", "visible")}, 280);
                                 this.hoverText.style("top", (d3.event.pageY - 40)+"px").style("left",(d3.event.pageX - 30)+"px") })
                             .on("mouseout", () => {
                                 clearTimeout(this.moveTimeout)
                                 this.hoverText.style("visibility", "hidden")
                             })
         this.makeDraggable()
+        this.draggedX = defaultLocation.x
+        this.draggedY = defaultLocation.y
     }
 
     public makeDraggable(){
@@ -72,7 +77,10 @@ export abstract class Draggable {
                 firstDrag = false
             }
 
-            this.setPosition(new Point(d3.event.x - mousePosRelativeToCenter.x, d3.event.y - mousePosRelativeToCenter.y))
+            this.draggedX = d3.event.x - mousePosRelativeToCenter.x;
+            this.draggedY = d3.event.y - mousePosRelativeToCenter.y;
+
+            this.setPosition(new Point(this.draggedX, this.draggedY))
             this.cropPosition()
             this.moveAction()
             // Dragging seems to force mousemove event to be ignored. Since we
@@ -115,7 +123,7 @@ export abstract class Draggable {
         this.svgComponent.selectAll("rect").style("stroke", "yellow").style("stroke-width", "2")
         if(this.wireGuidePresent) {
             windowProperties.wireGuide.moveToMouse()
-            windowProperties.wireGuide.show();            
+            windowProperties.wireGuide.show();
         }
     }
 
@@ -124,7 +132,7 @@ export abstract class Draggable {
             windowProperties.selectedElement = null
             windowProperties.wireGuide.hide();
         }
-        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)        
+        this.svgComponent.selectAll("rect").style("stroke", null).style("stroke-width", null)
     }
 
     public delete() {
@@ -167,15 +175,12 @@ export abstract class Draggable {
     public cropPosition() {
         let canvasBoundingBox = getSvgOriginalBoundingBox(document.getElementById("svg"))
         let componentBBox  = this.outerBoundingBox()
-        
+
         let bottomBoundary = (canvasBoundingBox.height-componentBBox.bottom) - windowProperties.svgYOffset;
 
-        let position = this.getPosition()
-
-        position.x = Math.min(Math.max(-componentBBox.left, position.x), canvasBoundingBox.width-componentBBox.right)
-        position.y = Math.min(Math.max(-componentBBox.top + windowProperties.svgYOffset, position.y), bottomBoundary)
-
-        this.setPosition(position)
+        this.setPosition(new Point( Math.min(Math.max(-componentBBox.left, this.draggedX), canvasBoundingBox.width-componentBBox.right),
+                                    Math.min(Math.max(-componentBBox.top + windowProperties.svgYOffset, this.draggedY), bottomBoundary)
+        ))
     }
 
     setPosition(position: Point) {
