@@ -187,13 +187,36 @@ export abstract class Layer extends Draggable {
             "layer_name": this.layerType,
             "children_ids": Array.from(this.children, child => child.uid),
             "parent_ids": Array.from(this.parents, parent => parent.uid),
-            "params": this.getParams(),
+            "params": this.getJSONParams(),
             "id": this.uid,
             "xPosition": this.getPosition().x,
             "yPosition": this.getPosition().y,
         }
     }
 
+    public getJSONParams() {
+        let params = {}
+        let defaultParams = this.parameterDefaults;
+        for(let line of this.paramBox.children){
+            let name = line.children[0].getAttribute('data-name');
+            if (line.children[1].className == "select") {
+                let selectElement: HTMLSelectElement = <HTMLSelectElement>line.children[1].children[0];
+                params[name] = selectElement.options[selectElement.selectedIndex].value
+            } else {
+                let value = (<HTMLInputElement>line.children[1]).value;
+                // Need to not parse as integer for float parameters
+                if ((defaultParams[name].toString()).indexOf('.') >= 0) {
+                    params[name] = parseFloat(value);
+                }
+
+                else {
+                    params[name] = parseString(value);  
+                }
+            }
+        }
+        return params
+    }
+    
     public getParams() {
         let params = {}
         let defaultParams = this.parameterDefaults;
