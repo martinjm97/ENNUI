@@ -412,20 +412,19 @@
 			<div id="educationOverfitting">
 				<div class="educationTitle"> Overfitting </div>
 				<div class="educationAuthor">by <i>Jesse Michel</i> and <i>Stefan Grosser</i></div>
-				<p>A neural network sometimes learns too well. It identifies trends specific only to the training data and thus fails to <strong>generalize</strong>. This problem of fitting the training data too closely is called <strong>overfitting</strong>. In Figure 1 you can see the decision boundary – the curve that determines the prediction of the classifier – in the case of underfitting, fitting well (normal), and overfitting.</p>
-				<div class="figure">
-					<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
-					<p class="caption">Possible decision boundaries <span class="citation"></span><span data-label="fig:ng"></span></p>
-				</div>
-				<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be higher than the validation accuracy. You can see an example of this in Figure 2.</p>
-
-
+				<p>A neural network sometimes learns too well. It identifies trends specific only to the training data and thus fails to <strong>generalize</strong>. This problem of fitting the training data too closely is called <strong>overfitting</strong>. In the following figure, you can see the decision boundary – the curve that determines the prediction of the classifier – in the case of underfitting, fitting well (normal), and overfitting.</p>
+				
+				<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
+				
+				<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be higher than the validation accuracy. You can see an example of this below.</p>
+				
+					
 				<img class="educationImage" style="float: left; max-width: 50%;" src="dist/loss_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
 
 
 				<img class="educationImage" style="float: right; max-width: 50%;" src="dist/accuracy_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
 
-				The architecture used for this example is shown in Figure 3.
+				The architecture used for this example is shown below.
 
 				<div class="figure">
 
