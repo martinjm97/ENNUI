@@ -414,12 +414,18 @@
 				<div class="educationAuthor">by <i>Jesse Michel</i> and <i>Stefan Grosser</i></div>
 				<p>A neural network sometimes learns too well. It identifies trends specific only to the training data and thus fails to <strong>generalize</strong>. This problem of fitting the training data too closely is called <strong>overfitting</strong>. In Figure 1 you can see the decision boundary – the curve that determines the prediction of the classifier – in the case of underfitting, fitting well (normal), and overfitting.</p>
 				<div class="figure">
-				<img src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
+				<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
 				<p class="caption">Possible decision boundaries <span class="citation"></span><span data-label="fig:ng"></span></p>
 				</div>
 				<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be higher than the validation accuracy. You can see an example of this in Figure 2 with the corresponding architecture in.</p>
-				<p><span>.5</span> <img src="dist/loss_overfit.png" title="fig:" alt="Visualization of overfitting during training" /></p>
-				<p><span>.5</span> <img src="dist/accuracy_overfit.png" title="fig:" alt="Visualization of overfitting during training" /></p>
+				
+					
+				<img class="educationImage" style="float: left; max-width: 50%;" src="dist/loss_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
+			
+			
+				<img class="educationImage" style="float: right; max-width: 50%;" src="dist/accuracy_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
+					
+				<br/><br/>
 				<p>Overfitting exemplifies why cross validation is so important; without checking a validation set, there would be no way to identify that the model has been overtrained.</p>
 				<p>So how can we combat overfitting and make sure that a model finds generalizable traits?</p>
 				<div class="educationSection">Regularization</div>
