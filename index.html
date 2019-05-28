@@ -399,7 +399,7 @@
 
 			<div id="educationDropout">
 				<div class="educationTitle"> Dropout Layers </div>
-				<div class="educationAuthor">by <i>Jesse Michel</i> and <i>Stefan Grosser</i></div>
+				<div class="educationAuthor">by <i>Stefan Grosser</i> and <i>Jesse Michel</i></div>
 
 				<div class="educationContent">
 					<p>Dropout layers ignore a random fraction of the incoming units during training time. For example, if the rate is 0.1, then on each forward pass the dropout layer will randomly select 10% of the weights and assign them to 0. Adding a dropout layer with a rate of 0 will make no change to the network, while a rate of 1 will have the dropout layer output 0.</p>
@@ -410,11 +410,15 @@
 
 			<div id="educationOverfitting">
 				<div class="educationTitle"> Overfitting </div>
-				<div class="educationAuthor">by <i>Jesse Michel</i> and <i>Stefan Grosser</i></div>
+				<div class="educationAuthor">by <i>Stefan Grosser</i> and <i>Jesse Michel</i></div>
 				<p>A neural network sometimes learns too well. It identifies trends specific only to the training data and thus fails to <strong>generalize</strong>. This problem of fitting the training data too closely is called <strong>overfitting</strong>. In the following figure, you can see the decision boundary – the curve that determines the prediction of the classifier – in the case of underfitting, fitting well (normal), and overfitting.</p>
 				
-				<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
-				
+				<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " /> 
+				<div class="modelLink">
+						<a class="modelLink" target="_newtab" href="http://mlwiki.org/index.php/Overfitting">
+							Source: ML Wiki
+						</a>
+				</div>
 				<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be higher than the validation accuracy. You can see an example of this below.</p>
 				
 					
