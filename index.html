@@ -414,24 +414,29 @@
 				<div class="educationAuthor">by <i>Jesse Michel</i> and <i>Stefan Grosser</i></div>
 				<p>A neural network sometimes learns too well. It identifies trends specific only to the training data and thus fails to <strong>generalize</strong>. This problem of fitting the training data too closely is called <strong>overfitting</strong>. In Figure 1 you can see the decision boundary – the curve that determines the prediction of the classifier – in the case of underfitting, fitting well (normal), and overfitting.</p>
 				<div class="figure">
-				<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
-				<p class="caption">Possible decision boundaries <span class="citation"></span><span data-label="fig:ng"></span></p>
+					<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
+					<p class="caption">Possible decision boundaries <span class="citation"></span><span data-label="fig:ng"></span></p>
 				</div>
-				<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be higher than the validation accuracy. You can see an example of this in Figure 2 with the corresponding architecture in.</p>
-				
-					
+				<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be higher than the validation accuracy. You can see an example of this in Figure 2.</p>
+
+
 				<img class="educationImage" style="float: left; max-width: 50%;" src="dist/loss_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
-			
-			
+
+
 				<img class="educationImage" style="float: right; max-width: 50%;" src="dist/accuracy_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
-					
-				<img class="educationImage" style="max-width: 50%;" src="dist/overfitting_network.png" alt="Network architecture" >
-				
-				
-				<div class="modelLink">
-						<a class="modelLink" target="_newtab" href="https://math.mit.edu/ennui/#%7B%22graph%22:%5B%7B%22layer_name%22:%22Input%22,%22children_ids%22:%5B2%5D,%22parent_ids%22:%5B%5D,%22params%22:%7B%22dataset%22:%22cifar%22%7D,%22id%22:0,%22xPosition%22:100,%22yPosition%22:399%7D,%7B%22layer_name%22:%22Conv2D%22,%22children_ids%22:%5B3%5D,%22parent_ids%22:%5B0%5D,%22params%22:%7B%22filters%22:16,%22kernelSize%22:%5B3,3%5D,%22strides%22:%5B1,1%5D,%22activation%22:%22relu%22%7D,%22id%22:2,%22xPosition%22:250,%22yPosition%22:319%7D,%7B%22layer_name%22:%22Flatten%22,%22children_ids%22:%5B1%5D,%22parent_ids%22:%5B2%5D,%22params%22:%7B%7D,%22id%22:3,%22xPosition%22:571,%22yPosition%22:319%7D,%7B%22layer_name%22:%22Output%22,%22children_ids%22:%5B%5D,%22parent_ids%22:%5B3%5D,%22params%22:%7B%7D,%22id%22:1,%22xPosition%22:899,%22yPosition%22:399%7D%5D,%22hyperparameters%22:%7B%22learningRate%22:0.1,%22batchSize%22:64,%22optimizer_id%22:%22defaultOptimizer%22,%22epochs%22:15,%22loss_id%22:%22defaultLoss%22%7D%7D">
-							Model Link
-						</a>
+
+				The architecture used for this example is shown in Figure 3.
+
+				<div class="figure">
+
+					<img class="educationImage" style="max-width: 50%;" src="dist/overfitting_network.png" alt="Network architecture" >
+
+
+					<div class="modelLink">
+							<a class="modelLink" target="_newtab" href="https://math.mit.edu/ennui/#%7B%22graph%22:%5B%7B%22layer_name%22:%22Input%22,%22children_ids%22:%5B2%5D,%22parent_ids%22:%5B%5D,%22params%22:%7B%22dataset%22:%22cifar%22%7D,%22id%22:0,%22xPosition%22:100,%22yPosition%22:399%7D,%7B%22layer_name%22:%22Conv2D%22,%22children_ids%22:%5B3%5D,%22parent_ids%22:%5B0%5D,%22params%22:%7B%22filters%22:16,%22kernelSize%22:%5B3,3%5D,%22strides%22:%5B1,1%5D,%22activation%22:%22relu%22%7D,%22id%22:2,%22xPosition%22:250,%22yPosition%22:319%7D,%7B%22layer_name%22:%22Flatten%22,%22children_ids%22:%5B1%5D,%22parent_ids%22:%5B2%5D,%22params%22:%7B%7D,%22id%22:3,%22xPosition%22:571,%22yPosition%22:319%7D,%7B%22layer_name%22:%22Output%22,%22children_ids%22:%5B%5D,%22parent_ids%22:%5B3%5D,%22params%22:%7B%7D,%22id%22:1,%22xPosition%22:899,%22yPosition%22:399%7D%5D,%22hyperparameters%22:%7B%22learningRate%22:0.1,%22batchSize%22:64,%22optimizer_id%22:%22defaultOptimizer%22,%22epochs%22:15,%22loss_id%22:%22defaultLoss%22%7D%7D">
+								Model Link
+							</a>
+					</div>
 				</div>
 				<br/><br/>
 				<p>Overfitting exemplifies why cross validation is so important; without checking a validation set, there would be no way to identify that the model has been overtrained.</p>
