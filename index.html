@@ -239,6 +239,7 @@
 				<!-- <div class = 'option education-option' data-articleType = 'Batchnorm'> Batch Norm</div> -->
 				<div class = 'option education-option' data-articleType = 'Dropout'> Dropout</div>
 				<div class = 'option education-option' data-articleType = 'Flatten'> Flatten</div>
+				<div class = 'option education-option' data-articleType = 'Overfitting'> Overfitting</div>
 				<!-- Temporarily -->
 				<div class = 'option education-option' data-articleType = 'ResNets'> ResNets </div>
 
@@ -407,6 +408,35 @@
 					<p>Dropout is commonly used to prevent <strong>overfitting</strong> (for more information, see our write-up on the topic). One may think of dropout as having the network learn a collection of weak classifiers that during testing come together to create a more powerful classifier. For those who are familiar with this terminology, it is boosting using an ensemble model. It also has the convenient property of speeding up training since fewer weights are required in each forward pass.</p>
 				</div>
 			</div>
+
+			<div id="educationOverfitting">
+				<div class="educationTitle"> Overfitting </div>
+				<div class="educationAuthor">by <i>Jesse Michel</i> and <i>Stefan Grosser</i></div>
+				<p>A neural network sometimes learns too well. It identifies trends specific only to the training data and thus fails to <strong>generalize</strong>. This problem of fitting the training data too closely is called <strong>overfitting</strong>. In Figure 1 you can see the decision boundary – the curve that determines the prediction of the classifier – in the case of underfitting, fitting well (normal), and overfitting.</p>
+				<div class="figure">
+				<img src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
+				<p class="caption">Possible decision boundaries <span class="citation"></span><span data-label="fig:ng"></span></p>
+				</div>
+				<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be higher than the validation accuracy. You can see an example of this in Figure 2 with the corresponding architecture in.</p>
+				<p><span>.5</span> <img src="dist/loss_overfit.png" title="fig:" alt="Visualization of overfitting during training" /></p>
+				<p><span>.5</span> <img src="dist/accuracy_overfit.png" title="fig:" alt="Visualization of overfitting during training" /></p>
+				<p>Overfitting exemplifies why cross validation is so important; without checking a validation set, there would be no way to identify that the model has been overtrained.</p>
+				<p>So how can we combat overfitting and make sure that a model finds generalizable traits?</p>
+				<div class="educationSection">Regularization</div>
+				<p>One way to prevent overfitting is regularization, which takes the form of adding in a new term that guides the model towards a simpler solution. Recall that in classification problems we begin with pairs of inputs and their classifications <span class="math display">\[(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n).\]</span> From this, we want to find a function <span class="math inline">\(f\)</span> that will accurately predict the classes of new samples of data. So if our original problem was <span class="math display">\[\min_f \sum_{i=1}^{n} C(f(x_i), y_i),\]</span> where <span class="math inline">\(C\)</span> calculates the cost of predicting <span class="math inline">\(f(x_i)\)</span> when the true value is <span class="math inline">\(y_i\)</span>, then the regularized loss will be <span class="math display">\[\min_f \sum_{i=1}^{n} C(f(x_i), y_i) + \lambda R(f)\]</span> where <span class="math inline">\(R(f)\)</span> is defined to be larger when <span class="math inline">\(f\)</span> is more complex. There are various definitions of how complex a layer is, but in our case we will say that a layer with a lower <span class="math inline">\(L2\)</span>-norm is less complex. Formally we define <span class="math inline">\(L2\)</span>-norm for a matrix <span class="math inline">\(A\)</span> as <span class="math display">\[\text{norm}(A) = \sqrt{\sum_i \sum_j a_{ij}^2}\]</span> For example, a matrix <span class="math display">\[A =
+				\begin{bmatrix}
+				1 &amp; 2 \\
+				0 &amp; -2
+				\end{bmatrix}\]</span> we have the L2-norm <span class="math display">\[||A||_2 = \sqrt{1^2 + 2^2 + 0^2 + (-2)^2} = 3\]</span></p>
+				<p>There are several reasons why penalizing an increased <span class="math inline">\(L2\)</span> norm is a reasonable action. If we assume that a classifier is going to overfit, then adding in this penalty will guide the decision boundary away from that state. This can be seen as adding “wiggle room&quot; to the classifier. As well, this penalty of a high <span class="math inline">\(L2\)</span> norm is a way to encourage discarding useless information. The penalty term drives layer weights to be smaller, and the closer a layer weight gets to zero, the smaller its impact is as a feature.</p>
+				<p>This notion of complexity leads to <span class="math inline">\(L1\)</span> and <span class="math inline">\(L2\)</span> normalization becoming a form of regularization. For a given layer <span class="math inline">\(W\)</span>, we can add <span class="math inline">\(\lambda ||W||_2\)</span> to our loss function, where <span class="math inline">\(\lambda\)</span> is hyperparameter. This is called <span class="math inline">\(L2\)</span> regularization.</p>
+				<div class="educationSection">Dropout</div>
+				<p>Another way to fight overfitting is a technique known as dropout. Dropout layers ignore a random fraction rate of the input units during training time (see our explanation on Dropout layers for more information). At first sight, this seems like a very strange action; however, there are two strong intuitions for why dropout might help in avoiding overfitting. Dropout can be seen as ensemble learning: each batch is a weak learner, and performing an average of the results can be seen as boosting. Another view is that dropout, over many runs, forces all parts of a network architecture to be used.</p>
+				<div class="educationSection">Conclusion</div>
+				<p>Regularization and dropout are two very common and simple approaches. When used correctly, along with cross validation, it is far easier to detect and prevent overfitting and have confidence in a network.</p>
+
+			</div>
+
 
 			<div style="height:100px;"> </div>
 
