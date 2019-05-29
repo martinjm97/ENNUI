@@ -411,50 +411,57 @@
 			<div id="educationOverfitting">
 				<div class="educationTitle"> Overfitting </div>
 				<div class="educationAuthor">by <i>Stefan Grosser</i> and <i>Jesse Michel</i></div>
-				<p>A neural network sometimes learns too well. It identifies trends specific only to the training data and thus fails to <strong>generalize</strong>. This problem of fitting the training data too closely is called <strong>overfitting</strong>. In the following figure, you can see the decision boundary – the curve that determines the prediction of the classifier – in the case of underfitting, fitting well (normal), and overfitting.</p>
+				<div class="educationContent">
 
-				<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
-				<div class="modelLink">
-						<a class="modelLink" target="_newtab" href="http://mlwiki.org/index.php/Overfitting">
-							Source: ML Wiki
-						</a>
-				</div>
-				<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be higher than the validation accuracy. You can see an example of this below.</p>
+					<p>A neural network sometimes learns too well. It identifies trends specific only to the training data and thus fails to <strong>generalize</strong>. This problem of fitting the training data too closely is called <strong>overfitting</strong>. In the following figure shows the decision boundary – the curve that determines the prediction of the classifier – in the cases of underfitting, fitting well (normal), and overfitting.</p>
 
-
-				<img class="educationImage" style="float: left; max-width: 50%;" src="dist/loss_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
-
-
-				<img class="educationImage" style="float: right; max-width: 50%;" src="dist/accuracy_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
-
-				The architecture used for this example is shown below.
-
-				<div class="figure">
-
-					<img class="educationImage" style="max-width: 50%;" src="dist/overfitting_network.png" alt="Network architecture" >
-
-
+					<img class="educationImage" src="dist/overfitti_ng.png" alt="Possible decision boundaries " />
 					<div class="modelLink">
-							<a class="modelLink" target="_newtab" href="https://math.mit.edu/ennui/#%7B%22graph%22:%5B%7B%22layer_name%22:%22Input%22,%22children_ids%22:%5B2%5D,%22parent_ids%22:%5B%5D,%22params%22:%7B%22dataset%22:%22cifar%22%7D,%22id%22:0,%22xPosition%22:100,%22yPosition%22:399%7D,%7B%22layer_name%22:%22Conv2D%22,%22children_ids%22:%5B3%5D,%22parent_ids%22:%5B0%5D,%22params%22:%7B%22filters%22:16,%22kernelSize%22:%5B3,3%5D,%22strides%22:%5B1,1%5D,%22kernelRegularizer%22:%22none%22,%22regScale%22:0.1,%22activation%22:%22relu%22%7D,%22id%22:2,%22xPosition%22:261,%22yPosition%22:453%7D,%7B%22layer_name%22:%22Flatten%22,%22children_ids%22:%5B1%5D,%22parent_ids%22:%5B2%5D,%22params%22:%7B%7D,%22id%22:3,%22xPosition%22:585,%22yPosition%22:484%7D,%7B%22layer_name%22:%22Output%22,%22children_ids%22:%5B%5D,%22parent_ids%22:%5B3%5D,%22params%22:%7B%7D,%22id%22:1,%22xPosition%22:900,%22yPosition%22:399%7D%5D,%22hyperparameters%22:%7B%22learningRate%22:0.1,%22batchSize%22:64,%22optimizer_id%22:%22defaultOptimizer%22,%22epochs%22:15,%22loss_id%22:%22defaultLoss%22%7D%7D">
-								Model Link
+							<a class="modelLink" target="_newtab" href="http://mlwiki.org/index.php/Overfitting">
+								Source: ML Wiki
 							</a>
 					</div>
+					<p>When a classifier overfits, it performs far better on the training data than on the test data. Therefore, the training accuracy will be much higher than the validation accuracy and the training loss will be much lower than the validation loss. We have provided an example of this below. </p>
+
+					<img class="educationImage" style="float: left; max-width: 50%;" src="dist/loss_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
+
+
+					<img class="educationImage" style="float: right; max-width: 50%;" src="dist/accuracy_overfit.png" title="fig:" alt="Visualization of overfitting during training" />
+
+					<div style="margin-top:10px;">
+						<!-- TODO: padding above -->
+						The architecture used for this example is shown below.
+					</div>
+
+
+					<div class="figure">
+
+						<img class="educationImage" style="max-width: 50%;" src="dist/overfitting_network.png" alt="Network architecture" >
+
+
+						<div class="modelLink">
+								<a class="modelLink" target="_newtab" href="https://math.mit.edu/ennui/#%7B%22graph%22:%5B%7B%22layer_name%22:%22Input%22,%22children_ids%22:%5B2%5D,%22parent_ids%22:%5B%5D,%22params%22:%7B%22dataset%22:%22cifar%22%7D,%22id%22:0,%22xPosition%22:100,%22yPosition%22:399%7D,%7B%22layer_name%22:%22Conv2D%22,%22children_ids%22:%5B3%5D,%22parent_ids%22:%5B0%5D,%22params%22:%7B%22filters%22:16,%22kernelSize%22:%5B3,3%5D,%22strides%22:%5B1,1%5D,%22kernelRegularizer%22:%22none%22,%22regScale%22:0.1,%22activation%22:%22relu%22%7D,%22id%22:2,%22xPosition%22:261,%22yPosition%22:453%7D,%7B%22layer_name%22:%22Flatten%22,%22children_ids%22:%5B1%5D,%22parent_ids%22:%5B2%5D,%22params%22:%7B%7D,%22id%22:3,%22xPosition%22:585,%22yPosition%22:484%7D,%7B%22layer_name%22:%22Output%22,%22children_ids%22:%5B%5D,%22parent_ids%22:%5B3%5D,%22params%22:%7B%7D,%22id%22:1,%22xPosition%22:900,%22yPosition%22:399%7D%5D,%22hyperparameters%22:%7B%22learningRate%22:0.1,%22batchSize%22:64,%22optimizer_id%22:%22defaultOptimizer%22,%22epochs%22:15,%22loss_id%22:%22defaultLoss%22%7D%7D">
+									Model Link
+								</a>
+						</div>
+					</div>
+					<br/><br/>
+					<p>Overfitting exemplifies why cross validation is so important; without a validation set, we would not be able to identify that the model will fail to generalize.</p>
+					<p>So, how can we combat overfitting and make sure that a model finds generalizable traits?</p>
+					<div class="educationSection">Regularization</div>
+					<p>One way to prevent overfitting is regularization, which takes the form of adding in a new term that guides the model towards a simpler solution. Recall that in classification problems we begin with pairs of inputs and their classifications <span class="math display">\[(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n).\]</span> From this, we want to find a function <span class="math inline">\(f\)</span> that will accurately predict the classes of new samples of data. So if our original problem was <span class="math display">\[\min_f \sum_{i=1}^{n} C(f(x_i), y_i),\]</span> where <span class="math inline">\(C\)</span> calculates the cost of predicting <span class="math inline">\(f(x_i)\)</span> when the true value is <span class="math inline">\(y_i\)</span>, then the regularized loss will be <span class="math display">\[\min_f \sum_{i=1}^{n} C(f(x_i), y_i) + \lambda R(f),\]</span> where <span class="math inline">\(R(f)\)</span> the regularization term that is defined to be larger when <span class="math inline">\(f\)</span> is more complex and <span class="math inline">\lambda>0</span> is a tunable parameter controlling the amount of regularization. There are various definitions of how complex a layer is, but in our case we will say that a layer with a lower <span class="math inline">\(L2\)</span>-norm is less complex. Formally, we define <span class="math inline">\(L2\)</span>-norm for a matrix <span class="math inline">\(A\)</span> as <span class="math display">\[\text{norm}(A) = \sqrt{\sum_i \sum_j a_{ij}^2}.\]</span> For example, given matrix <span class="math display">\[A =
+					\begin{bmatrix}
+					1 &amp; 2 \\
+					0 &amp; -2
+					\end{bmatrix}\],</span> the L2-norm is <span class="math display">\[||A||_2 = \sqrt{1^2 + 2^2 + 0^2 + (-2)^2} = 3\]</span></p>
+					<p>There are several reasons why penalizing an increased <span class="math inline">\(L2\)</span>-norm is a reasonable action. If we assume that a classifier is going to overfit, then adding in the penalty <span class="math inline">\(\lambda R(f)\)</span> will guide the decision boundary away from that state. This can be seen as adding “wiggle room&quot; to the classifier. Moreover, this penalty of a high <span class="math inline">\(L2\)</span>-norm is a way to encourage discarding useless information. The penalty term drives layer weights to be smaller, and the closer a layer weight gets to zero, the smaller its impact is as a feature.</p>
+					<p>This notion of complexity leads to <span class="math inline">\(L1\)</span>- and <span class="math inline">\(L2\)</span>-norms becoming forms of regularization. In the case of <span class="math inline">\(L2\)</span>-regularization, we can add <span class="math inline">\(\lambda ||W||_2\)</span> to our loss function for a given layer <span class="math inline">\(W.\)</span> There are other ways to regularize, but for now let us take a look at another approach to preventing overfitting. </p>
+					<!-- TODO: Maybe explain L1-regularization in the future -->
+					<div class="educationSection">Dropout</div>
+					<p>Another way to fight overfitting is a technique known as dropout. Dropout layers ignore a random fraction of the input units during training time (see our explanation on dropout layers for more information). There are two intuitions for why dropout helps prevent overfitting. Dropout can be seen a type of ensemble learning -- taking a collection of weak (underfit) classifiers and combing their classifications in some way e.g. taking the majority class. For each batch a new section of the network is trained as a weak classifier. During validation, the whole network is used, effectively combining all of the classifiers to provide a single result. Another view is that, over many runs, dropout forces all parts of a network architecture to be used. Therefore, no one feature of the training set will be too influential, avoiding the network from focussing on artifacts that are just specific to the training set.</p>
+					<div class="educationSection">Conclusion</div>
+					<p>Overfitting hinders the performance of classifiers on unseen data. Regularization and dropout are two widely-used and easy-to-implement approaches for combatting overfitting. Combining these methods with cross validation, makes it far easier to build more generalizable models.</p>
 				</div>
-				<br/><br/>
-				<p>Overfitting exemplifies why cross validation is so important; without checking a validation set, there would be no way to identify that the model has been overtrained.</p>
-				<p>So how can we combat overfitting and make sure that a model finds generalizable traits?</p>
-				<div class="educationSection">Regularization</div>
-				<p>One way to prevent overfitting is regularization, which takes the form of adding in a new term that guides the model towards a simpler solution. Recall that in classification problems we begin with pairs of inputs and their classifications <span class="math display">\[(x_1, y_1), (x_2, y_2), \dots, (x_n, y_n).\]</span> From this, we want to find a function <span class="math inline">\(f\)</span> that will accurately predict the classes of new samples of data. So if our original problem was <span class="math display">\[\min_f \sum_{i=1}^{n} C(f(x_i), y_i),\]</span> where <span class="math inline">\(C\)</span> calculates the cost of predicting <span class="math inline">\(f(x_i)\)</span> when the true value is <span class="math inline">\(y_i\)</span>, then the regularized loss will be <span class="math display">\[\min_f \sum_{i=1}^{n} C(f(x_i), y_i) + \lambda R(f)\]</span> where <span class="math inline">\(R(f)\)</span> is defined to be larger when <span class="math inline">\(f\)</span> is more complex. There are various definitions of how complex a layer is, but in our case we will say that a layer with a lower <span class="math inline">\(L2\)</span>-norm is less complex. Formally we define <span class="math inline">\(L2\)</span>-norm for a matrix <span class="math inline">\(A\)</span> as <span class="math display">\[\text{norm}(A) = \sqrt{\sum_i \sum_j a_{ij}^2}\]</span> For example, a matrix <span class="math display">\[A =
-				\begin{bmatrix}
-				1 &amp; 2 \\
-				0 &amp; -2
-				\end{bmatrix}\]</span> we have the L2-norm <span class="math display">\[||A||_2 = \sqrt{1^2 + 2^2 + 0^2 + (-2)^2} = 3\]</span></p>
-				<p>There are several reasons why penalizing an increased <span class="math inline">\(L2\)</span> norm is a reasonable action. If we assume that a classifier is going to overfit, then adding in this penalty will guide the decision boundary away from that state. This can be seen as adding “wiggle room&quot; to the classifier. As well, this penalty of a high <span class="math inline">\(L2\)</span> norm is a way to encourage discarding useless information. The penalty term drives layer weights to be smaller, and the closer a layer weight gets to zero, the smaller its impact is as a feature.</p>
-				<p>This notion of complexity leads to <span class="math inline">\(L1\)</span> and <span class="math inline">\(L2\)</span> normalization becoming a form of regularization. For a given layer <span class="math inline">\(W\)</span>, we can add <span class="math inline">\(\lambda ||W||_2\)</span> to our loss function, where <span class="math inline">\(\lambda\)</span> is hyperparameter. This is called <span class="math inline">\(L2\)</span> regularization.</p>
-				<div class="educationSection">Dropout</div>
-				<p>Another way to fight overfitting is a technique known as dropout. Dropout layers ignore a random fraction rate of the input units during training time (see our explanation on Dropout layers for more information). At first sight, this seems like a very strange action; however, there are two strong intuitions for why dropout might help in avoiding overfitting. Dropout can be seen as ensemble learning: each batch is a weak learner, and performing an average of the results can be seen as boosting. Another view is that dropout, over many runs, forces all parts of a network architecture to be used.</p>
-				<div class="educationSection">Conclusion</div>
-				<p>Regularization and dropout are two very common and simple approaches. When used correctly, along with cross validation, it is far easier to detect and prevent overfitting and have confidence in a network.</p>
 
 			</div>
 
