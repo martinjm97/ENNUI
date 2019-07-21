@@ -35,12 +35,12 @@ export interface DraggableData {
 }
 
 export let svgData: DraggableData = {
-	draggable : [],
+	draggable: [],
 	input: null,
 	output: null
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
 	// This function runs when the DOM is ready, i.e. when the document has been parsed
 	setupPlots();
@@ -71,34 +71,34 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("error").style.display = "none";
 
 	var elmts = document.getElementsByClassName('tab');
-	for(let elmt of elmts){
+	for (let elmt of elmts) {
 		dispatchSwitchTabOnClick(elmt);
 	}
 
 	var elmts = document.getElementsByClassName('option');
-	for(let elmt of elmts){
+	for (let elmt of elmts) {
 		dispatchCreationOnClick(elmt);
 	}
 
 	var elmts = document.getElementsByClassName('categoryTitle');
-	for(let elmt of elmts){
+	for (let elmt of elmts) {
 		makeCollapsable(elmt);
 	}
 
-    window.addEventListener('create', function( e ) {
+	window.addEventListener('create', function (e) {
 		appendItem(e);
 	});
 
-    window.addEventListener('selectClass', function( e ) {
+	window.addEventListener('selectClass', function (e) {
 		switchClassExamples(e);
 	});
 
-	window.addEventListener('switch', function( e: any ) {
+	window.addEventListener('switch', function (e: any) {
 		console.log("switching tabs!")
 		switchTab(e);
 	});
 
-	window.addEventListener('resize',resizeMiddleSVG);
+	window.addEventListener('resize', resizeMiddleSVG);
 	window.addEventListener('resize', setupPlots);
 
 	resizeMiddleSVG();
@@ -110,55 +110,55 @@ document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("defaultLoss").classList.add('selected')
 
 	document.getElementById("train").onclick = trainOnClick
-	document.getElementById("informationEducation").onclick = (_)  => {
+	document.getElementById("informationEducation").onclick = (_) => {
 		document.getElementById("informationOverlay").style.display = "none";
-		switchTab({"detail": {"tabType": "education"}})
+		switchTab({ "detail": { "tabType": "education" } })
 		console.log("Switching the tab")
 
 	}
 	document.getElementById("informationOverlay").onclick = (_) => document.getElementById("informationOverlay").style.display = "none";
 	document.getElementById("x").onclick = (_) => clearError()
 
-	document.getElementById("svg").addEventListener("click", function(event) {
+	document.getElementById("svg").addEventListener("click", function (event) {
 		// Only click if there is a selected element, and the clicked element is an SVG Element, and its id is "svg"
 		// It does this to prevent unselecting if we click on a layer block or other svg shape
-		if(windowProperties.selectedElement && event.target instanceof SVGElement && event.target.id == "svg"){
+		if (windowProperties.selectedElement && event.target instanceof SVGElement && event.target.id == "svg") {
 			windowProperties.selectedElement.unselect();
 			windowProperties.selectedElement = null;
 		}
 	})
 
-	window.onkeyup = function(event){
-		switch(event.key){
-			case 'Escape' :
-				if(windowProperties.selectedElement){
+	window.onkeyup = function (event) {
+		switch (event.key) {
+			case 'Escape':
+				if (windowProperties.selectedElement) {
 					windowProperties.selectedElement.unselect();
 					windowProperties.selectedElement = null;
 				}
 				break;
-			case 'Delete' :
+			case 'Delete':
 				if (document.getElementsByClassName('focusParam').length == 0)
 					deleteSelected();
 				break;
-			case 'Backspace' :
+			case 'Backspace':
 				if (document.getElementsByClassName('focusParam').length == 0)
 					deleteSelected();
 				break;
-			case 'Enter' :
+			case 'Enter':
 				break;
 		}
 	};
 
-	windowProperties.wireGuide = new WireGuide()
-	windowProperties.shapeTextBox = new TextBox()
+	windowProperties.wireGuide = new WireGuide();
+	windowProperties.shapeTextBox = new TextBox();
 
-	d3.select("#svg").on("mousemove", function(d: any, i) {
+	d3.select("#svg").on("mousemove", function (d: any, i) {
 		if (windowProperties.selectedElement instanceof Layer) {
-			windowProperties.wireGuide.moveToMouse()
+			windowProperties.wireGuide.moveToMouse();
 		}
 	})
 
-	svgData = loadStateIfPossible()
+	svgData = loadStateIfPossible();
 
 	// Select the input block when we load the page
 	svgData.input.select();
@@ -167,8 +167,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	// showInformationOverlay();
 });
 
-function deleteSelected(){
-	if(windowProperties.selectedElement){
+function deleteSelected() {
+	if (windowProperties.selectedElement) {
 		windowProperties.selectedElement.delete();
 		windowProperties.selectedElement = null;
 	}
@@ -180,20 +180,20 @@ async function trainOnClick() {
 	// Only train if not already training
 
 	let training = document.getElementById('train');
-	if (!training.classList.contains("train-active")){
-		clearError()
+	if (!training.classList.contains("train-active")) {
+		clearError();
 
-		changeDataset(svgData.input.getParams()["dataset"])
+		changeDataset(svgData.input.getParams()["dataset"]);
 
 		// Grab hyperparameters
-		setModelHyperparameters()
+		setModelHyperparameters();
 
 		let trainingBox = document.getElementById('ti_training');
 		trainingBox.children[1].innerHTML = 'Yes';
 		training.innerHTML = "Training";
 		training.classList.add("train-active");
 		try {
-			model.architecture = buildNetworkDAG(svgData.input)
+			model.architecture = buildNetworkDAG(svgData.input);
 			await train()
 		} catch (error) {
 			displayError(error);
@@ -206,15 +206,15 @@ async function trainOnClick() {
 	}
 }
 
-function bindMenuExpander(){
+function bindMenuExpander() {
 	document.getElementById('menu').style.display = 'block';
-	document.getElementById('menu_expander_handle').addEventListener('click',function(e){
-		if(document.getElementById('menu').style.display == 'none'){
+	document.getElementById('menu_expander_handle').addEventListener('click', function (e) {
+		if (document.getElementById('menu').style.display == 'none') {
 
 			document.getElementById('menu').style.display = 'block'
-			document.getElementById('expander_triangle').setAttribute('points',"0,15 10,30 10,0");
+			document.getElementById('expander_triangle').setAttribute('points', "0,15 10,30 10,0");
 
-			if(document.getElementById('paramshell').style.display == 'block'){
+			if (document.getElementById('paramshell').style.display == 'block') {
 				document.getElementById('middle').style.width = 'calc(100% - 430px)'
 			} else {
 				document.getElementById('middle').style.width = 'calc(100% - 240px)'
@@ -223,9 +223,9 @@ function bindMenuExpander(){
 		} else {
 
 			document.getElementById('menu').style.display = 'none'
-			document.getElementById('expander_triangle').setAttribute('points',"10,15 0,30 0,0");
+			document.getElementById('expander_triangle').setAttribute('points', "10,15 0,30 0,0");
 
-			if(document.getElementById('paramshell').style.display == 'block'){
+			if (document.getElementById('paramshell').style.display == 'block') {
 				document.getElementById('middle').style.width = 'calc(100% - 250px)'
 			} else {
 				document.getElementById('middle').style.width = 'calc(100% - 60px)'
@@ -238,15 +238,15 @@ function bindMenuExpander(){
 	});
 }
 
-function bindRightMenuExpander(){
+function bindRightMenuExpander() {
 	document.getElementById('paramshell').style.display = 'block';
-	document.getElementById('right_menu_expander_handle').addEventListener('click',function(e){
-		if(document.getElementById('paramshell').style.display == 'none'){
+	document.getElementById('right_menu_expander_handle').addEventListener('click', function (e) {
+		if (document.getElementById('paramshell').style.display == 'none') {
 
 			document.getElementById('paramshell').style.display = 'block'
-			document.getElementById('right_expander_triangle').setAttribute('points',"20,15 10,30 10,0");
+			document.getElementById('right_expander_triangle').setAttribute('points', "20,15 10,30 10,0");
 
-			if(document.getElementById('menu').style.display == 'block'){
+			if (document.getElementById('menu').style.display == 'block') {
 				document.getElementById('middle').style.width = 'calc(100% - 430px)'
 			} else {
 				document.getElementById('middle').style.width = 'calc(100% - 250px)'
@@ -254,9 +254,9 @@ function bindRightMenuExpander(){
 		} else {
 
 			document.getElementById('paramshell').style.display = 'none'
-			document.getElementById('right_expander_triangle').setAttribute('points',"0,15 10,30 10,0");
+			document.getElementById('right_expander_triangle').setAttribute('points', "0,15 10,30 10,0");
 
-			if(document.getElementById('menu').style.display == 'block'){
+			if (document.getElementById('menu').style.display == 'block') {
 				document.getElementById('middle').style.width = 'calc(100% - 240px)'
 			} else {
 				document.getElementById('middle').style.width = 'calc(100% - 60px)'
@@ -267,29 +267,29 @@ function bindRightMenuExpander(){
 	});
 }
 
-function resizeMiddleSVG(){
+function resizeMiddleSVG() {
 	const original_svg_width = 1000;
 
 	let svgWidth = document.getElementById('middle').clientWidth;
 	let svgHeight = document.getElementById('middle').clientHeight;
 
-	let ratio = svgWidth/original_svg_width;
+	let ratio = svgWidth / original_svg_width;
 
-	let xTranslate = (svgWidth-original_svg_width)/2
-	let yTranslate = Math.max(0, (svgHeight*ratio-svgHeight)/2);
+	let xTranslate = (svgWidth - original_svg_width) / 2
+	let yTranslate = Math.max(0, (svgHeight * ratio - svgHeight) / 2);
 
 	// Modify initialization heights for random locations for layers/activations so they don't appear above the svg
-	let yOffsetDelta = yTranslate/ratio - windowProperties.svgYOffset;
+	let yOffsetDelta = yTranslate / ratio - windowProperties.svgYOffset;
 	ActivationLayer.defaultInitialLocation.y += yOffsetDelta
 	Activation.defaultLocation.y += yOffsetDelta
 
-	windowProperties.svgYOffset = yTranslate/ratio;
+	windowProperties.svgYOffset = yTranslate / ratio;
 	windowProperties.svgTransformRatio = ratio;
 
 	document.getElementById('svg').setAttribute("transform", `translate(${xTranslate}, 0) scale(${ratio}, ${ratio})  `);
 
 	// Call crop position on each draggable to ensure it is within the new canvas boundary
-	if( svgData.input != null) {
+	if (svgData.input != null) {
 		svgData.input.cropPosition();
 		svgData.input.moveAction();
 	}
@@ -303,27 +303,27 @@ function resizeMiddleSVG(){
 	});
 }
 
-function toggleExpanderTriangle(categoryTitle){
-		categoryTitle.getElementsByClassName('expander')[0].classList.toggle("expanded");
+function toggleExpanderTriangle(categoryTitle) {
+	categoryTitle.getElementsByClassName('expander')[0].classList.toggle("expanded");
 }
 
-function makeCollapsable(elmt){
-	elmt.addEventListener('click', function(e){
+function makeCollapsable(elmt) {
+	elmt.addEventListener('click', function (e) {
 		toggleExpanderTriangle(elmt)
-		var arr = Array.prototype.slice.call( elmt.parentElement.children ).slice(1);
+		var arr = Array.prototype.slice.call(elmt.parentElement.children).slice(1);
 
-		if(elmt.getAttribute('data-expanded') == 'false'){
-			for(let sib of arr){
+		if (elmt.getAttribute('data-expanded') == 'false') {
+			for (let sib of arr) {
 				if (sib.id != 'defaultparambox')
 					sib.style.display = 'block';
 			}
 
-			elmt.setAttribute('data-expanded','true');
+			elmt.setAttribute('data-expanded', 'true');
 		} else {
-			for(let sib of arr){
+			for (let sib of arr) {
 				sib.style.display = 'none';
 			}
-			elmt.setAttribute('data-expanded','false');
+			elmt.setAttribute('data-expanded', 'false');
 		}
 	})
 }
@@ -332,19 +332,19 @@ function makeCollapsable(elmt){
  * Takes the hyperparemeters from the html and assigns them to the global model
  */
 export function setModelHyperparameters() {
-	let temp : number = 0;
+	let temp: number = 0;
 	let hyperparams = document.getElementsByClassName("hyperparamvalue")
 
 	for (let hp of hyperparams) {
-		let name : string = hp.id;
+		let name: string = hp.id;
 
 		temp = Number((<HTMLInputElement>document.getElementById(name)).value);
 		if (temp < 0 || temp == null) {
-			let error : Error = Error("Hyperparameters should be positive numbers.")
+			let error: Error = Error("Hyperparameters should be positive numbers.")
 			displayError(error);
 			return;
 		}
-		switch(name){
+		switch (name) {
 			case "learningRate":
 				model.params.learningRate = temp;
 				break;
@@ -360,11 +360,11 @@ export function setModelHyperparameters() {
 	}
 }
 
-function dispatchSwitchTabOnClick(elmt){
-	elmt.addEventListener('click', function(e){
-        let tabType = elmt.getAttribute('data-tabType')
-		let detail = { tabType : tabType}
-        let event = new CustomEvent('switch', { detail : detail } );
+function dispatchSwitchTabOnClick(elmt) {
+	elmt.addEventListener('click', function (e) {
+		let tabType = elmt.getAttribute('data-tabType')
+		let detail = { tabType: tabType }
+		let event = new CustomEvent('switch', { detail: detail });
 		window.dispatchEvent(event);
 	});
 }
@@ -384,9 +384,9 @@ export function tabSelected(): string {
 }
 
 
-function dispatchCreationOnClick(elmt){
+function dispatchCreationOnClick(elmt) {
 	if (!elmt.classList.contains('dropdown'))
-		elmt.addEventListener('click', function(e){
+		elmt.addEventListener('click', function (e) {
 			let itemType
 			if (elmt.parentElement.classList.contains('dropdown-content')) {
 				itemType = elmt.parentElement.parentElement.parentElement.getAttribute('data-itemType')
@@ -395,7 +395,7 @@ function dispatchCreationOnClick(elmt){
 				itemType = elmt.parentElement.getAttribute('data-itemType')
 			}
 
-			if (model.params.isParam(itemType)){
+			if (model.params.isParam(itemType)) {
 				let setting;
 				if (elmt.hasAttribute('data-trainType')) {
 					setting = elmt.getAttribute('data-trainType');
@@ -408,7 +408,7 @@ function dispatchCreationOnClick(elmt){
 					selected[0].classList.remove("selected");
 				}
 				elmt.classList.add("selected");
-				updateNetworkParameters({itemType: itemType, setting : setting});
+				updateNetworkParameters({ itemType: itemType, setting: setting });
 			} else if (itemType == "share") {
 				changeDataset(svgData.input.getParams()["dataset"])
 				if (elmt.getAttribute('share-option') == "exportPython") {
@@ -416,12 +416,12 @@ function dispatchCreationOnClick(elmt){
 					download(generatePython(topologicalSort(svgData.input)), filename);
 				} else if (elmt.getAttribute('share-option') == "exportJulia") {
 					if (svgData.input.getParams()["dataset"] == "cifar") {
-						let error : Error = Error("CIFAR-10 dataset exporting to Julia not currently supported. Select MNIST dataset instead.")
+						let error: Error = Error("CIFAR-10 dataset exporting to Julia not currently supported. Select MNIST dataset instead.")
 						displayError(error);
 						return;
 					}
 					download(generateJulia(topologicalSort(svgData.input)), "mnist_model.jl");
-				} else if (elmt.getAttribute('share-option') == "copyModel"){
+				} else if (elmt.getAttribute('share-option') == "copyModel") {
 					let state = graphToJson(svgData);
 					let baseUrl: string = window.location.href;
 					let urlParam: string = storeNetworkInUrl(state);
@@ -429,18 +429,18 @@ function dispatchCreationOnClick(elmt){
 				}
 			} else if (itemType == "classes") {
 				selectOption(elmt)
-				if (model.architecture != null){
+				if (model.architecture != null) {
 					showPredictions()
 				}
 			} else if (itemType == "educationPage") {
 				// selectOption(elmt); // TODO uncomment this line to add back in selections
 				let target: HTMLElement = document.getElementById('education' + elmt.getAttribute("data-articleType"));
-				(<Element> target.parentNode).scrollTop = target.offsetTop;
+				(<Element>target.parentNode).scrollTop = target.offsetTop;
 			}
 			else {
-				let detail = { itemType : itemType}
-				detail[itemType + 'Type'] = elmt.getAttribute('data-'+itemType+'Type')
-				let event = new CustomEvent('create', { detail : detail } );
+				let detail = { itemType: itemType }
+				detail[itemType + 'Type'] = elmt.getAttribute('data-' + itemType + 'Type')
+				let event = new CustomEvent('create', { detail: detail });
 				window.dispatchEvent(event);
 			}
 		});
@@ -448,8 +448,8 @@ function dispatchCreationOnClick(elmt){
 
 
 function selectOption(elmt: HTMLElement) {
-	
-	let parents = Array.from(document.querySelectorAll(`[data-itemType="${elmt.parentElement.getAttribute("data-itemType")}"]`).values()) ;
+
+	let parents = Array.from(document.querySelectorAll(`[data-itemType="${elmt.parentElement.getAttribute("data-itemType")}"]`).values());
 	for (let parent of parents) {
 		for (let option of parent.getElementsByClassName("option")) {
 			option.classList.remove("selected");
@@ -459,8 +459,8 @@ function selectOption(elmt: HTMLElement) {
 	elmt.classList.add("selected");
 }
 
-function updateNetworkParameters(params){
-	switch(params.itemType){
+function updateNetworkParameters(params) {
+	switch (params.itemType) {
 		case 'optimizer':
 			model.params.optimizer = params.setting;
 			break;
@@ -470,11 +470,11 @@ function updateNetworkParameters(params){
 	}
 }
 
-function appendItem(options){
+function appendItem(options) {
 	var item: Draggable
 	var template = null
-	switch(options.detail.itemType){
-        case 'layer': switch(options.detail.layerType) {
+	switch (options.detail.itemType) {
+		case 'layer': switch (options.detail.layerType) {
 			case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
 			case "conv2D": item = new Conv2D(); console.log("Created Conv2D Layer"); break;
 			case "maxPooling2D": item = new MaxPooling2D(); console.log("Created MaxPooling2D Layer"); break;
@@ -484,12 +484,12 @@ function appendItem(options){
 			case "add": item = new Add(); console.log("Created Add Layer"); break;
 			case "dropout": item = new Dropout(); console.log("Created Dropout Layer"); break;
 		}
-		case 'activation': switch(options.detail.activationType) {
+		case 'activation': switch (options.detail.activationType) {
 			case 'relu': item = new Relu(); console.log("Created Relu"); break;
 			case 'sigmoid': item = new Sigmoid(); console.log("Created Sigmoid"); break;
 			case 'tanh': item = new Tanh(); console.log("Created Tanh"); break;
 		}
-		case 'template':  switch(options.detail.templateType) {
+		case 'template': switch (options.detail.templateType) {
 			case 'blank': template = true; blankTemplate(svgData); console.log("Created Blank Template"); break;
 			case 'default': template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
 			case 'resnet': template = true; resnetTemplate(svgData); console.log("Created ResNet Template"); break;
@@ -502,7 +502,7 @@ function appendItem(options){
 	}
 }
 
-function switchClassExamples(options){
+function switchClassExamples(options) {
 	// showPredictions()
 }
 
@@ -510,7 +510,7 @@ function switchClassExamples(options){
 function switchTab(tab) {
 	// Hide all tabs
 	document.getElementById("networkTab").style.display = "none";
-    document.getElementById("progressTab").style.display = "none";
+	document.getElementById("progressTab").style.display = "none";
 	document.getElementById("visualizationTab").style.display = "none";
 	document.getElementById("educationTab").style.display = "none";
 
@@ -536,19 +536,17 @@ function switchTab(tab) {
 	document.getElementById(tab.detail.tabType + "Tab").style.display = null;
 	document.getElementById(tab.detail.tabType).classList.add("tab-selected");
 	document.getElementById(tab.detail.tabType + "Menu").style.display = null;
-	document.getElementById(tab.detail.tabType +"Paramshell").style.display = null;
+	document.getElementById(tab.detail.tabType + "Paramshell").style.display = null;
 	document.getElementById("paramshell").style.display = null;
 	document.getElementById("menu").style.display = null;
 	// document.getElementById("menu_expander").style.display = null;
 
-	switch(tab.detail.tabType){
+	switch (tab.detail.tabType) {
 		case 'network': resizeMiddleSVG(); break;
 		case 'progress': renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
 		case 'visualization': showPredictions(); break;
 		case 'education':
 			document.getElementById("paramshell").style.display = "none";
-			// document.getElementById("menu").style.display = "none";
-			// document.getElementById("menu_expander").style.display = "none";
 			break;
 	}
 
@@ -559,11 +557,10 @@ function switchTab(tab) {
 	}
 
 	let tabMapping = ["blanktab", "network", "progress", "visualization",
-					  "middleblanktab", "education", "bottomblanktab"];
+		"middleblanktab", "education", "bottomblanktab"];
 	let index = tabMapping.indexOf(tab.detail.tabType);
 
-	document.getElementById(tabMapping[index-1]).classList.add("top_neighbor_tab-selected");
-	document.getElementById(tabMapping[index+1]).classList.add("bottom_neighbor_tab-selected");
+	document.getElementById(tabMapping[index - 1]).classList.add("top_neighbor_tab-selected");
+	document.getElementById(tabMapping[index + 1]).classList.add("bottom_neighbor_tab-selected");
 
 }
-
