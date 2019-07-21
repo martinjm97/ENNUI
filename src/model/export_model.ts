@@ -1,5 +1,6 @@
 import { DraggableData } from "../ui/app";
-import { Layer, LayerJson, ActivationLayer } from "../ui/shapes/layer";
+import { Layer, LayerJson } from "../ui/shapes/layer";
+import { ActivationLayer } from "../ui/shapes/activationlayer";
 import { saveAs } from 'file-saver';
 import { Point } from "../ui/shapes/shape";
 import { Input } from "../ui/shapes/layers/input";

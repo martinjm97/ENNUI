@@ -22,7 +22,8 @@ import { Dropout } from "./shapes/layers/dropout";
 import * as d3 from "d3";
 
 import { changeDataset } from "../model/data";
-import { Layer, ActivationLayer } from "./shapes/layer";
+import { Layer } from "./shapes/layer";
+import { ActivationLayer } from "./shapes/activationlayer";
 import { WireGuide } from "./shapes/wireguide";
 import { Add } from "./shapes/layers/add";
 import { TextBox } from "./shapes/textbox";
