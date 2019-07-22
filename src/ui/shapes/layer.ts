@@ -217,7 +217,7 @@ export abstract class Layer extends Draggable {
         return params
     }
     
-    public getParams() {
+    public getParams(): { [dataset: string]: any; } {
         let params = {}
         let defaultParams = this.parameterDefaults;
         for(let line of this.paramBox.children){

@@ -202,9 +202,9 @@ async function trainOnClick(): Promise<void> {
     }
 }
 
-function bindMenuExpander() {
+function bindMenuExpander(): void {
     document.getElementById("menu").style.display = "block";
-    document.getElementById("menu_expander_handle").addEventListener("click", function(e) {
+    document.getElementById("menu_expander_handle").addEventListener("click", (_) => {
         if (document.getElementById("menu").style.display == "none") {
 
             document.getElementById("menu").style.display = "block";
