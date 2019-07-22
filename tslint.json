@@ -10,8 +10,7 @@
             "parameter",
             "property-declaration",
             "member-variable-declaration"],
-        "prefer-const": true,
-        "no-unused-variable": [true, {"ignore-pattern": "^_"}]
+        "prefer-const": true
     },
     "rulesDirectory": []
 }

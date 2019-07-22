@@ -205,12 +205,12 @@ async function trainOnClick(): Promise<void> {
 function bindMenuExpander(): void {
     document.getElementById("menu").style.display = "block";
     document.getElementById("menu_expander_handle").addEventListener("click", (_) => {
-        if (document.getElementById("menu").style.display == "none") {
+        if (document.getElementById("menu").style.display === "none") {
 
             document.getElementById("menu").style.display = "block";
             document.getElementById("expander_triangle").setAttribute("points", "0,15 10,30 10,0");
 
-            if (document.getElementById("paramshell").style.display == "block") {
+            if (document.getElementById("paramshell").style.display === "block") {
                 document.getElementById("middle").style.width = "calc(100% - 430px)";
             } else {
                 document.getElementById("middle").style.width = "calc(100% - 240px)";
@@ -221,7 +221,7 @@ function bindMenuExpander(): void {
             document.getElementById("menu").style.display = "none";
             document.getElementById("expander_triangle").setAttribute("points", "10,15 0,30 0,0");
 
-            if (document.getElementById("paramshell").style.display == "block") {
+            if (document.getElementById("paramshell").style.display === "block") {
                 document.getElementById("middle").style.width = "calc(100% - 250px)";
             } else {
                 document.getElementById("middle").style.width = "calc(100% - 60px)";
@@ -235,8 +235,9 @@ function bindMenuExpander(): void {
 }
 
 function bindRightMenuExpander() {
+    const thing = 0;
     document.getElementById("paramshell").style.display = "block";
-    document.getElementById("right_menu_expander_handle").addEventListener("click", function(e) {
+    document.getElementById("right_menu_expander_handle").addEventListener("click", () => {
         if (document.getElementById("paramshell").style.display == "none") {
 
             document.getElementById("paramshell").style.display = "block";

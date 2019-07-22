@@ -4,7 +4,9 @@
         "allowJs": false,
         "target": "es6",
         "module": "commonjs",
-	"moduleResolution": "node",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+	    "moduleResolution": "node",
     },
     "include": [
         "./src/**/*",
