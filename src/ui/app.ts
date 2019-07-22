@@ -85,18 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
         makeCollapsable(elmt);
     }
 
-    window.addEventListener("create", (e) => {
-        appendItem(e);
-    });
-
-    window.addEventListener("selectClass", (e) => {
-        switchClassExamples(e);
-    });
-
-    window.addEventListener("switch", (e) => {
-        switchTab(e);
-    });
-
     window.addEventListener("resize", resizeMiddleSVG);
     window.addEventListener("resize", setupPlots);
 
@@ -106,9 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("defaultLoss").classList.add("selected");
 
     document.getElementById("train").onclick = trainOnClick;
+
     document.getElementById("informationEducation").onclick = (_) => {
         document.getElementById("informationOverlay").style.display = "none";
-        switchTab({ detail: { tabType: "education" } });
+        switchTab("education");
 
     };
     document.getElementById("informationOverlay").onclick = (_) => {
@@ -299,9 +288,7 @@ export function setModelHyperparameters(): void {
 function dispatchSwitchTabOnClick(elmt: Element): void {
     elmt.addEventListener("click", () => {
         const tabType = elmt.getAttribute("data-tabType");
-        const detail = { tabType };
-        const event = new CustomEvent("switch", { detail });
-        window.dispatchEvent(event);
+        switchTab(tabType);
     });
 }
 
@@ -370,11 +357,10 @@ function dispatchCreationOnClick(elmt: HTMLElement): void {
                 // selectOption(elmt); // TODO uncomment this line to add back in selections
                 const target = document.getElementById("education" + elmt.getAttribute("data-articleType"));
                 ( target.parentNode as Element).scrollTop = target.offsetTop;
+            } else if (itemType === "template") {
+                createTemplate(elmt.getAttribute("data-templateType"));
             } else {
-                const detail = { itemType };
-                detail[itemType + "Type"] = elmt.getAttribute("data-" + itemType + "Type");
-                const event = new CustomEvent("create", { detail });
-                window.dispatchEvent(event);
+                appendItem(elmt.getAttribute("data-" + itemType + "Type"));
             }
         });
     }
@@ -393,7 +379,7 @@ function selectOption(elmt: HTMLElement): void {
     elmt.classList.add("selected");
 }
 
-function updateNetworkParameters(itemType, setting): void {
+function updateNetworkParameters(itemType: string, setting: string): void {
     switch (itemType) {
         case "optimizer":
             model.params.optimizer = setting;
@@ -404,43 +390,34 @@ function updateNetworkParameters(itemType, setting): void {
     }
 }
 
-function appendItem(options) {
-    let item: Draggable;
-    let template = null;
-    switch (options.detail.itemType) {
-        case "layer": switch (options.detail.layerType) {
-            case "dense": item = new Dense(); console.log("Created Dense Layer"); break;
-            case "conv2D": item = new Conv2D(); console.log("Created Conv2D Layer"); break;
-            case "maxPooling2D": item = new MaxPooling2D(); console.log("Created MaxPooling2D Layer"); break;
-            case "batchnorm": item = new BatchNorm(); console.log("Created Batch Normalization Layer"); break;
-            case "flatten": item = new Flatten(); console.log("Created Flatten Layer"); break;
-            case "concatenate": item = new Concatenate(); console.log("Created Concatenate Layer"); break;
-            case "add": item = new Add(); console.log("Created Add Layer"); break;
-            case "dropout": item = new Dropout(); console.log("Created Dropout Layer"); break;
-        }
-        case "activation": switch (options.detail.activationType) {
-            case "relu": item = new Relu(); console.log("Created Relu"); break;
-            case "sigmoid": item = new Sigmoid(); console.log("Created Sigmoid"); break;
-            case "tanh": item = new Tanh(); console.log("Created Tanh"); break;
-        }
-        case "template": switch (options.detail.templateType) {
-            case "blank": template = true; blankTemplate(svgData); console.log("Created Blank Template"); break;
-            case "default": template = true; defaultTemplate(svgData); console.log("Created Default Template"); break;
-            case "resnet": template = true; resnetTemplate(svgData); console.log("Created ResNet Template"); break;
-        }
-    }
+function createTemplate(template: string): void {
+    switch (template) {
+        case "blank": blankTemplate(svgData); break;
+        case "default": defaultTemplate(svgData); break;
+        case "resnet": resnetTemplate(svgData); break;
 
-    if (template == null) {
-        // item.select()
-        svgData.draggable.push(item);
     }
 }
 
-function switchClassExamples(options) {
-    // showPredictions()
+function appendItem(itemType: string): void {
+    const item: Draggable = new ({
+        add: Add,
+        batchnorm: BatchNorm,
+        concatenate: Concatenate,
+        conv2D: Conv2D,
+        dense: Dense,
+        dropout: Dropout,
+        flatten: Flatten,
+        maxPooling2D: MaxPooling2D,
+        relu: Relu,
+        sigmoid: Sigmoid,
+        tanh: Tanh,
+    } as any)[itemType]();
+
+    svgData.draggable.push(item);
 }
 
-function switchTab(tab) {
+function switchTab(tabType: string): void {
     // Hide all tabs
     document.getElementById("networkTab").style.display = "none";
     document.getElementById("progressTab").style.display = "none";
@@ -466,15 +443,15 @@ function switchTab(tab) {
     document.getElementById("education").classList.remove("tab-selected");
 
     // Display only the selected tab
-    document.getElementById(tab.detail.tabType + "Tab").style.display = null;
-    document.getElementById(tab.detail.tabType).classList.add("tab-selected");
-    document.getElementById(tab.detail.tabType + "Menu").style.display = null;
-    document.getElementById(tab.detail.tabType + "Paramshell").style.display = null;
+    document.getElementById(tabType + "Tab").style.display = null;
+    document.getElementById(tabType).classList.add("tab-selected");
+    document.getElementById(tabType + "Menu").style.display = null;
+    document.getElementById(tabType + "Paramshell").style.display = null;
     document.getElementById("paramshell").style.display = null;
     document.getElementById("menu").style.display = null;
     // document.getElementById("menu_expander").style.display = null;
 
-    switch (tab.detail.tabType) {
+    switch (tabType) {
         case "network": resizeMiddleSVG(); break;
         case "progress": renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
         case "visualization": showPredictions(); break;
@@ -485,13 +462,15 @@ function switchTab(tab) {
 
     // Give border radius to top and bottom neighbors
     if (document.getElementsByClassName("top_neighbor_tab-selected").length > 0) {
-        document.getElementsByClassName("top_neighbor_tab-selected")[0].classList.remove("top_neighbor_tab-selected");
-        document.getElementsByClassName("bottom_neighbor_tab-selected")[0].classList.remove("bottom_neighbor_tab-selected");
+        document.getElementsByClassName("top_neighbor_tab-selected")[0].classList
+            .remove("top_neighbor_tab-selected");
+        document.getElementsByClassName("bottom_neighbor_tab-selected")[0].classList
+            .remove("bottom_neighbor_tab-selected");
     }
 
     const tabMapping = ["blanktab", "network", "progress", "visualization",
         "middleblanktab", "education", "bottomblanktab"];
-    const index = tabMapping.indexOf(tab.detail.tabType);
+    const index = tabMapping.indexOf(tabType);
 
     document.getElementById(tabMapping[index - 1]).classList.add("top_neighbor_tab-selected");
     document.getElementById(tabMapping[index + 1]).classList.add("bottom_neighbor_tab-selected");
