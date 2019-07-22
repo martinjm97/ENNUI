@@ -1,5 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
-import { ActivationLayer, Layer } from "../layer";
+import { Layer } from "../layer";
+import { ActivationLayer } from "../activationlayer";
 import { Point, PathShape } from "../shape";
 
 export class Dropout extends Layer {

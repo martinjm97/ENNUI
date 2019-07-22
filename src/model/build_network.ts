@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 
-import { Layer, ActivationLayer } from '../ui/shapes/layer';
+import { Layer } from '../ui/shapes/layer';
+import { ActivationLayer } from '../ui/shapes/activationlayer';
 import { Input } from '../ui/shapes/layers/input';
 import { displayError } from '../ui/error';
 import { pythonSkeleton } from './python_skeleton';

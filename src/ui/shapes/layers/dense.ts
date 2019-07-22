@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { ActivationLayer } from "../layer";
+import { ActivationLayer } from "../activationlayer";
 import { Point, PathShape } from "../shape";
 
 export class Dense extends ActivationLayer {

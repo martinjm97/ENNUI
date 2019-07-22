@@ -1,5 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
-import { ActivationLayer, Layer } from "../layer";
+import { Layer } from "../layer";
+import { ActivationLayer } from "../activationlayer";
 import { Point, Rectangle, PathShape } from "../shape";
 
 export class MaxPooling2D extends Layer {

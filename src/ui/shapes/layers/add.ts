@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { ActivationLayer, Layer } from "../layer";
+import { ActivationLayer } from "../activationlayer";
 import { Point, PathShape, Circle, Line } from "../shape";
 import { displayError } from '../../error';
 
