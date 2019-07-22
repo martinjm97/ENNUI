@@ -10,6 +10,7 @@
             "parameter",
             "property-declaration",
             "member-variable-declaration"],
+        "max-classes-per-file": false,
         "prefer-const": true,
         "ban-types": [true, ["Object", "Use {} instead."], ["String"]]
     },
