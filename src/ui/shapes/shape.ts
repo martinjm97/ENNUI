@@ -1,83 +1,77 @@
 import * as d3 from "d3";
 
 export abstract class Shape {
-    color: string;
-    abstract location: Point;
+    public color: string;
+    public location: Point;
+    public svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
 
-    abstract svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>);
+    constructor(location: Point, color: string) {
+        this.color = color;
+        this.location = location;
+    }
+
+    public abstract svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>): void;
 
 }
 
 export class PathShape extends Shape {
-    location: Point;
-    path: string;
-    svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    public path: string;
 
     constructor(path: string, color: string) {
-        super()
-        this.color = color;
-        this.location = new Point(0,0);
+        super(new Point(0, 0), color);
         this.path = path;
     }
 
-    svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>) {
+    public svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>): void {
         this.svgComponent = selection.append<SVGGraphicsElement>("path")
                                      .attr("d", this.path)
                                      .attr("x", this.location.x)
                                      .attr("y", this.location.y)
                                      .style("fill", this.color)
-                                     .style("cursor", "pointer")
+                                     .style("cursor", "pointer");
     }
 
 }
 
 export class Rectangle extends Shape {
-    location: Point;
-    width: number;
-    height: number;
-    svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    public width: number;
+    public height: number;
 
     constructor(location: Point, width: number, height: number, color: string) {
-        super()
-        this.color = color;
-        this.location = location;
+        super(location, color);
         this.width = width;
         this.height = height;
     }
 
-    svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>) {
+    public svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>): void {
         this.svgComponent = selection.append<SVGGraphicsElement>("rect")
                                      .attr("x", this.location.x)
                                      .attr("y", this.location.y)
                                      .attr("width", this.width)
                                      .attr("height", this.height)
                                      .style("fill", this.color)
-                                     .style("cursor", "pointer")
-                                     
+                                     .style("cursor", "pointer");
+
     }
 }
 
 export class Circle extends Shape {
-    location: Point;
-    radius: number;
-    svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
-    outerShape: boolean;
+    public radius: number;
+    private outerShape: boolean;
 
-    constructor(location: Point, radius: number, color: string, outerShape=false) {
-        super()
-        this.color = color;
-        this.location = location;
+    constructor(location: Point, radius: number, color: string, outerShape: boolean = false) {
+        super(location, color);
         this.radius = radius;
         this.outerShape = outerShape;
     }
 
-    svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>) {
+    public svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>): void {
         this.svgComponent = selection.append<SVGGraphicsElement>("circle")
                                      .attr("cx", this.location.x)
                                      .attr("cy", this.location.y)
                                      .attr("r", this.radius)
                                      .style("fill", this.color)
-                                     .style("cursor", "pointer")
+                                     .style("cursor", "pointer");
 
         if (this.outerShape) {
             this.svgComponent.attr("class", "outerShape");
@@ -86,20 +80,16 @@ export class Circle extends Shape {
 }
 
 export class Line extends Shape {
-    location: Point;
-    endPoint: Point;
-    lineWidth: number;
-    svgComponent: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>;
+    public endPoint: Point;
+    public lineWidth: number;
 
     constructor(location: Point, endPoint: Point, lineWidth: number, color: string) {
-        super()
-        this.color = color;
-        this.location = location;
+        super(location, color);
         this.endPoint = endPoint;
         this.lineWidth = lineWidth;
     }
 
-    svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>) {
+    public svgAppender(selection: d3.Selection<SVGGraphicsElement, {}, HTMLElement, any>): void {
         this.svgComponent = selection.append<SVGGraphicsElement>("line")
                                      .attr("x1", this.location.x)
                                      .attr("y1", this.location.y)
@@ -107,40 +97,40 @@ export class Line extends Shape {
                                      .attr("y2", this.endPoint.y)
                                      .style("stroke-width", this.lineWidth)
                                      .style("stroke", this.color)
-                                     .style("cursor", "pointer")
+                                     .style("cursor", "pointer");
     }
 }
 
 export class Point {
-    x: number;
-    y: number;
+
+    public static randomPoint(width: number, height: number, initial: Point): Point {
+        return new Point(Math.random() * width + initial.x, Math.random() * height + initial.y);
+    }
+    public x: number;
+    public y: number;
 
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
     }
 
-    static randomPoint(width: number, height: number, initial: Point) {
-        return new Point(Math.random() * width + initial.x, Math.random()*height + initial.y)
+    public distance(other: Point): number {
+        return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2);
     }
 
-    distance(other: Point): number {
-	    return Math.sqrt((this.x - other.x)**2 + (this.y - other.y)**2);
+    public add(other: Point): Point {
+        return new Point(this.x + other.x, this.y + other.y);
     }
 
-    add(other: Point): Point {
-	    return new Point(this.x + other.x, this.y + other.y);
-    }
-
-    minus(other: Point): Point {
+    public minus(other: Point): Point {
         return new Point(this.x - other.x, this.y - other.y);
     }
 
-    angleTo(other: Point): number {
-        return Math.atan2(other.y - this.y, other.x - this.x) * 180 / Math.PI;//angle for tangent
+    public angleTo(other: Point): number {
+        return Math.atan2(other.y - this.y, other.x - this.x) * 180 / Math.PI; // angle for tangent
     }
 
-    midpoint(other: Point): Point {
-        return new Point((this.x+other.x)/2, (this.y+other.y)/2)
+    public midpoint(other: Point): Point {
+        return new Point((this.x + other.x) / 2, (this.y + other.y) / 2);
     }
 }

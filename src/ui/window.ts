@@ -1,36 +1,34 @@
+import { ActivationLayer } from "./shapes/activationlayer";
 import { Draggable } from "./shapes/draggable";
-import { Wire } from "./shapes/wire";
-import { ActivationLayer } from "./shapes/layer";
-import { WireGuide } from "./shapes/wireguide";
 import { TextBox } from "./shapes/textbox";
+import { Wire } from "./shapes/wire";
+import { WireGuide } from "./shapes/wireguide";
 
 export enum Mode {
     Move,
-    Connect
+    Connect,
 }
 
-class WindowProperties
-{
-    private static _instance: WindowProperties;
-    selectedElement: Draggable | Wire;
-    activationLayers: Set<ActivationLayer> = new Set();
-    mode: Mode = Mode.Move;
-    draggedElement: any;
-    selectState: any;
-    xClickOffset: any;
-    yClickOffset: any;
-    wireInputElement: any;
-    defaultparambox: any;
-    wireGuide: WireGuide;
-    svgTransformRatio: number = 1;
-    svgYOffset: number = 0;
-    shapeTextBox: TextBox;
+class WindowProperties {
+    private static instance: WindowProperties;
+    public selectedElement: Draggable | Wire;
+    public activationLayers: Set<ActivationLayer> = new Set();
+    public mode: Mode = Mode.Move;
+    public draggedElement: any;
+    public selectState: any;
+    public xClickOffset: any;
+    public yClickOffset: any;
+    public wireInputElement: any;
+    public defaultparambox: any;
+    public wireGuide: WireGuide;
+    public svgTransformRatio: number = 1;
+    public svgYOffset: number = 0;
+    public shapeTextBox: TextBox;
 
-    private constructor(){}
+    private constructor() {}
 
-    public static get Instance()
-    {
-        return this._instance || (this._instance = new this());
+    public static get Instance(): WindowProperties {
+        return this.instance || (this.instance = new this());
     }
 }
 
