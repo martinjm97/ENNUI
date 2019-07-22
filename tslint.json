@@ -10,7 +10,8 @@
             "parameter",
             "property-declaration",
             "member-variable-declaration"],
-        "prefer-const": true
+        "prefer-const": true,
+        "ban-types": [true, ["Object", "Use {} instead."], ["String"]]
     },
     "rulesDirectory": []
 }

@@ -8,6 +8,7 @@
         "noUnusedParameters": true,
         "alwaysStrict": true,
         "noImplicitReturns": true,
+        "noImplicitAny": true,
 	    "moduleResolution": "node",
     },
     "include": [
