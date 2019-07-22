@@ -6,36 +6,55 @@ import { displayError } from '../ui/error';
 import { pythonSkeleton } from './python_skeleton';
 import { juliaSkeleton } from './julia_skeleton';
 
-export function buildNetworkDAG(input: Input) {
+/**
+ * Wrap errors from networkDAG
+ * @param input an input layer that is the root of the computational graph
+ */
+export function buildNetworkDAG(input: Input): void {
     let toposorted = topologicalSort(input);
     try {
         return networkDAG(toposorted);
     } catch(err) {
-        displayError(err)
+        displayError(err);
     }
 }
 
-export function cloneNetwork(input: Input, newInput: Input) {
+/**
+ * Wrap model generation and produce a summary.
+ * @param toposorted topologically sorted list of layers
+ */
+function networkDAG(toposorted){
+    let model = generateTfjsModel(toposorted);
+    console.log(model.summary());
+    return model;
+}
+
+/**
+ * Clone a full computational graph
+ * @param input an input layer that is the root of the computational graph
+ * @param newInput the input that will be the root of the cloned graph
+ */
+export function cloneNetwork(input: Input, newInput: Input): void {
     // Initialize queues, dags, and parents (visited)
 
-    let oldId2Clone = {}
-    oldId2Clone[input.uid] = newInput
+    let oldId2Clone = {};
+    oldId2Clone[input.uid] = newInput;
 
     let queue: Layer[] = [input]
     let visited: Set<Layer> = new Set()
 
     let newLayer : Layer
     while (queue.length != 0) {
-        let current = queue.shift()
+        let current = queue.shift();
 
         // Clone layer
         if (current != input) {
             if (!(current.uid in oldId2Clone)) {
-                newLayer = current.clone()
-                oldId2Clone[current.uid] = newLayer
+                newLayer = current.clone();
+                oldId2Clone[current.uid] = newLayer;
             }
             else {
-                newLayer = oldId2Clone[current.uid]
+                newLayer = oldId2Clone[current.uid];
             }
 
 
@@ -44,30 +63,35 @@ export function cloneNetwork(input: Input, newInput: Input) {
             for (let p of current.parents) {
 
                 if(!(p.uid in oldId2Clone)) {
-                    oldId2Clone[p.uid] = p.clone()
+                    oldId2Clone[p.uid] = p.clone();
 
                 }
-                let newParent = oldId2Clone[p.uid]
-                newParent.addChild(newLayer, false)
-                newLayer.addParent(newParent)
+                let newParent = oldId2Clone[p.uid];
+                newParent.addChild(newLayer, false);
+                newLayer.addParent(newParent);
             }
         }
 
         else {
-            newLayer = newInput
+            newLayer = newInput;
         }
 
         // Continue BFS
         for (let child of current.children) {
 
             if (!visited.has(child)) {
-                queue.push(child)
-                visited.add(child)
+                queue.push(child);
+                visited.add(child);
             }
         }
     }
 }
 
+/**
+ * Topologically sort a graph of layers that are rooted at the input.
+ * @param input an input layer that is the root of the computational graph
+ * @param showErrors decide whether or not to surface errors to the UI
+ */
 export function topologicalSort(input: Input, showErrors=true): Layer[] {
     // Kahn's algorithm
     let sorted: Layer[] = [];
@@ -81,12 +105,12 @@ export function topologicalSort(input: Input, showErrors=true): Layer[] {
         sorted.push(layer);
 
         if (potentialBranch.has(layer.uid)) {
-            potentialBranch.delete(layer.uid)
+            potentialBranch.delete(layer.uid);
         }
 
         for (let child of layer.children) {
 
-            // Check not a loop
+            // Check not a cycle
             let childIndex = sorted.indexOf(child);
 
             if (childIndex >= 0 && childIndex < sorted.indexOf(layer)) {
@@ -99,7 +123,7 @@ export function topologicalSort(input: Input, showErrors=true): Layer[] {
 
                 canAdd = visited.has(parent);
                 if (!canAdd) {
-                    potentialBranch.add(parent.uid)
+                    potentialBranch.add(parent.uid);
                     break;
                 }
             }
@@ -123,15 +147,15 @@ export function topologicalSort(input: Input, showErrors=true): Layer[] {
         }
     }
 
-    return sorted
+    return sorted;
 }
 
 /**
  * Creates corresponding Python code.
  * @param sorted topologically sorted list of layers
  */
-export function generatePython(sorted: Layer[]){
-    let pythonScript: string = ""
+export function generatePython(sorted: Layer[]): string{
+    let pythonScript: string = "";
     for (let layer of sorted) {
         let layerstring = layer.lineOfPython();
         let applystring = ""; // Nothing to apply if no parents (input)
@@ -150,8 +174,8 @@ export function generatePython(sorted: Layer[]){
             pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";
         }
     }
-    pythonScript += `model = Model(inputs=x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})`
-    return pythonSkeleton(pythonScript)
+    pythonScript += `model = Model(inputs=x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})`;
+    return pythonSkeleton(pythonScript);
 }
 
 /**
@@ -177,10 +201,4 @@ export function generateTfjsModel(sorted: Layer[]){
     let input = sorted[0].getTfjsLayer();
     let output = sorted[sorted.length - 1].getTfjsLayer();
     return tf.model({inputs: input, outputs: output});
-}
-
-function networkDAG(toposorted){
-    let model = generateTfjsModel(toposorted);
-    console.log(model.summary());
-    return model;
 }

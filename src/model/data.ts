@@ -1,3 +1,5 @@
+// Adapted from https://github.com/tensorflow/tfjs-examples/blob/master/mnist/data.js
+
 import * as tf from '@tensorflow/tfjs';
 import { Rank, Tensor } from '@tensorflow/tfjs';
 import { Cifar10 } from 'tfjs-cifar10-web'
@@ -12,8 +14,9 @@ const MNIST_IMAGES_SPRITE_PATH =
 const MNIST_LABELS_PATH =
     'https://storage.googleapis.com/learnjs-data/model-builder/mnist_labels_uint8';
 
-
-
+/**
+ * A class that serves as a schema for loading image data.
+ */
 export abstract class ImageData {
     readonly IMAGE_HEIGHT: number;
     readonly IMAGE_WIDTH: number;
@@ -83,35 +86,35 @@ export abstract class ImageData {
      */
     getTestDataWithLabel(numExamples, label): {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>} {
         if (label == "all") {
-            return this.getTestData(numExamples)
+            return this.getTestData(numExamples);
         }
 
         let {xs, labels} = this.getTestData();
 
         // select only the numbers with the given label
-        let newLabels = []
-        let newXs = []
-        let goodIndices: number[] = [] 
+        let newLabels = [];
+        let newXs = [];
+        let goodIndices: number[] = [] ;
 
         for (let i=0; i < this.testLabels.size/this.NUM_CLASSES; i++) {
-            let theLabel = 0
+            let theLabel = 0;
             for (let j=0; j < this.NUM_CLASSES; j++){
                 if (labels.get(i,j) == 1) {
-                    theLabel = j
-                    break
+                    theLabel = j;
+                    break;
                 }
             }
             if (theLabel == label) {
-                newXs.push(xs.slice([i, 0, 0, 0], [1, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS]))
-                newLabels.push(labels.slice([i,0], [1,10]).squeeze())
-                goodIndices.push(i)
+                newXs.push(xs.slice([i, 0, 0, 0], [1, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS]));
+                newLabels.push(labels.slice([i,0], [1,10]).squeeze());
+                goodIndices.push(i);
             }
             if (goodIndices.length >= numExamples) {
-                break
+                break;
             }
         }
-        xs = tf.concat(newXs)
-        labels = <tf.Tensor<Rank.R2>> tf.stack(newLabels)
+        xs = tf.concat(newXs);
+        labels = <tf.Tensor<Rank.R2>> tf.stack(newLabels);
         return {xs, labels};
     }
 
@@ -125,6 +128,10 @@ export abstract class ImageData {
     }
 }
 
+/**
+ * A class that fetches the sprited CIFAR dataset and provide data as
+ * tf.Tensors.
+ */
 export class Cifar10Data extends ImageData {
     IMAGE_HEIGHT = 32;
     IMAGE_WIDTH = 32;
@@ -141,7 +148,7 @@ export class Cifar10Data extends ImageData {
     private static _instance: Cifar10Data;
     
     public static get Instance() {
-        return this._instance || (this._instance = new this())
+        return this._instance || (this._instance = new this());
     }
 
     async load(): Promise<void> {
@@ -151,17 +158,17 @@ export class Cifar10Data extends ImageData {
         
         this.toggleLoadingOverlay();
 
-        const data = new Cifar10()
-        await data.load()
+        const data = new Cifar10();
+        await data.load();
 
-        const {xs: trainX, ys: trainY} = data.nextTrainBatch(15000)
-        const {xs: testX, ys: testY} = data.nextTestBatch(1500)
+        const {xs: trainX, ys: trainY} = data.nextTrainBatch(15000);
+        const {xs: testX, ys: testY} = data.nextTestBatch(1500);
         this.trainImages = <Tensor<Rank.R4>> <unknown> trainX;
         this.trainLabels = <Tensor<Rank.R4>> <unknown> trainY;
         this.testImages = <Tensor<Rank.R2>> <unknown> testX;
         this.testLabels = <Tensor<Rank.R2>> <unknown> testY;
 
-        this.dataLoaded = true
+        this.dataLoaded = true;
 
         document.getElementById("loadingDataTab").style.display = "none";
     }
@@ -247,15 +254,14 @@ export class MnistData extends ImageData {
 
         // Slice the the images and labels into train and test sets.
         let trainImages = datasetImages.slice(0, this.IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
-        this.trainImages = tf.tensor4d(trainImages, [trainImages.length / this.IMAGE_SIZE, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS])
+        this.trainImages = tf.tensor4d(trainImages, [trainImages.length / this.IMAGE_SIZE, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS]);
         let testImages = datasetImages.slice(this.IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
-        this.testImages = tf.tensor4d(testImages, [testImages.length / this.IMAGE_SIZE, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS])
-        let trainLabels =
-            datasetLabels.slice(0, this.NUM_CLASSES * NUM_TRAIN_ELEMENTS);
-        this.trainLabels = tf.tensor2d(trainLabels, [trainImages.length / this.IMAGE_SIZE, this.NUM_CLASSES])
+        this.testImages = tf.tensor4d(testImages, [testImages.length / this.IMAGE_SIZE, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS]);
+        let trainLabels = datasetLabels.slice(0, this.NUM_CLASSES * NUM_TRAIN_ELEMENTS);
+        this.trainLabels = tf.tensor2d(trainLabels, [trainImages.length / this.IMAGE_SIZE, this.NUM_CLASSES]);
         let testLabels =
             datasetLabels.slice(this.NUM_CLASSES * NUM_TRAIN_ELEMENTS);
-        this.testLabels = tf.tensor2d(testLabels, [testImages.length / this.IMAGE_SIZE, this.NUM_CLASSES])
+        this.testLabels = tf.tensor2d(testLabels, [testImages.length / this.IMAGE_SIZE, this.NUM_CLASSES]);
 
         
 

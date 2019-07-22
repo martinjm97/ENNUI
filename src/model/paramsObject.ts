@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { displayError } from '../ui/error';
 
+/** All the hyperparameters for the network */ 
 export interface HyperparameterData {
     learningRate: number
     batchSize: number
@@ -9,8 +10,7 @@ export interface HyperparameterData {
     loss_id: string
 }
 
-class NetworkParameters
-{
+class NetworkParameters {
     private paramNames : Set<string> = new Set(['optimizer', 'loss']);
     learningRate: number = 0.01;
     batchSize: number = 64;
@@ -18,14 +18,13 @@ class NetworkParameters
     epochs: number = 6;
     loss: string = 'categoricalCrossentropy';
 
-
     constructor(){}
 
-    public isParam(param){
+    public isParam(param: string): boolean{
         return this.paramNames.has(param);
     }
 
-    public getOptimizer(){
+    public getOptimizer(): tf.optimizer {
         switch(this.optimizer){
             case 'sgd':
                 return tf.train.sgd(this.learningRate);
@@ -44,11 +43,11 @@ class NetworkParameters
         }
     }
 
-    public getPythonLoss() {
+    public getPythonLoss(): string {
         return this.loss.split(/(?=[A-Z])/).join('_').toLowerCase();
     }
 
-    public getPythonOptimizer() {
+    public getPythonOptimizer(): string {
         switch(this.optimizer) {
             case 'sgd':
                 return 'SGD';
@@ -67,7 +66,7 @@ class NetworkParameters
         }
     }
 
-    public getJuliaLoss() {
+    public getJuliaLoss(): string {
         switch(this.loss) {
             case 'categoricalCrossentropy':
                 return 'crossentropy';
@@ -86,7 +85,7 @@ class NetworkParameters
         }
     }
 
-    public getJuliaOptimizer() {
+    public getJuliaOptimizer(): string {
         switch(this.optimizer) {
             case 'sgd':
                 return 'Descent';
@@ -106,8 +105,10 @@ class NetworkParameters
     }
 }
 
-class Model
-{
+/**
+ * Create a singleton model.
+ */
+class Model {
     private static _instance: Model;
     params : NetworkParameters = new NetworkParameters();
     architecture = null;

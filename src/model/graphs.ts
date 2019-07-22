@@ -8,10 +8,11 @@ const GRAPH_FONT_SIZE = 14;
 const NUM_CLASSES = 10;
 
 const testExamples:number = 50;
+
 /**
  * Show predictions on a number of test examples.
  */
-export async function showPredictions() {
+export async function showPredictions(): Promise<void> {
   if (tabSelected() == "visualizationTab" && dataset.dataLoaded) {
     const testExamples = 60;
 
@@ -52,6 +53,7 @@ export async function showPredictions() {
   }
 }
 
+// TOOD: Remove this peice of problematic global state.
 let confusionValues = [];
 for (let i = 0; i < NUM_CLASSES; i++) {
   let arr = new Array(NUM_CLASSES);
@@ -59,7 +61,7 @@ for (let i = 0; i < NUM_CLASSES; i++) {
   confusionValues.push(arr);
 }
 
-export function showConfusionMatrix() {
+export function showConfusionMatrix(): void {
   if (tabSelected() == "progressTab" && dataset.dataLoaded) {
     const {xs, labels} = dataset.getTestData(1000);
     tf.tidy(() => {
@@ -78,7 +80,7 @@ export function showConfusionMatrix() {
 
 }
 
-export function setupTestResults() {
+export function setupTestResults(): void {
   const imagesElement = document.getElementById('images');
   imagesElement.innerHTML = '';
   for (let i = 0; i < testExamples; i++) {
@@ -93,7 +95,6 @@ export function setupTestResults() {
     ctx.rect(0, 0, 1000, 5000);
     ctx.fillStyle = "#888";
     ctx.fill();
-    // draw(, canvas);
 
     const pred = document.createElement('div');
     pred.className = `pred pred-none`;
@@ -106,9 +107,8 @@ export function setupTestResults() {
   }
 }
 
-export function showTestResults(batch, predictions, labels) {
+export function showTestResults(batch: tf.tensor, predictions: tf.tensor, labels: tf.tensor): void {
   const imagesElement = document.getElementById('images');
-  // const testExamples = batch.xs.shape[0];
   imagesElement.innerHTML = '';
   for (let i = 0; i < testExamples; i++) {
     const image = batch.xs.slice([i, 0], [1, batch.xs.shape[1]]);
@@ -117,8 +117,6 @@ export function showTestResults(batch, predictions, labels) {
     div.className = 'pred-container';
 
     const canvas = document.createElement('canvas');
-    // canvas.width = 76;
-    // canvas.height = 76;
     canvas.className = 'prediction-canvas';
     draw(image.flatten(), canvas);
 
@@ -138,8 +136,9 @@ export function showTestResults(batch, predictions, labels) {
   }
 }
 
+// TOOD: Remove this peice of problematic global state.
 let lossValues = [[], []];
-export function plotLoss(batch, loss, set) {
+export function plotLoss(batch: tf.tensor, loss: tf.tensor, set: string): void {
   const series = set === 'train' ? 0 : 1;
   // Set the first validation loss as the first training loss
   if (series == 0 && lossValues[1].length == 0) {
@@ -149,10 +148,9 @@ export function plotLoss(batch, loss, set) {
   if (tabSelected() == "progressTab") {
     renderLossPlot();
   }
-  // lossLabelElement.innerText = `last loss: ${loss.toFixed(3)}`;
 }
 
-export function renderLossPlot() {
+export function renderLossPlot(): void {
   const lossContainer = document.getElementById('loss-canvas');
   tfvis.render.linechart(
       {values: lossValues, series: ['train', 'validation']}, lossContainer, {
@@ -164,14 +162,14 @@ export function renderLossPlot() {
       });
 }
 
-export function resetPlotValues() {
+export function resetPlotValues(): void {
   // set initial accuracy values to 0,0 for validation
   accuracyValues = [[], [{x: 0, y: 0}]];
   lossValues = [[], []];
 }
 
 let accuracyValues = [[], [{x: 0, y: 0}]];
-export function plotAccuracy(epochs, accuracy, set) {
+export function plotAccuracy(epochs: number, accuracy: number, set: string): void {
   const series = set === 'train' ? 0 : 1;
   accuracyValues[series].push({x: epochs, y: accuracy});
   if (tabSelected() == "progressTab") {
@@ -179,7 +177,7 @@ export function plotAccuracy(epochs, accuracy, set) {
   }
 }
 
-export function renderAccuracyPlot() {
+export function renderAccuracyPlot(): void {
   const accuracyContainer = document.getElementById('accuracy-canvas');
   tfvis.render.linechart(
       {values: accuracyValues, series: ['train', 'validation']},
@@ -193,7 +191,7 @@ export function renderAccuracyPlot() {
       });
 }
 
-function renderConfusionMatrix() {
+function renderConfusionMatrix(): void {
   const confusionMatrixElement = document.getElementById('confusion-matrix-canvas');
   tfvis.render.confusionMatrix({
     values: confusionValues ,
@@ -215,14 +213,14 @@ function canvasHeight(): number {
   return height;
 }
 
-export function setupPlots() {
+export function setupPlots(): void {
   renderLossPlot();
   renderAccuracyPlot();
   renderConfusionMatrix();
 }
 
 
-export function draw(image, canvas) {
+export function draw(image: tf.tensor, canvas: HTMLCanvasElement): void {
   const [width, height] = [dataset.IMAGE_HEIGHT, dataset.IMAGE_WIDTH];
   canvas.width = width;
   canvas.height = height;
@@ -246,21 +244,3 @@ export function draw(image, canvas) {
   }
   ctx.putImageData(imageData, 0, 0);
 }
-
-// export function getModelTypeId() {
-//   return document.getElementById('model-type').value;
-// }
-
-// export function getTrainEpochs() {
-//   return Number.parseInt(document.getElementById('train-epochs').value);
-// }
-
-// export function setTrainButtonCallback(callback) {
-//   const trainButton = document.getElementById('train');
-//   const modelType = document.getElementById('model-type');
-//   trainButton.addEventListener('click', () => {
-//     trainButton.setAttribute('disabled', true);
-//     modelType.setAttribute('disabled', true);
-//     callback();
-//   });
-// }
