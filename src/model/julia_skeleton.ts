@@ -1,7 +1,7 @@
-import { model } from "./paramsObject";
 import { setModelHyperparameters } from "../ui/app";
+import { model } from "./paramsObject";
 
-export function juliaSkeleton(initialization_code: string, model_code: string): string {
+export function juliaSkeleton(initializationCode: string, modelCode: string): string {
     setModelHyperparameters();
     return `using Flux, Flux.Data.MNIST, Statistics
 using Flux: onehotbatch, onecold, crossentropy, mse, throttle, @treelike
@@ -42,10 +42,10 @@ net = Network(Vector(), Dict(), SimpleDiGraph(), Dict(), Dict())
 
 ############################# Architecture made by Ennui
 # Initialize the network
-${initialization_code}
+${initializationCode}
 
 # Build the graph
-${model_code}
+${modelCode}
 #############################
 
 # Initialize the network with the appropriate shapes
@@ -104,5 +104,6 @@ opt = ${model.params.getJuliaOptimizer()}(${model.params.learningRate})
 
 for i in 1:6
     Flux.train!(loss, params(net), train, opt, cb = evalcb)
-end`
+end
+`;
 }

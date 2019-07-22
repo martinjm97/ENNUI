@@ -1,8 +1,8 @@
-import { model } from "./paramsObject";
 import { setModelHyperparameters } from "../ui/app";
 import { dataset } from "./data";
+import { model } from "./paramsObject";
 
-export function pythonSkeleton(model_code: string): string {
+export function pythonSkeleton(modelCode: string): string {
     setModelHyperparameters();
     return `from __future__ import print_function
 import keras
@@ -44,7 +44,7 @@ y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
 ############################# Architecture made by Ennui
-${model_code}
+${modelCode}
 #############################
 
 model.compile(loss=keras.losses.${model.params.getPythonLoss()},

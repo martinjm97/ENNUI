@@ -1,21 +1,21 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from "@tensorflow/tfjs";
 
-import { Layer } from '../ui/shapes/layer';
-import { ActivationLayer } from '../ui/shapes/activationlayer';
-import { Input } from '../ui/shapes/layers/input';
-import { displayError } from '../ui/error';
-import { pythonSkeleton } from './python_skeleton';
-import { juliaSkeleton } from './julia_skeleton';
+import { displayError } from "../ui/error";
+import { ActivationLayer } from "../ui/shapes/activationlayer";
+import { Layer } from "../ui/shapes/layer";
+import { Input } from "../ui/shapes/layers/input";
+import { juliaSkeleton } from "./julia_skeleton";
+import { pythonSkeleton } from "./python_skeleton";
 
 /**
  * Wrap errors from networkDAG
  * @param input an input layer that is the root of the computational graph
  */
 export function buildNetworkDAG(input: Input): void {
-    let toposorted = topologicalSort(input);
+    const toposorted = topologicalSort(input);
     try {
         return networkDAG(toposorted);
-    } catch(err) {
+    } catch (err) {
         displayError(err);
     }
 }
@@ -24,8 +24,9 @@ export function buildNetworkDAG(input: Input): void {
  * Wrap model generation and produce a summary.
  * @param toposorted topologically sorted list of layers
  */
-function networkDAG(toposorted){
-    let model = generateTfjsModel(toposorted);
+function networkDAG(toposorted: Layer[]): tf.model {
+    const model = generateTfjsModel(toposorted);
+    // tslint:disable-next-line:no-console
     console.log(model.summary());
     return model;
 }
@@ -38,47 +39,40 @@ function networkDAG(toposorted){
 export function cloneNetwork(input: Input, newInput: Input): void {
     // Initialize queues, dags, and parents (visited)
 
-    let oldId2Clone = {};
+    const oldId2Clone = {};
     oldId2Clone[input.uid] = newInput;
 
-    let queue: Layer[] = [input]
-    let visited: Set<Layer> = new Set()
+    const queue: Layer[] = [input];
+    const visited: Set<Layer> = new Set();
 
-    let newLayer : Layer
-    while (queue.length != 0) {
-        let current = queue.shift();
+    let newLayer: Layer;
+    while (queue.length !== 0) {
+        const current = queue.shift();
 
         // Clone layer
-        if (current != input) {
+        if (current !== input) {
             if (!(current.uid in oldId2Clone)) {
                 newLayer = current.clone();
                 oldId2Clone[current.uid] = newLayer;
-            }
-            else {
+            } else {
                 newLayer = oldId2Clone[current.uid];
             }
 
-
             // Add in cloned parent/child relations
-
-            for (let p of current.parents) {
-
-                if(!(p.uid in oldId2Clone)) {
+            for (const p of current.parents) {
+                if (!(p.uid in oldId2Clone)) {
                     oldId2Clone[p.uid] = p.clone();
-
                 }
-                let newParent = oldId2Clone[p.uid];
+                const newParent = oldId2Clone[p.uid];
                 newParent.addChild(newLayer, false);
                 newLayer.addParent(newParent);
             }
-        }
-
-        else {
+        } else {
             newLayer = newInput;
         }
 
         // Continue BFS
-        for (let child of current.children) {
+        for (const child of current.children) {
 
             if (!visited.has(child)) {
                 queue.push(child);
@@ -93,15 +87,16 @@ export function cloneNetwork(input: Input, newInput: Input): void {
  * @param input an input layer that is the root of the computational graph
  * @param showErrors decide whether or not to surface errors to the UI
  */
-export function topologicalSort(input: Input, showErrors=true): Layer[] {
+export function topologicalSort(input: Input, showErrors: boolean = true): Layer[] {
     // Kahn's algorithm
-    let sorted: Layer[] = [];
-    let visited: Set<Layer> = new Set();
-    let frontier: Layer[] = [input];
-    let potentialBranch: Set<Number> = new Set(); // This is to detect if we have a branch that doesn't start from input
+    const sorted: Layer[] = [];
+    const visited: Set<Layer> = new Set();
+    const frontier: Layer[] = [input];
+    // This is to detect if we have a branch that doesn't start from input
+    const potentialBranch: Set<number> = new Set();
 
     while (frontier.length > 0) {
-        let layer = frontier.pop();
+        const layer = frontier.pop();
         visited.add(layer);
         sorted.push(layer);
 
@@ -109,10 +104,10 @@ export function topologicalSort(input: Input, showErrors=true): Layer[] {
             potentialBranch.delete(layer.uid);
         }
 
-        for (let child of layer.children) {
+        for (const child of layer.children) {
 
             // Check not a cycle
-            let childIndex = sorted.indexOf(child);
+            const childIndex = sorted.indexOf(child);
 
             if (childIndex >= 0 && childIndex < sorted.indexOf(layer)) {
                 displayError(new Error("Cannot have backwards edges"));
@@ -120,7 +115,7 @@ export function topologicalSort(input: Input, showErrors=true): Layer[] {
 
             // Check if we've already visited all parents
             let canAdd = true;
-            for (let parent of child.parents){
+            for (const parent of child.parents) {
 
                 canAdd = visited.has(parent);
                 if (!canAdd) {
@@ -137,13 +132,11 @@ export function topologicalSort(input: Input, showErrors=true): Layer[] {
     }
 
     // Either there are layers with no parents (other than input), there is a cycle, or output is never reached
-    if (sorted[sorted.length - 1].layerType != "Output" && showErrors) {
+    if (sorted[sorted.length - 1].layerType !== "Output" && showErrors) {
 
         if (potentialBranch.size > 0) {
             displayError(new Error("All layers must have input as an ancestor."));
-        }
-
-        else{
+        } else {
             displayError(new Error("Something is wrong with your network architecture."));
         }
     }
@@ -155,27 +148,27 @@ export function topologicalSort(input: Input, showErrors=true): Layer[] {
  * Creates corresponding Python code.
  * @param sorted topologically sorted list of layers
  */
-export function generatePython(sorted: Layer[]): string{
+export function generatePython(sorted: Layer[]): string {
     let pythonScript: string = "";
-    for (let layer of sorted) {
-        let layerstring = layer.lineOfPython();
+    for (const layer of sorted) {
+        const layerstring = layer.lineOfPython();
         let applystring = ""; // Nothing to apply if no parents (input)
-        if(layer.parents.size == 1) {
+        if (layer.parents.size === 1) {
             applystring = `(x${layer.parents.values().next().value.uid})`;
         } else if (layer.parents.size > 1) {
-            applystring = `([${[...layer.parents].map(p => "x" + p.uid).join(", ")}])`;
+            applystring = `([${[...layer.parents].map((p) => "x" + p.uid).join(", ")}])`;
         }
         pythonScript += `x${layer.uid} = ` + layerstring + applystring + "\n";
 
         // TODO: Move this to BatchNorm and generalize layerstring to an array
-        if(layer.layerType == "BatchNorm" && (<ActivationLayer> layer).activation != null) {
-            if(this.activation != null && this.activation.activationType != "relu") {
+        if (layer.layerType === "BatchNorm" && (layer as ActivationLayer).activation != null) {
+            if (this.activation != null && this.activation.activationType !== "relu") {
                 displayError(new Error("Batch Normalization does not support activations other than ReLu"));
             }
             pythonScript += `x${layer.uid} = ` + "ReLU()" + `(x${layer.uid})`  + "\n";
         }
     }
-    pythonScript += `model = Model(inputs=x${sorted[0].uid}, outputs=x${sorted[sorted.length-1].uid})`;
+    pythonScript += `model = Model(inputs=x${sorted[0].uid}, outputs=x${sorted[sorted.length - 1].uid})`;
     return pythonSkeleton(pythonScript);
 }
 
@@ -184,9 +177,9 @@ export function generatePython(sorted: Layer[]): string{
  * @param sorted topologically sorted list of layers
  */
 export function generateJulia(sorted: Layer[]): string {
-    let juliaInitialization:string = "";
+    let juliaInitialization: string = "";
     let juliaScript: string = "";
-    for (let layer of sorted) {
+    for (const layer of sorted) {
         juliaInitialization += layer.initLineOfJulia();
         juliaScript += layer.lineOfJulia();
     }
@@ -197,9 +190,9 @@ export function generateJulia(sorted: Layer[]): string {
  * Creates corresponding python code.
  * @param sorted topologically sorted list of layers
  */
-export function generateTfjsModel(sorted: Layer[]){
-    sorted.forEach(layer => layer.generateTfjsLayer());
-    let input = sorted[0].getTfjsLayer();
-    let output = sorted[sorted.length - 1].getTfjsLayer();
+export function generateTfjsModel(sorted: Layer[]): tf.model {
+    sorted.forEach((layer) => layer.generateTfjsLayer());
+    const input = sorted[0].getTfjsLayer();
+    const output = sorted[sorted.length - 1].getTfjsLayer();
     return tf.model({inputs: input, outputs: output});
 }
