@@ -46,30 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupPlots();
     setupTestResults();
 
-    document.getElementById("all").classList.add("selected");
-
-    // Initialize the network tab to selected
-    document.getElementById("network").classList.add("tab-selected");
-
-    // Hide the progress and visualization tabs
-    document.getElementById("progressTab").style.display = "none";
-    document.getElementById("visualizationTab").style.display = "none";
-    document.getElementById("loadingDataTab").style.display = "none";
-    document.getElementById("educationTab").style.display = "none";
-
-    // Hide the progress and visualization menus
-    document.getElementById("progressMenu").style.display = "none";
-    document.getElementById("visualizationMenu").style.display = "none";
-    document.getElementById("educationMenu").style.display = "none";
-
-    // Hide the progress and visualization paramshell
-    document.getElementById("progressParamshell").style.display = "none";
-    document.getElementById("visualizationParamshell").style.display = "none";
-    document.getElementById("educationParamshell").style.display = "none";
-
-    // Hide the error box
-    document.getElementById("error").style.display = "none";
-
     const tabElements = document.getElementsByClassName("tab") as HTMLCollectionOf<HTMLElement>;
     for (const elmt of tabElements) {
         dispatchSwitchTabOnClick(elmt);
@@ -89,9 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", setupPlots);
 
     resizeMiddleSVG();
-
-    document.getElementById("defaultOptimizer").classList.add("selected");
-    document.getElementById("defaultLoss").classList.add("selected");
 
     document.getElementById("train").onclick = trainOnClick;
 

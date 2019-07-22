@@ -68,7 +68,7 @@
 	<!-- The leftmost strip to select tabs -->
 	<div id = 'tabselector'>
 		<div id = 'blanktab' class='top_neighbor_tab-selected'> </div>
-		<div title = 'Network' class = 'tab' id = 'network' data-tabType = 'network'>
+		<div title = 'Network' class = 'tab tab-selected' id = 'network' data-tabType = 'network'>
 			<svg class = 'icon' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z"/></svg>
 		</div>
 		<div title = 'Progress' class = 'tab bottom_neighbor_tab-selected' id = 'progress' data-tabType = 'progress'>
@@ -156,7 +156,7 @@
 			</div>
 		</div>
 
-		<div id = 'progressMenu'>
+		<div id = 'progressMenu' style="display: none">
 			<div id = 'optimizers' class = 'category' data-itemType = 'optimizer'>
 				<div class = 'categoryTitle' data-expanded = 'true'>
 					<div class='expander'>
@@ -168,7 +168,7 @@
 						Optimizers
 					</div>
 				</div>
-				<div id = "defaultOptimizer" class = 'option' id = 'sgd' data-trainType = 'sgd'> SGD </div>
+				<div id = "defaultOptimizer" class = 'option selected' id = 'sgd' data-trainType = 'sgd'> SGD </div>
 				<div id = 'rmsprop' class = 'option train-option' data-trainType = 'rmsprop'> RMSprop </div>
 				<div id = 'adagrad' class = 'option train-option' data-trainType = 'adagrad'> Adagrad </div>
 				<div id = 'adam' class = 'option train-option' data-trainType = 'adam'> Adam </div>
@@ -184,14 +184,14 @@
 						Losses
 					</div>
 				</div>
-				<div id = 'defaultLoss' class = 'option loss-option' data-lossType = 'categoricalCrossentropy'>CrossEntropy</div>
+				<div id = 'defaultLoss' class = 'option loss-option selected' data-lossType = 'categoricalCrossentropy'>CrossEntropy</div>
 				<div id = 'hinge' class = 'option loss-option' data-lossType = 'hinge'> Hinge </div>
 				<div id = 'meanSquaredError' class = 'option loss-option' data-lossType = 'meanSquaredError'> MSE </div>
 				<div id = 'meanAbsoluteError' class = 'option loss-option' data-lossType = 'meanAbsoluteError'> MAE </div>
 			</div>
 		</div>
 
-		<div id = 'visualizationMenu'>
+		<div id = 'visualizationMenu' style="display: none">
 			<div id = 'classes' class = 'category' data-itemType = 'classes'>
 				<div class = 'categoryTitle' data-expanded = 'true'>
 					<div class='expander'>
@@ -203,7 +203,7 @@
 						Classes
 					</div>
 				</div>
-				<div id = 'all' class = 'option visualization-option' data-classesType = 'all'> All </div>
+				<div id = 'all' class = 'option visualization-option selected' data-classesType = 'all'> All </div>
 				<div class = 'option visualization-option data-class-option' data-classesType = '0'> 0 </div>
 				<div class = 'option visualization-option data-class-option' data-classesType = '1'> 1 </div>
 				<div class = 'option visualization-option data-class-option' data-classesType = '2'> 2 </div>
@@ -217,7 +217,7 @@
 			</div>
 		</div>
 
-		<div id = 'educationMenu'>
+		<div id = 'educationMenu' style="display: none">
 			<div id = 'educationLayers' class = 'category' data-itemType = 'educationPage'>
 				<div class = 'categoryTitle' data-expanded = 'true'>
 					<div class='expander'>
@@ -248,34 +248,16 @@
 					</div>
 				</div>
 
-
-				<!-- <div class = 'option education-option' data-articleType = 'Dense'> Dense </div> -->
 				<div class = 'option education-option' data-articleType = 'Concatenate'> Concatenate</div>
 				<div class = 'option education-option' data-articleType = 'Convolution'> Convolution </div>
-				<!-- <div class = 'option education-option' data-articleType = 'MaxPooling'> Max Pooling </div> -->
-				<!-- <div class = 'option education-option' data-articleType = 'Batchnorm'> Batch Norm</div> -->
 				<div class = 'option education-option' data-articleType = 'Dropout'> Dropout</div>
 				<div class = 'option education-option' data-articleType = 'Flatten'> Flatten</div>
 
 			</div>
 
-			<!-- <div id = 'activations' class = 'category' data-itemType = 'activation'>
-				<div class = 'categoryTitle' data-expanded = 'true'>Activations</div>
-				<div class = 'option' data-articleType = 'relu'> ReLU </div>
-				<div class = 'option' data-articleType = 'sigmoid'> Sigmoid </div>
-				<div class = 'option' data-articleType = 'tanh'> Tanh </div>
-			</div> -->
 		</div>
 
 	</div>
-<!--
-	<div id = 'menu_expander'>
- 		<div id = 'menu_expander_handle'>
-			<svg>
-				<polygon id='expander_triangle' points="0,15 10,30 10,0" style="fill:#555;" />
-			</svg>
-		</div>
-	 </div> -->
 
 	<!-- The middle canvas -->
 	<div id = 'middle'>
@@ -284,7 +266,7 @@
 			<svg id = 'svg'> </svg>
 		</div>
 
-		<div id = 'progressTab'>
+		<div id = 'progressTab' style="display: none">
 
 			<div id="loss-canvas"></div>
 
@@ -293,7 +275,7 @@
 			<div id="confusion-matrix-canvas"></div>
 		</div>
 
-		<div id = 'visualizationTab'>
+		<div id = 'visualizationTab' style="display: none">
 			<div id='visulaization'></div>
 			<div id='images'></div>
 		</div>
@@ -321,7 +303,7 @@
 			</div>
 		</div>
 
-		<div id = 'educationTab'>
+		<div id = 'educationTab' style="display: none">
 			<div id="educationOverview">
 				<div class="educationTitle" style="padding-top: 0px"> Learn About Deep Neural Networks </div>
 				<div class="educationSection"> Introduction to Ennui </div>
@@ -471,14 +453,14 @@
 
 		</div>
 
-		<div id = 'loadingDataTab'>
+		<div id = 'loadingDataTab' style="display: none">
 			<div id='loadingMNIST'>
 				Loading <span id="datasetLoadingName">MNIST</span> dataset
 			</div>
 		</div>
 
 		<!-- Error popup -->
-		<div id = 'error'>
+		<div id = 'error' style="display: none">
 			<svg id = 'x' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
 			<div id = 'errorMessage'> </div>
 		</div>
@@ -558,10 +540,7 @@
 			</div>
 		</div>
 
-		<div id = 'progressParamshell'>
-			<!-- <div class = 'trainbox' id = 'trainbox'>
-				<div id = 'train' class = 'train' data-actionType = 'json'> Train </div>
-			</div>-->
+		<div id = 'progressParamshell' style="display: none">
 			<div class = 'category' id='paramtruck'>
 				<div class = 'categoryTitle' data-expanded = 'true'>
 					<div class='expander'>
@@ -590,31 +569,13 @@
 			</div>
 		</div>
 
-		<div id = 'visualizationParamshell'>
+		<div id = 'visualizationParamshell' style="display: none">
 		</div>
 
-		<div id = 'educationParamshell'>
+		<div id = 'educationParamshell' style="display: none">
 		</div>
 
 	</div>
-
-	<!-- <div id = 'right_menu_expander'>
- 		<div id = 'right_menu_expander_handle'>
-			<svg>
-				<polygon id='right_expander_triangle' points="20,15 10,30 10,0" style="fill:#555;" />
-			</svg>
-		</div>
-	 </div> -->
-
-
-	<!-- <div id = 'right_menu_expander'>
-		<div id = 'right_this_will_be_a_triangle'>
-			<svg>
-			  <polygon id='right_expander_triangle' points="0,15 10,30 10,0" style="fill:#555;" />
-			</svg>
-
-		</div>
-	</div> -->
 
 </div>
 </body>
