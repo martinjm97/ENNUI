@@ -4,6 +4,13 @@
         "tslint:recommended"
     ],
     "jsRules": {},
-    "rules": {},
+    "rules": {
+        "typedef": [true,
+            "call-signature",
+            "parameter",
+            "property-declaration",
+            "member-variable-declaration"],
+        "prefer-const": true
+    },
     "rulesDirectory": []
 }
