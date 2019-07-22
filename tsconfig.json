@@ -6,6 +6,8 @@
         "module": "commonjs",
         "noUnusedLocals": true,
         "noUnusedParameters": true,
+        "alwaysStrict": true,
+        "noImplicitReturns": true,
 	    "moduleResolution": "node",
     },
     "include": [
