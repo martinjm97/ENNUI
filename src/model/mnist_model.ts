@@ -12,18 +12,15 @@ import { tabSelected } from '../ui/app';
  *
  * @param {*} model The model to
  */
- 
-export async function train() {
-    // TODO: start method
-    // ui.logStatus('Training model...');
-    // TODO: This is where we should do caching.
+export async function train(): Promise<void> {
+    // Set up all of the plots
     resetPlotValues();
     setupPlots();
     setupTestResults();
     await dataset.load();
     
-    let onIteration = () => showPredictions()
-    let optimizer = model.params.getOptimizer()
+    let onIteration = () => showPredictions();
+    let optimizer = model.params.getOptimizer();
   
     
     model.architecture.compile({
@@ -34,7 +31,6 @@ export async function train() {
     const batchSize = model.params.batchSize;
     const validationSplit = 0.15;
   
-    // const trainEpochs = getTrainEpochs();
     const trainEpochs = model.params.epochs;
   
     // We'll keep a buffer of loss and accuracy values over time.
@@ -46,10 +42,8 @@ export async function train() {
   
     const trainData = dataset.getTrainData();
     const testData = dataset.getTestData();
-    const totalNumBatches =
-        Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / batchSize) *
-        trainEpochs;
-    let valAcc;
+    const totalNumBatches = Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / batchSize) * trainEpochs;
+
     await model.architecture.fit(trainData.xs, trainData.labels, {
         batchSize,
         validationSplit,
@@ -60,21 +54,21 @@ export async function train() {
                 let accBox = document.getElementById('ti_acc');
                 let lossBox = document.getElementById('ti_loss');
                 let trainBox = document.getElementById('ti_training');
-                accBox.children[1].innerHTML = String(Number((100*logs.acc).toFixed(2)))
-                lossBox.children[1].innerHTML = String(Number((logs.loss).toFixed(2)))
-                trainBox.children[1].innerHTML = String((trainBatchCount / totalNumBatches * 100).toFixed(1)+'%')
+                accBox.children[1].innerHTML = String(Number((100*logs.acc).toFixed(2)));
+                lossBox.children[1].innerHTML = String(Number((logs.loss).toFixed(2)));
+                trainBox.children[1].innerHTML = String((trainBatchCount / totalNumBatches * 100).toFixed(1)+'%');
                 // For logging training in console.
-                //   console.log(
-                //       `Training... (` +
-                //       `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
-                //       ` complete). To stop training, refresh or close page.`);
+                console.log(
+                    `Training... (` +
+                    `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
+                    ` complete). To stop training, refresh or close page.`);
                 totalLoss += logs.loss;
                 totalAccuracy += logs.acc;
                 if (batch % plotLossFrequency === 0) {
                   // Compute the average loss for the last plotLossFrequency iterations
                   plotLoss(trainBatchCount, totalLoss / (trainBatchCount - prevTrainBatchCount), 'train');
                   plotAccuracy(trainBatchCount, totalAccuracy / (trainBatchCount - prevTrainBatchCount), 'train');
-                  prevTrainBatchCount = trainBatchCount
+                  prevTrainBatchCount = trainBatchCount;
                   totalLoss = 0;
                   totalAccuracy = 0;
                 }
@@ -83,13 +77,13 @@ export async function train() {
                 }
                 await tf.nextFrame();
             },
-            onEpochEnd: async (epoch, logs) => {
+            onEpochEnd: async (epoch: number, logs) => {
                 let valAcc = logs.val_acc;
                 let valLoss = logs.val_loss;
                 let vaccBox = document.getElementById('ti_vacc');
                 let vlossBox = document.getElementById('ti_vloss');
-                vaccBox.children[1].innerHTML = String(Number((100*valAcc).toFixed(2)))
-                vlossBox.children[1].innerHTML = String(Number((valLoss).toFixed(2)))
+                vaccBox.children[1].innerHTML = String(Number((100*valAcc).toFixed(2)));
+                vlossBox.children[1].innerHTML = String(Number((valLoss).toFixed(2)));
                 plotLoss(trainBatchCount, logs.val_loss, 'validation');
                 plotAccuracy(trainBatchCount, logs.val_acc, 'validation');
                 showConfusionMatrix();
@@ -103,16 +97,6 @@ export async function train() {
 
     let vaccBox = document.getElementById('ti_vacc');
     let vlossBox = document.getElementById('ti_vloss');
-    vaccBox.children[1].innerHTML = String(Number((100*testResult[1].dataSync()[0] ).toFixed(2)))
-    vlossBox.children[1].innerHTML = String(Number((testResult[0].dataSync()[0]).toFixed(2)))
-
-    
-    // elmt.style.background = '#007400'
-    // let trainingBox = document.getElementById('ti_training');
-    // trainingBox.children[1].innerHTML = 'No'
-  
-    // TODO: Add a termination message
-    // ui.logStatus(
-    //     `Final validation accuracy: ${finalValAccPercent.toFixed(1)}%; ` +
-    //     `Final test accuracy: ${testAccPercent.toFixed(1)}%`);
+    vaccBox.children[1].innerHTML = String(Number((100*testResult[1].dataSync()[0] ).toFixed(2)));
+    vlossBox.children[1].innerHTML = String(Number((testResult[0].dataSync()[0]).toFixed(2)));
 }
