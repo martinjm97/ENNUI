@@ -3,7 +3,7 @@ import { IDraggableData } from "../ui/app";
 import { displayError } from "../ui/error";
 import { Activation, Relu, Sigmoid, Tanh } from "../ui/shapes/activation";
 import { ActivationLayer } from "../ui/shapes/activationlayer";
-import { Layer, LayerJson } from "../ui/shapes/layer";
+import { Layer, ILayerJson } from "../ui/shapes/layer";
 import { Add } from "../ui/shapes/layers/add";
 import { BatchNorm } from "../ui/shapes/layers/batchnorm";
 import { Concatenate } from "../ui/shapes/layers/concatenate";
@@ -21,7 +21,7 @@ import { IHyperparameterData } from "./paramsObject";
  * Schema for serialized networks.
  */
 export interface ISerializedNetwork {
-    graph: LayerJson[];
+    graph: ILayerJson[];
     hyperparameters: IHyperparameterData;
 }
 
@@ -56,7 +56,7 @@ export function graphToJson(svgData: IDraggableData): ISerializedNetwork {
     // Initialize queues, dags, and parents (visited)
     const queue: Layer[] = [svgData.input];
     const visited: Set<Layer> = new Set();
-    const layersjson: LayerJson[] = new Array();
+    const layersjson: ILayerJson[] = new Array();
     while (queue.length !== 0) {
         const current = queue.shift();
         layersjson.push(current.toJson());
@@ -123,7 +123,7 @@ export function stateFromJson(svgData: IDraggableData, serializedNet: ISerialize
     const hyperparams: IHyperparameterData = serializedNet.hyperparameters;
     setHyperparams(hyperparams);
 
-    const layersJson: LayerJson[] = serializedNet.graph;
+    const layersJson: ILayerJson[] = serializedNet.graph;
     return graphFromJson(svgData, layersJson);
 }
 
@@ -148,7 +148,7 @@ function setHyperparams(hyperparamData: IHyperparameterData): void {
  * @param svgData empty empty structure blob to be filled
  * @param layersJson a json blob of all of the nn architecture
  */
-function graphFromJson(svgData: IDraggableData, layersJson: LayerJson[]): IDraggableData {
+function graphFromJson(svgData: IDraggableData, layersJson: ILayerJson[]): IDraggableData {
 
     // Make each of the objects without parents and children
     const uidToObject: Map<number, Layer> = new Map();
@@ -208,7 +208,7 @@ function createActivationInstanceFromName(svgData: IDraggableData,
  * @param svgData the input nn architecture
  * @param lj a json blob of all of the layers
  */
-function createLayerInstanceFromName(svgData: IDraggableData, lj: LayerJson): Layer {
+function createLayerInstanceFromName(svgData: IDraggableData, lj: ILayerJson): Layer {
 
     // Create an instance from the instance name.
     let layer: Layer;

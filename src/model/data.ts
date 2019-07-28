@@ -287,7 +287,7 @@ export function changeDataset(newDataset: string): void {
     }
 
     // Set the image visualizations divs with class name identifiers
-    Array.from(document.getElementsByClassName("data-class-option")).forEach((element, i) => {
+    Array.from(document.getElementById("classes").getElementsByClassName("option")).forEach((element, i) => {
         element.innerHTML = i + ( dataset.classStrings != null ? ` (${dataset.classStrings[i]})` : "" );
     });
 }

@@ -46,15 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
     setupPlots();
     setupTestResults();
 
-    const tabElements = document.getElementsByClassName("tab") as HTMLCollectionOf<HTMLElement>;
-    for (const elmt of tabElements) {
-        dispatchSwitchTabOnClick(elmt);
-    }
-
-    const optionElements = document.getElementsByClassName("option") as HTMLCollectionOf<HTMLElement>;
-    for (const elmt of optionElements) {
-        dispatchCreationOnClick(elmt);
-    }
+    setupOptionOnClicks();
+    setupIndividualOnClicks();
 
     const categoryElements = document.getElementsByClassName("categoryTitle") as HTMLCollectionOf<HTMLElement>;
     for (const elmt of categoryElements) {
@@ -65,28 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", setupPlots);
 
     resizeMiddleSVG();
-
-    document.getElementById("train").onclick = trainOnClick;
-
-    document.getElementById("informationEducation").onclick = (_) => {
-        document.getElementById("informationOverlay").style.display = "none";
-        switchTab("education");
-
-    };
-    document.getElementById("informationOverlay").onclick = (_) => {
-        document.getElementById("informationOverlay").style.display = "none";
-    };
-
-    document.getElementById("x").onclick = (_) => clearError();
-
-    document.getElementById("svg").addEventListener("click", (event) => {
-        // Only click if there is a selected element, and the clicked element is an SVG Element, and its id is "svg"
-        // It does this to prevent unselecting if we click on a layer block or other svg shape
-        if (windowProperties.selectedElement && event.target instanceof SVGElement && event.target.id === "svg") {
-            windowProperties.selectedElement.unselect();
-            windowProperties.selectedElement = null;
-        }
-    });
 
     window.onkeyup = (event) => {
         switch (event.key) {
@@ -127,6 +98,120 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+function addOnClickToOptions(categoryId: string, func: (optionValue: string, element: HTMLElement) => void): void {
+    for (const element of document.getElementById(categoryId).getElementsByClassName("option")) {
+        element.addEventListener("click", () => {
+            func(element.getAttribute("data-optionValue"), element as HTMLElement);
+        });
+    }
+}
+
+function setupOptionOnClicks(): void {
+    addOnClickToOptions("tab", (tabType) => switchTab(tabType));
+    addOnClickToOptions("layers", (layerType) => appendItem(layerType));
+    addOnClickToOptions("activations", (activationType) => appendItem(activationType));
+    addOnClickToOptions("templates", (templateType) => createTemplate(templateType));
+    addOnClickToOptions("educationLayers", (articleType) => {
+        document.getElementById("education" + articleType).scrollIntoView(true);
+    });
+    addOnClickToOptions("classes", (_, element) => {
+        selectOption("classes", element);
+        if (model.architecture != null) {
+            showPredictions();
+        }
+    });
+    addOnClickToOptions("optimizers", (optimizerType, element) => {
+        selectOption("optimizers", element);
+        model.params.optimizer = optimizerType;
+    });
+    addOnClickToOptions("losses", (lossType, element) => {
+        selectOption("losses", element);
+        model.params.loss = lossType;
+    });
+}
+
+function selectOption(optionCategoryId: string, optionElement: HTMLElement): void {
+    for (const option of document.getElementById(optionCategoryId).getElementsByClassName("option")) {
+        option.classList.remove("selected");
+    }
+    optionElement.classList.add("selected");
+}
+
+function createTemplate(template: string): void {
+    switch (template) {
+        case "blank": blankTemplate(svgData); break;
+        case "default": defaultTemplate(svgData); break;
+        case "resnet": resnetTemplate(svgData); break;
+
+    }
+}
+
+function appendItem(itemType: string): void {
+    const item: Draggable = new ({
+        add: Add,
+        batchnorm: BatchNorm,
+        concatenate: Concatenate,
+        conv2D: Conv2D,
+        dense: Dense,
+        dropout: Dropout,
+        flatten: Flatten,
+        maxPooling2D: MaxPooling2D,
+        relu: Relu,
+        sigmoid: Sigmoid,
+        tanh: Tanh,
+    } as any)[itemType]();
+
+    svgData.draggable.push(item);
+}
+
+function setupIndividualOnClicks(): void {
+    document.getElementById("exportPython").addEventListener("click", () => {
+        changeDataset(svgData.input.getParams().dataset); // TODO change dataset should happen when the dataset changes
+        const filename = svgData.input.getParams().dataset + "_model.py";
+        download(generatePython(topologicalSort(svgData.input)), filename);
+    });
+
+    document.getElementById("exportJulia").addEventListener("click", () => {
+        changeDataset(svgData.input.getParams().dataset); // TODO change dataset should happen when the dataset changes
+        if (svgData.input.getParams().dataset === "cifar") {
+            displayError(Error("CIFAR-10 dataset exporting to Julia not currently supported. " +
+                "Select MNIST dataset instead."));
+            return;
+        }
+        download(generateJulia(topologicalSort(svgData.input)), "mnist_model.jl");
+    });
+
+    document.getElementById("copyModel").addEventListener("click", () => {
+        changeDataset(svgData.input.getParams().dataset); // TODO change dataset should happen when the dataset changes
+        const state = graphToJson(svgData);
+        const baseUrl: string = window.location.href;
+        const urlParam: string = storeNetworkInUrl(state);
+        copyTextToClipboard(baseUrl + "#" + urlParam);
+    });
+
+    document.getElementById("train").addEventListener("click", trainOnClick);
+
+    document.getElementById("informationEducation").addEventListener("click", () => {
+        document.getElementById("informationOverlay").style.display = "none";
+        switchTab("education");
+    });
+
+    document.getElementById("informationOverlay").addEventListener("click", () => {
+        document.getElementById("informationOverlay").style.display = "none";
+    });
+
+    document.getElementById("x").addEventListener("click", () => clearError());
+
+    document.getElementById("svg").addEventListener("click", (event) => {
+        // Only click if there is a selected element, and the clicked element is an SVG Element, and its id is "svg"
+        // It does this to prevent unselecting if we click on a layer block or other svg shape
+        if (windowProperties.selectedElement && event.target instanceof SVGElement && event.target.id === "svg") {
+            windowProperties.selectedElement.unselect();
+            windowProperties.selectedElement = null;
+        }
+    });
+}
+
 function deleteSelected(): void {
     if (windowProperties.selectedElement) {
         windowProperties.selectedElement.delete();
@@ -142,7 +227,7 @@ async function trainOnClick(): Promise<void> {
     if (!training.classList.contains("train-active")) {
         clearError();
 
-        changeDataset(svgData.input.getParams().dataset);
+        changeDataset(svgData.input.getParams().dataset); // TODO change dataset should happen when the dataset changes
 
         // Grab hyperparameters
         setModelHyperparameters();
@@ -258,13 +343,6 @@ export function setModelHyperparameters(): void {
     }
 }
 
-function dispatchSwitchTabOnClick(elmt: Element): void {
-    elmt.addEventListener("click", () => {
-        const tabType = elmt.getAttribute("data-tabType");
-        switchTab(tabType);
-    });
-}
-
 export function tabSelected(): string {
     if (document.getElementById("networkTab").style.display !== "none") {
         return "networkTab";
@@ -277,117 +355,6 @@ export function tabSelected(): string {
     } else {
         throw new Error("No tab selection found");
     }
-}
-
-function dispatchCreationOnClick(elmt: HTMLElement): void {
-    if (!elmt.classList.contains("dropdown")) {
-        elmt.addEventListener("click", () => {
-            let itemType;
-            if (elmt.parentElement.classList.contains("dropdown-content")) {
-                itemType = elmt.parentElement.parentElement.parentElement.getAttribute("data-itemType");
-            } else {
-                itemType = elmt.parentElement.getAttribute("data-itemType");
-            }
-
-            if (model.params.isParam(itemType)) {
-                let setting;
-                if (elmt.hasAttribute("data-trainType")) {
-                    setting = elmt.getAttribute("data-trainType");
-                } else if (elmt.hasAttribute("data-lossType")) {
-                    setting = elmt.getAttribute("data-lossType");
-                }
-
-                const selected = elmt.parentElement.getElementsByClassName("selected");
-                if (selected.length > 0) {
-                    selected[0].classList.remove("selected");
-                }
-                elmt.classList.add("selected");
-                updateNetworkParameters(itemType, setting);
-            } else if (itemType === "share") {
-                changeDataset(svgData.input.getParams().dataset);
-                if (elmt.getAttribute("share-option") === "exportPython") {
-                    const filename = svgData.input.getParams().dataset + "_model.py";
-                    download(generatePython(topologicalSort(svgData.input)), filename);
-                } else if (elmt.getAttribute("share-option") === "exportJulia") {
-                    if (svgData.input.getParams().dataset === "cifar") {
-                        displayError(Error("CIFAR-10 dataset exporting to Julia not currently supported. " +
-                            "Select MNIST dataset instead."));
-                        return;
-                    }
-                    download(generateJulia(topologicalSort(svgData.input)), "mnist_model.jl");
-                } else if (elmt.getAttribute("share-option") === "copyModel") {
-                    const state = graphToJson(svgData);
-                    const baseUrl: string = window.location.href;
-                    const urlParam: string = storeNetworkInUrl(state);
-                    copyTextToClipboard(baseUrl + "#" + urlParam);
-                }
-            } else if (itemType === "classes") {
-                selectOption(elmt);
-                if (model.architecture != null) {
-                    showPredictions();
-                }
-            } else if (itemType === "educationPage") {
-                // selectOption(elmt); // TODO uncomment this line to add back in selections
-                const target = document.getElementById("education" + elmt.getAttribute("data-articleType"));
-                ( target.parentNode as Element).scrollTop = target.offsetTop;
-            } else if (itemType === "template") {
-                createTemplate(elmt.getAttribute("data-templateType"));
-            } else {
-                appendItem(elmt.getAttribute("data-" + itemType + "Type"));
-            }
-        });
-    }
-}
-
-function selectOption(elmt: HTMLElement): void {
-
-    const parents = Array.from(document.querySelectorAll(
-        `[data-itemType="${elmt.parentElement.getAttribute("data-itemType")}"]`).values());
-    for (const parent of parents) {
-        for (const option of parent.getElementsByClassName("option")) {
-            option.classList.remove("selected");
-        }
-    }
-
-    elmt.classList.add("selected");
-}
-
-function updateNetworkParameters(itemType: string, setting: string): void {
-    switch (itemType) {
-        case "optimizer":
-            model.params.optimizer = setting;
-            break;
-        case "loss":
-            model.params.loss = setting;
-            break;
-    }
-}
-
-function createTemplate(template: string): void {
-    switch (template) {
-        case "blank": blankTemplate(svgData); break;
-        case "default": defaultTemplate(svgData); break;
-        case "resnet": resnetTemplate(svgData); break;
-
-    }
-}
-
-function appendItem(itemType: string): void {
-    const item: Draggable = new ({
-        add: Add,
-        batchnorm: BatchNorm,
-        concatenate: Concatenate,
-        conv2D: Conv2D,
-        dense: Dense,
-        dropout: Dropout,
-        flatten: Flatten,
-        maxPooling2D: MaxPooling2D,
-        relu: Relu,
-        sigmoid: Sigmoid,
-        tanh: Tanh,
-    } as any)[itemType]();
-
-    svgData.draggable.push(item);
 }
 
 function switchTab(tabType: string): void {
@@ -447,5 +414,4 @@ function switchTab(tabType: string): void {
 
     document.getElementById(tabMapping[index - 1]).classList.add("top_neighbor_tab-selected");
     document.getElementById(tabMapping[index + 1]).classList.add("bottom_neighbor_tab-selected");
-
 }

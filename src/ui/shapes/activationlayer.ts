@@ -3,7 +3,7 @@ import { Point, Shape } from "./shape";
 import { Activation } from "./activation";
 import { windowProperties } from "../window";
 import { displayError } from '../error';
-import { Layer, LayerJson } from './layer';
+import { Layer, ILayerJson } from './layer';
 
 
 /**
@@ -79,7 +79,7 @@ export abstract class ActivationLayer extends Layer {
         this.activation = null;
     }
 
-    public toJson(): LayerJson {
+    public toJson(): ILayerJson {
         let json = super.toJson();
         if (this.activation != null) {
             json.params["activation"] = this.activation.activationType;
