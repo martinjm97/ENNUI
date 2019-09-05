@@ -79,7 +79,7 @@ export class Wire {
         this.dest.wires.delete(this);
     }
 
-    private updatePosition(): void {
+    public updatePosition(): void {
         const sourceCenter = this.source.getPosition().add(this.source.center());
         const destCenter = this.dest.getPosition().add(this.dest.center());
         const midPoint = sourceCenter.midpoint(destCenter);

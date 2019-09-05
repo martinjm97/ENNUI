@@ -42,7 +42,8 @@ export abstract class Layer extends Draggable {
     public readonly outputWiresAllowed: boolean = true;
     public readonly wireGuidePresent: boolean = true;
     protected tfjsLayer: tf.SymbolicTensor;
-    protected readonly tfjsEmptyLayer: tf.SymbolicTensor;
+
+    protected readonly tfjsEmptyLayer: tf.layers.Layer;
     private paramBox: HTMLElement;
     private selectText: any = d3.select("body")
                         .append("div")
@@ -57,7 +58,7 @@ export abstract class Layer extends Draggable {
 
     private block: Shape[];
 
-    constructor(block: Shape[], defaultLocation) {
+    constructor(block: Shape[], defaultLocation: Point) {
         super(defaultLocation);
         this.uid = Layer.nextID;
         Layer.nextID += 1;
@@ -84,9 +85,7 @@ export abstract class Layer extends Draggable {
     public abstract getHoverText(): string;
     public abstract clone(): Layer;
 
-    populateParamBox() {}
-
-    public moveAction() {
+    public moveAction(): void {
         for (const wire of this.wires) {
             wire.updatePosition();
         }
@@ -96,16 +95,17 @@ export abstract class Layer extends Draggable {
         }
     }
 
-    public raise() {
+    public raise(): void {
         this.wires.forEach((w) => w.raiseGroup());
         this.parents.forEach((p) => p.raiseGroup());
         this.children.forEach((c) => c.raiseGroup());
         this.raiseGroup();
     }
 
-    public select() {
+    public select(): void {
         const currSelected = windowProperties.selectedElement;
-        if (currSelected != null && currSelected !== this && currSelected instanceof Layer && currSelected.outputWiresAllowed) {
+        if (currSelected != null && currSelected !== this &&
+                currSelected instanceof Layer && currSelected.outputWiresAllowed) {
             currSelected.addChild(this);
         }
         super.select();
@@ -121,7 +121,7 @@ export abstract class Layer extends Draggable {
         windowProperties.shapeTextBox.show();
     }
 
-    public unselect() {
+    public unselect(): void {
         super.unselect();
         document.getElementById("defaultparambox").style.display = null;
         this.paramBox.style.visibility = "hidden";
@@ -136,7 +136,7 @@ export abstract class Layer extends Draggable {
      * Add a child layer of this node (successor).
      * @param child the layer pointed to by the given wire
      */
-    public addChild(child: Layer) {
+    public addChild(child: Layer): void {
         if (!this.children.has(child) && !child.children.has(this)) {
             this.children.add(child);
             child.parents.add(this);
@@ -152,33 +152,33 @@ export abstract class Layer extends Draggable {
      * Add a parent layer of this node (predecessor).
      * @param parent the layer pointed to by the given wire
      */
-    public addParent(parent: Layer) {
+    public addParent(parent: Layer): void {
         parent.addChild(this);
     }
 
-    public delete() {
+    public delete(): void {
         super.delete();
         this.wires.forEach((w) => w.delete()); // deleting wires should delete layer connection sets
     }
 
     public toJson(): ILayerJson {
         return {
-            layer_name: this.layerType,
-            "children_ids": Array.from(this.children, (child) => child.uid),
-            parent_ids: Array.from(this.parents, (parent) => parent.uid),
-            params: this.getJSONParams(),
+            children_ids: Array.from(this.children, (child) => child.uid),
             id: this.uid,
+            layer_name: this.layerType,
+            params: this.getJSONParams(),
+            parent_ids: Array.from(this.parents, (parent) => parent.uid),
             xPosition: this.getPosition().x,
             yPosition: this.getPosition().y,
         };
     }
 
-    public getJSONParams() {
-        const params = {};
+    public getJSONParams(): { [key: string]: any } {
+        const params: { [key: string]: any } = {};
         const defaultParams = this.parameterDefaults;
         for (const line of this.paramBox.children) {
             const name = line.children[0].getAttribute("data-name");
-            if (line.children[1].className == "select") {
+            if (line.children[1].className === "select") {
                 const selectElement: HTMLSelectElement =  line.children[1].children[0] as HTMLSelectElement;
                 params[name] = selectElement.options[selectElement.selectedIndex].value;
             } else {
@@ -194,12 +194,12 @@ export abstract class Layer extends Draggable {
         return params;
     }
 
-    public getParams(): { [dataset: string]: any; } {
-        const params = {};
+    public getParams(): { [key: string]: any; } {
+        const params: { [key: string]: any } = {};
         const defaultParams = this.parameterDefaults;
         for (const line of this.paramBox.children) {
             const name = line.children[0].getAttribute("data-name");
-            if (line.children[1].className == "select") {
+            if (line.children[1].className === "select") {
                 const selectElement: HTMLSelectElement =  line.children[1].children[0] as HTMLSelectElement;
                 params[name] = selectElement.options[selectElement.selectedIndex].value;
             } else {
@@ -218,10 +218,11 @@ export abstract class Layer extends Draggable {
     public setParams(params: Map<string, any>): void {
         for (const line of this.paramBox.children) {
             const name = line.children[0].getAttribute("data-name");
-            if (line.children[1].className == "select") {
+            if (line.children[1].className === "select") {
                 const selectElement: HTMLSelectElement =  line.children[1].children[0] as HTMLSelectElement;
                 // Get index with the correct value and select it
-                selectElement.selectedIndex = Array.apply(null, selectElement).findIndex((elem) => elem.value === params[name]);
+                selectElement.selectedIndex =
+                    Array.apply(null, selectElement).findIndex((elem) => elem.value === params[name]);
             } else {
                 ( line.children[1] as HTMLInputElement).value = params[name];
             }
@@ -338,5 +339,7 @@ export abstract class Layer extends Draggable {
 
         return false;
     }
+
+    protected abstract populateParamBox(): void;
 
 }
