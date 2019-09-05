@@ -9,15 +9,15 @@ export class Output extends ActivationLayer {
     layerType = "Output";
     parameterDefaults = {units: 10, activation: 'softmax'};
     readonly tfjsEmptyLayer = tf.layers.dense ;
-    private juliaFinalLineId = null;
+    private juliaFinalLineId: number = null;
     readonly outputWiresAllowed: boolean = false;
     readonly wireGuidePresent: boolean = false;
 
-    defaultLocation = new Point(getSvgOriginalBoundingBox(document.getElementById("svg")).width - 100, getSvgOriginalBoundingBox(document.getElementById("svg")).height/2);
+    defaultLocation = new Point(getSvgOriginalBoundingBox(document.getElementById("svg") as any as SVGSVGElement).width - 100, getSvgOriginalBoundingBox(document.getElementById("svg") as any as SVGSVGElement).height/2);
     constructor(){
         super([new Rectangle(new Point(-8, -90), 30, 200, '#806CB7')],
-               new Point(getSvgOriginalBoundingBox(document.getElementById("svg")).width - 100,
-               getSvgOriginalBoundingBox(document.getElementById("svg")).height/2));
+               new Point(getSvgOriginalBoundingBox(document.getElementById("svg") as any as SVGSVGElement).width - 100,
+               getSvgOriginalBoundingBox(document.getElementById("svg") as any as SVGSVGElement).height/2));
 
     }
 
@@ -49,7 +49,7 @@ export class Output extends ActivationLayer {
         return newLayer;
     }
 
-    public addChild(child: Layer) {
+    public addChild(_: Layer) {
         displayError(new Error("Output cannot have children. "))
     }
 }
