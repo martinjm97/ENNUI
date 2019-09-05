@@ -11,20 +11,16 @@ import { pythonSkeleton } from "./python_skeleton";
  * Wrap errors from networkDAG
  * @param input an input layer that is the root of the computational graph
  */
-export function buildNetworkDAG(input: Input): void {
+export function buildNetworkDAG(input: Input) {
     const toposorted = topologicalSort(input);
-    try {
-        return networkDAG(toposorted);
-    } catch (err) {
-        displayError(err);
-    }
+    return networkDAG(toposorted);
 }
 
 /**
  * Wrap model generation and produce a summary.
  * @param toposorted topologically sorted list of layers
  */
-function networkDAG(toposorted: Layer[]): tf.model {
+function networkDAG(toposorted: Layer[]): tf.Model {
     const model = generateTfjsModel(toposorted);
     // tslint:disable-next-line:no-console
     console.log(model.summary());
@@ -39,8 +35,8 @@ function networkDAG(toposorted: Layer[]): tf.model {
 export function cloneNetwork(input: Input, newInput: Input): void {
     // Initialize queues, dags, and parents (visited)
 
-    const oldId2Clone = {};
-    oldId2Clone[input.uid] = newInput;
+    const oldId2Clone: Map<number, Layer> = new Map<number, Layer>();
+    oldId2Clone.set(input.uid, newInput);
 
     const queue: Layer[] = [input];
     const visited: Set<Layer> = new Set();
@@ -53,18 +49,18 @@ export function cloneNetwork(input: Input, newInput: Input): void {
         if (current !== input) {
             if (!(current.uid in oldId2Clone)) {
                 newLayer = current.clone();
-                oldId2Clone[current.uid] = newLayer;
+                oldId2Clone.set(current.uid, newLayer);
             } else {
-                newLayer = oldId2Clone[current.uid];
+                newLayer = oldId2Clone.get(current.uid);
             }
 
             // Add in cloned parent/child relations
             for (const p of current.parents) {
                 if (!(p.uid in oldId2Clone)) {
-                    oldId2Clone[p.uid] = p.clone();
+                    oldId2Clone.set(p.uid, p.clone());
                 }
-                const newParent = oldId2Clone[p.uid];
-                newParent.addChild(newLayer, false);
+                const newParent = oldId2Clone.get(p.uid);
+                newParent.addChild(newLayer);
                 newLayer.addParent(newParent);
             }
         } else {
@@ -190,7 +186,7 @@ export function generateJulia(sorted: Layer[]): string {
  * Creates corresponding python code.
  * @param sorted topologically sorted list of layers
  */
-export function generateTfjsModel(sorted: Layer[]): tf.model {
+export function generateTfjsModel(sorted: Layer[]): tf.Model {
     sorted.forEach((layer) => layer.generateTfjsLayer());
     const input = sorted[0].getTfjsLayer();
     const output = sorted[sorted.length - 1].getTfjsLayer();
