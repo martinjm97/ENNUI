@@ -22,7 +22,7 @@ class NetworkParameters {
         return this.paramNames.has(param);
     }
 
-    public getOptimizer(): tf.optimizer {
+    public getOptimizer(): tf.Optimizer {
         switch (this.optimizer) {
             case "sgd":
                 return tf.train.sgd(this.learningRate);
@@ -109,7 +109,7 @@ class NetworkParameters {
 class Model {
     private static instance: Model;
     public params: NetworkParameters = new NetworkParameters();
-    public architecture: tf.model = null;
+    public architecture: tf.Model = null;
 
     private constructor() {}
 

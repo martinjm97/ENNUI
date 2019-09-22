@@ -51,7 +51,7 @@ export async function train(): Promise<void> {
     await model.architecture.fit(trainData.xs, trainData.labels, {
         batchSize,
         callbacks: {
-            onBatchEnd: async (batch, logs) => {
+            onBatchEnd: async (batch: number, logs: tf.Logs) => {
                 trainBatchCount++;
                 const accBox = document.getElementById("ti_acc");
                 const lossBox = document.getElementById("ti_loss");
@@ -79,7 +79,7 @@ export async function train(): Promise<void> {
                 }
                 await tf.nextFrame();
             },
-            onEpochEnd: async (_, logs) => {
+            onEpochEnd: async (_:number, logs: tf.Logs) => {
                 const valAcc = logs.val_acc;
                 const valLoss = logs.val_loss;
                 vaccBox.children[1].innerHTML = String(Number((100 * valAcc).toFixed(2)));
@@ -95,7 +95,7 @@ export async function train(): Promise<void> {
         validationSplit,
     });
 
-    const testResult = model.architecture.evaluate(testData.xs, testData.labels);
+    const testResult = <tf.Tensor<tf.Rank.R0>[]> model.architecture.evaluate(testData.xs, testData.labels);
 
     const vaccBox = document.getElementById("ti_vacc");
     const vlossBox = document.getElementById("ti_vloss");

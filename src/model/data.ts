@@ -210,50 +210,47 @@ export class MnistData extends ImageData {
         this.toggleLoadingOverlay();
 
         const img = new Image();
-        let datasetImages;
-        let datasetLabels;
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        const imgRequest = new Promise((resolve, _) => {
+        const imgRequest = new Promise<Float32Array>((resolve, _) => {
             img.crossOrigin = "";
             img.onload = () => {
                 img.width = img.naturalWidth;
                 img.height = img.naturalHeight;
 
-                const datasetBytesBuffer =
-                    new ArrayBuffer(NUM_DATASET_ELEMENTS * this.IMAGE_SIZE * 4);
+                const datasetBytesBuffer = new ArrayBuffer(NUM_DATASET_ELEMENTS * this.IMAGE_SIZE * 4);
 
                 const chunkSize = 5000;
                 canvas.width = img.width;
                 canvas.height = chunkSize;
 
                 for (let i = 0; i < NUM_DATASET_ELEMENTS / chunkSize; i++) {
-                const datasetBytesView = new Float32Array(
-                    datasetBytesBuffer, i * this.IMAGE_SIZE * chunkSize * 4,
-                    this.IMAGE_SIZE * chunkSize);
-                ctx.drawImage(
-                    img, 0, i * chunkSize, img.width, chunkSize, 0, 0, img.width,
-                    chunkSize);
+                    const datasetBytesView = new Float32Array(
+                        datasetBytesBuffer, i * this.IMAGE_SIZE * chunkSize * 4,
+                        this.IMAGE_SIZE * chunkSize);
+                    ctx.drawImage(
+                        img, 0, i * chunkSize, img.width, chunkSize, 0, 0, img.width,
+                        chunkSize);
 
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-                for (let j = 0; j < imageData.data.length / 4; j++) {
-                    // All channels hold an equal value since the image is grayscale, so
-                    // just read the red channel.
-                    datasetBytesView[j] = imageData.data[j * 4] / 255;
+                    for (let j = 0; j < imageData.data.length / 4; j++) {
+                        // All channels hold an equal value since the image is grayscale, so
+                        // just read the red channel.
+                        datasetBytesView[j] = imageData.data[j * 4] / 255;
+                    }
                 }
-                }
-                datasetImages = new Float32Array(datasetBytesBuffer);
+                let dataImages = new Float32Array(datasetBytesBuffer);
 
-                resolve();
+                resolve(dataImages);
             };
             img.src = MNIST_IMAGES_SPRITE_PATH;
         });
 
         const labelsRequest = fetch(MNIST_LABELS_PATH);
-        const [, labelsResponse] = await Promise.all([imgRequest, labelsRequest]);
+        const [datasetImages, labelsResponse] = await Promise.all([imgRequest, labelsRequest]);
 
-        datasetLabels = new Uint8Array(await labelsResponse.arrayBuffer());
+        let datasetLabels = new Uint8Array(await labelsResponse.arrayBuffer());
 
         // Slice the the images and labels into train and test sets.
         const trainImages = datasetImages.slice(0, this.IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
@@ -287,6 +284,6 @@ export function changeDataset(newDataset: string): void {
 
     // Set the image visualizations divs with class name identifiers
     Array.from(document.getElementById("classes").getElementsByClassName("option")).forEach((element, i) => {
-        element.innerHTML = i + ( dataset.classStrings != null ? ` (${dataset.classStrings[i]})` : "" );
+        element.innerHTML = i + ( dataset.classStrings != null ? ` (${dataset.classStrings[i]})`: "");
     });
 }

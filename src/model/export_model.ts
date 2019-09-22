@@ -154,17 +154,17 @@ function graphFromJson(svgData: IDraggableData, layersJson: ILayerJson[]): IDrag
     const uidToObject: Map<number, Layer> = new Map();
     for (const l of layersJson) {
         const layer = createLayerInstanceFromName(svgData, l);
-        uidToObject[l.id] = layer;
+        uidToObject.set(l.id, layer);
     }
 
     // Add in all of the parents, children, and activations
     for (const l of layersJson) {
-        const layer: Layer = uidToObject[l.id];
+        const layer: Layer = uidToObject.get(l.id);
         for (const childId of l.children_ids) {
-            layer.addChild(uidToObject[childId]);
+            layer.addChild(uidToObject.get(childId));
         }
         for (const parentId of l.parent_ids) {
-            layer.addParent(uidToObject[parentId]);
+            layer.addParent(uidToObject.get(parentId));
         }
         layer.setParams(l.params);
         if (l.params.activation != null) {

@@ -22,13 +22,13 @@ export async function showPredictions(): Promise<void> {
             break;
         }
     }
-    const examples = dataset.getTestDataWithLabel(testExamples, label);
+    const examples = dataset.getTestDataWithLabel(testExamples, label) as {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>};
 
     // Code wrapped in a tf.tidy() function callback will have their tensors freed
     // from GPU memory after execution without having to call dispose().
     // The tf.tidy callback runs synchronously.
     tf.tidy(() => {
-      const output = model.architecture.predict(examples.xs);
+      const output = model.architecture.predict(examples.xs) as tf.Tensor<tf.Rank.R1>;
 
       // tf.argMax() returns the indices of the maximum values in the tensor along
       // a specific axis. Categorical classification tasks like this one often
@@ -52,7 +52,7 @@ export async function showPredictions(): Promise<void> {
 }
 
 // TOOD: Remove this peice of problematic global state.
-let confusionValues = [];
+let confusionValues: any = [];
 for (let i = 0; i < NUM_CLASSES; i++) {
   const arr = new Array(NUM_CLASSES);
   arr.fill(0, 0, NUM_CLASSES);
@@ -63,10 +63,10 @@ export function showConfusionMatrix(): void {
   if (tabSelected() === "progressTab" && dataset.dataLoaded) {
     const {xs, labels} = dataset.getTestData(1000);
     tf.tidy(() => {
-      const output = model.architecture.predict(xs);
+      const output = model.architecture.predict(xs) as tf.Tensor<tf.Rank.R1>;
 
-      const fixedLabels =  labels.argMax(1) as tf.Tensor<tf.Rank.R1>;
-      const predictions = output.argMax(1);
+      const fixedLabels = labels.argMax(1) as tf.Tensor<tf.Rank.R1>;
+      const predictions = output.argMax(1) as tf.Tensor<tf.Rank.R1>;
 
       tfvis.metrics.confusionMatrix(fixedLabels, predictions, NUM_CLASSES).then((confusionVals) => {
         confusionValues = confusionVals;
@@ -105,7 +105,9 @@ export function setupTestResults(): void {
   }
 }
 
-export function showTestResults(batch: tf.tensor, predictions: tf.tensor, labels: tf.tensor): void {
+export function showTestResults(batch: {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>},
+                                predictions: number[],
+                                labels: number[]): void {
   const imagesElement = document.getElementById("images");
   imagesElement.innerHTML = "";
   for (let i = 0; i < testExamples; i++) {
@@ -136,13 +138,13 @@ export function showTestResults(batch: tf.tensor, predictions: tf.tensor, labels
 
 // TOOD: Remove this peice of problematic global state.
 let lossValues = [[], []];
-export function plotLoss(batch: tf.tensor, loss: tf.tensor, set: string): void {
+export function plotLoss(batch_num: number, loss: number, set: string): void {
   const series = set === "train" ? 0 : 1;
   // Set the first validation loss as the first training loss
   if (series === 0 && lossValues[1].length === 0) {
-    lossValues[1].push({x: batch, y: loss});
+    lossValues[1].push({x: batch_num, y: loss});
   }
-  lossValues[series].push({x: batch, y: loss});
+  lossValues[series].push({x: batch_num, y: loss});
   if (tabSelected() === "progressTab") {
     renderLossPlot();
   }
@@ -217,7 +219,7 @@ export function setupPlots(): void {
   renderConfusionMatrix();
 }
 
-export function draw(image: tf.tensor, canvas: HTMLCanvasElement): void {
+export function draw(image: tf.Tensor, canvas: HTMLCanvasElement): void {
   const [width, height] = [dataset.IMAGE_HEIGHT, dataset.IMAGE_WIDTH];
   canvas.width = width;
   canvas.height = height;

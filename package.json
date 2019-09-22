@@ -7,6 +7,7 @@
     "@tensorflow/tfjs": "^0.13.5",
     "@tensorflow/tfjs-vis": "^0.4.0",
     "@types/d3": "^5.7.1",
+    "@types/file-saver": "^2.0.1",
     "common-js": "^0.3.8",
     "d3": "^5.9.2",
     "file-loader": "^3.0.1",
