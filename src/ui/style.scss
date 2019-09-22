@@ -258,6 +258,10 @@ body {
 
     background-color: transparent;
     user-select:none;
+
+    &:hover {
+        background-color: #ccc;
+    }
 }
 
 .tab-option {

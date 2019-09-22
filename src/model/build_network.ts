@@ -11,7 +11,7 @@ import { pythonSkeleton } from "./python_skeleton";
  * Wrap errors from networkDAG
  * @param input an input layer that is the root of the computational graph
  */
-export function buildNetworkDAG(input: Input) {
+export function buildNetworkDAG(input: Input): tf.Model {
     const toposorted = topologicalSort(input);
     return networkDAG(toposorted);
 }
