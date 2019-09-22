@@ -169,19 +169,15 @@ function appendItem(itemType: string): void {
 
 function setupIndividualOnClicks(): void {
     document.getElementById("exportPython").addEventListener("click", () => {
-        changeDataset(svgData.input.getParams().dataset); // TODO change dataset should happen when the dataset changes
+        changeDataset(svgData.input.getParams().dataset);
         const filename = svgData.input.getParams().dataset + "_model.py";
         download(generatePython(topologicalSort(svgData.input)), filename);
     });
 
     document.getElementById("exportJulia").addEventListener("click", () => {
-        changeDataset(svgData.input.getParams().dataset); // TODO change dataset should happen when the dataset changes
-        if (svgData.input.getParams().dataset === "cifar") {
-            displayError(Error("CIFAR-10 dataset exporting to Julia not currently supported. " +
-                "Select MNIST dataset instead."));
-            return;
-        }
-        download(generateJulia(topologicalSort(svgData.input)), "mnist_model.jl");
+        changeDataset(svgData.input.getParams().dataset);
+        const filename = svgData.input.getParams().dataset + "_model.jl";
+        download(generateJulia(topologicalSort(svgData.input)), filename);
     });
 
     document.getElementById("copyModel").addEventListener("click", () => {
