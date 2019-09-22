@@ -108,5 +108,5 @@ opt = ${model.params.getJuliaOptimizer()}(${model.params.learningRate})
 for i in 1:6
     Flux.train!(loss, params(net), train, opt, cb = evalcb)
 end
-`
+`;
 }
