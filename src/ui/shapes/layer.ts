@@ -43,7 +43,7 @@ export abstract class Layer extends Draggable {
     public readonly wireGuidePresent: boolean = true;
     protected tfjsLayer: tf.SymbolicTensor;
 
-    protected readonly tfjsEmptyLayer: (config: any) => any;
+    protected readonly tfjsEmptyLayer: any;
     protected paramBox: HTMLElement;
     private selectText: any = d3.select("body")
                         .append("div")
