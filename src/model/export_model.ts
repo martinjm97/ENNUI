@@ -1,9 +1,9 @@
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 import { IDraggableData } from "../ui/app";
 import { displayError } from "../ui/error";
 import { Activation, Relu, Sigmoid, Tanh } from "../ui/shapes/activation";
 import { ActivationLayer } from "../ui/shapes/activationlayer";
-import { Layer, ILayerJson } from "../ui/shapes/layer";
+import { ILayerJson, Layer } from "../ui/shapes/layer";
 import { Add } from "../ui/shapes/layers/add";
 import { BatchNorm } from "../ui/shapes/layers/batchnorm";
 import { Concatenate } from "../ui/shapes/layers/concatenate";
@@ -135,7 +135,7 @@ function setHyperparams(hyperparamData: IHyperparameterData): void {
     const hyperparams = document.getElementsByClassName("hyperparamvalue");
     for (const hyperparam of hyperparams) {
         const paramName = document.getElementById(hyperparam.id as string) as HTMLInputElement;
-        paramName.value = hyperparamData[hyperparam.id].toString();
+        paramName.value = (hyperparamData as any)[hyperparam.id].toString();
     }
     document.getElementById("defaultOptimizer").classList.remove("selected");
     document.getElementById(hyperparamData.optimizerId).classList.add("selected");

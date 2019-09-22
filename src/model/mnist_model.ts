@@ -79,7 +79,7 @@ export async function train(): Promise<void> {
                 }
                 await tf.nextFrame();
             },
-            onEpochEnd: async (_:number, logs: tf.Logs) => {
+            onEpochEnd: async (_: number, logs: tf.Logs) => {
                 const valAcc = logs.val_acc;
                 const valLoss = logs.val_loss;
                 vaccBox.children[1].innerHTML = String(Number((100 * valAcc).toFixed(2)));
@@ -95,7 +95,7 @@ export async function train(): Promise<void> {
         validationSplit,
     });
 
-    const testResult = <tf.Tensor<tf.Rank.R0>[]> model.architecture.evaluate(testData.xs, testData.labels);
+    const testResult = model.architecture.evaluate(testData.xs, testData.labels) as Array<tf.Tensor<tf.Rank.R0>>;
 
     const vaccBox = document.getElementById("ti_vacc");
     const vlossBox = document.getElementById("ti_vloss");

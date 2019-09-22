@@ -240,7 +240,7 @@ export class MnistData extends ImageData {
                         datasetBytesView[j] = imageData.data[j * 4] / 255;
                     }
                 }
-                let dataImages = new Float32Array(datasetBytesBuffer);
+                const dataImages = new Float32Array(datasetBytesBuffer);
 
                 resolve(dataImages);
             };
@@ -250,7 +250,7 @@ export class MnistData extends ImageData {
         const labelsRequest = fetch(MNIST_LABELS_PATH);
         const [datasetImages, labelsResponse] = await Promise.all([imgRequest, labelsRequest]);
 
-        let datasetLabels = new Uint8Array(await labelsResponse.arrayBuffer());
+        const datasetLabels = new Uint8Array(await labelsResponse.arrayBuffer());
 
         // Slice the the images and labels into train and test sets.
         const trainImages = datasetImages.slice(0, this.IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
@@ -284,6 +284,6 @@ export function changeDataset(newDataset: string): void {
 
     // Set the image visualizations divs with class name identifiers
     Array.from(document.getElementById("classes").getElementsByClassName("option")).forEach((element, i) => {
-        element.innerHTML = i + ( dataset.classStrings != null ? ` (${dataset.classStrings[i]})`: "");
+        element.innerHTML = i + ( dataset.classStrings != null ? ` (${dataset.classStrings[i]})` : "");
     });
 }

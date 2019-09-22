@@ -22,7 +22,8 @@ export async function showPredictions(): Promise<void> {
             break;
         }
     }
-    const examples = dataset.getTestDataWithLabel(testExamples, label) as {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>};
+    const examples = dataset.getTestDataWithLabel(testExamples, label) as
+                  {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>};
 
     // Code wrapped in a tf.tidy() function callback will have their tensors freed
     // from GPU memory after execution without having to call dispose().
@@ -136,15 +137,15 @@ export function showTestResults(batch: {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Te
   }
 }
 
-// TOOD: Remove this peice of problematic global state.
-let lossValues = [[], []];
-export function plotLoss(batch_num: number, loss: number, set: string): void {
+// TOOD: Remove this piece of problematic global state.
+let lossValues: Array<Array<{x: number, y: number}>> = [[], []];
+export function plotLoss(batchNum: number, loss: number, set: string): void {
   const series = set === "train" ? 0 : 1;
   // Set the first validation loss as the first training loss
   if (series === 0 && lossValues[1].length === 0) {
-    lossValues[1].push({x: batch_num, y: loss});
+    lossValues[1].push({x: batchNum, y: loss});
   }
-  lossValues[series].push({x: batch_num, y: loss});
+  lossValues[series].push({x: batchNum, y: loss});
   if (tabSelected() === "progressTab") {
     renderLossPlot();
   }
@@ -194,7 +195,7 @@ export function renderAccuracyPlot(): void {
 function renderConfusionMatrix(): void {
   const confusionMatrixElement = document.getElementById("confusion-matrix-canvas");
   tfvis.render.confusionMatrix({
-    labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
     values: confusionValues ,
   }, confusionMatrixElement, {
     fontSize: GRAPH_FONT_SIZE,

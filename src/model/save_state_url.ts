@@ -1,4 +1,4 @@
-import { DraggableData } from "../ui/app";
+import { IDraggableData } from "../ui/app";
 import { defaultTemplate, resetWorkspace } from "../ui/model_templates";
 import { Input } from "../ui/shapes/layers/input";
 import { Output } from "../ui/shapes/layers/output";
@@ -12,9 +12,9 @@ export function storeNetworkInUrl(state: ISerializedNetwork): string {
 /**
  * Load a network from a URL if possible. Otherwise, load the default workspace.
  */
-export function loadStateIfPossible(): DraggableData {
+export function loadStateIfPossible(): IDraggableData {
 
-    let svgData: DraggableData = {
+    let svgData: IDraggableData = {
         draggable : [],
         input: null,
         output: null,
