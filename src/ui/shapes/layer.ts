@@ -43,8 +43,8 @@ export abstract class Layer extends Draggable {
     public readonly wireGuidePresent: boolean = true;
     protected tfjsLayer: tf.SymbolicTensor;
 
-    protected readonly tfjsEmptyLayer: tf.layers.Layer;
-    private paramBox: HTMLElement;
+    protected readonly tfjsEmptyLayer: (config: any) => any;
+    protected paramBox: HTMLElement;
     private selectText: any = d3.select("body")
                         .append("div")
                         .style("position", "absolute")
@@ -221,30 +221,24 @@ export abstract class Layer extends Draggable {
             if (line.children[1].className === "select") {
                 const selectElement: HTMLSelectElement =  line.children[1].children[0] as HTMLSelectElement;
                 // Get index with the correct value and select it
-                selectElement.selectedIndex =
-                    Array.apply(null, selectElement).findIndex((elem) => elem.value === params[name]);
+                for (let i = 0; i < selectElement.options.length; i++) {
+                    if (selectElement.options.item(i).value === params.get(name)) {
+                        selectElement.selectedIndex = i;
+                        break;
+                    }
+                }
             } else {
-                ( line.children[1] as HTMLInputElement).value = params[name];
+                ( line.children[1] as HTMLInputElement).value = params.get(name);
             }
         }
     }
 
-    public focusing() {
-        for (const line of this.paramBox.children) {
-            ( line.children[1] as HTMLInputElement).onfocus = this.toggleFocus.bind(line.children[1]);
-            ( line.children[1] as HTMLInputElement).onblur = this.toggleFocus.bind(line.children[1]);
-        }
-    }
-
-    public toggleFocus(textField) {
-        textField.target.classList.toggle("focusParam");
-    }
     /**
      * Make parent -> this become parent -> layer -> this.
      * @param layer a layer that will become the new parent
      * @param parent a parent of this
      */
-    public addParentLayerBetween(layer: Layer, parent: Layer) {
+    public addParentLayerBetween(layer: Layer, parent: Layer): void {
         parent.children.delete(this);
         parent.children.add(layer);
 
@@ -259,7 +253,7 @@ export abstract class Layer extends Draggable {
      * Make parents -> this become parents -> layer -> this.
      * @param parent a parent of this
      */
-    public addParentLayer(layer: Layer) {
+    public addParentLayer(layer: Layer): void {
         for (const parent of this.parents) {
             parent.children.delete(this);
             parent.children.add(layer);
@@ -276,7 +270,7 @@ export abstract class Layer extends Draggable {
      * Make new child -> this become this -> newChild -> old children.
      * @param newChild a new child of this
      */
-    public addChildLayerBetween(newChild: Layer) {
+    public addChildLayerBetween(newChild: Layer): void {
         for (const child of this.children) {
             newChild.addChild(child);
             child.parents.delete(this);
@@ -286,11 +280,11 @@ export abstract class Layer extends Draggable {
         newChild.addParent(this);
     }
 
-    public getTfjsLayer() {
+    public getTfjsLayer(): tf.SymbolicTensor {
         return this.tfjsLayer;
     }
 
-    public generateTfjsLayer() {
+    public generateTfjsLayer(): void {
         // TODO change defaults to class level
         const parameters = this.getParams();
 
@@ -307,7 +301,7 @@ export abstract class Layer extends Draggable {
 
     public layerShape(): number[] {
         // Computes all of the predecessors to determine shape
-        if (this.layerType == "Input") {
+        if (this.layerType === "Input") {
             changeDataset(svgData.input.getParams().dataset);
         }
         try {
@@ -330,7 +324,7 @@ export abstract class Layer extends Draggable {
         return connections;
     }
 
-    public hasParentType(type) {
+    public hasParentType(type: any ): boolean {
         for (const p of this.parents) {
             if (p instanceof type) {
                 return true;
@@ -341,5 +335,16 @@ export abstract class Layer extends Draggable {
     }
 
     protected abstract populateParamBox(): void;
+
+    protected focusing(): void {
+        for (const line of this.paramBox.children) {
+            ( line.children[1] as HTMLInputElement).onfocus = this.toggleFocus.bind(line.children[1]);
+            ( line.children[1] as HTMLInputElement).onblur = this.toggleFocus.bind(line.children[1]);
+        }
+    }
+
+    private toggleFocus(textField: any): void {
+        textField.target.classList.toggle("focusParam");
+    }
 
 }

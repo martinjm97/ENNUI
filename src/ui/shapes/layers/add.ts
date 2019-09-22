@@ -1,46 +1,46 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from "@tensorflow/tfjs";
+import { displayError } from "../../error";
 import { ActivationLayer } from "../activationlayer";
-import { Point, PathShape, Circle, Line } from "../shape";
-import { displayError } from '../../error';
+import { Line, PathShape, Point } from "../shape";
 
 export class Add extends ActivationLayer {
-    layerType = "Add";
-    parameterDefaults = {};
-    readonly tfjsEmptyLayer = tf.layers.add;
+    public layerType: string = "Add";
+    public parameterDefaults: { [key: string]: any }  = {};
+    public readonly tfjsEmptyLayer: any = tf.layers.add;
 
-    constructor(defaultLocation=Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
-        super([new PathShape("m10,10 v-10 h-10 v10 a30,30 0 1,1 10,0Z", '#73A665'),
-               new Line(new Point(-10, -20), new Point(20, -20), 5, '#040'),
-               new Line(new Point(5, -35), new Point(5, -5), 5, '#040')], defaultLocation)
+    constructor(defaultLocation: Point = Point.randomPoint(100, 40, ActivationLayer.defaultInitialLocation)) {
+        super([new PathShape("m10,10 v-10 h-10 v10 a30,30 0 1,1 10,0Z", "#73A665"),
+               new Line(new Point(-10, -20), new Point(20, -20), 5, "#040"),
+               new Line(new Point(5, -35), new Point(5, -5), 5, "#040")], defaultLocation);
         // Path for Layer plus: m15,10 h-5 v-10 h-10 v10 h-5 v-20 h-20 v-20 h20 v-20 h20 v20 h20 v20 h-20 v20Z
-            
+
     }
 
-    populateParamBox() {}
+    public populateParamBox(): void { return; }
 
-    getHoverText(): string { return "Add" }
+    public getHoverText(): string { return "Add"; }
 
     public lineOfPython(): string {
-        return `Add()`
+        return `Add()`;
     }
 
     public initLineOfJulia(): string {
-        displayError(Error("Export to Julia does not support Add Layers"))
+        displayError(Error("Export to Julia does not support Add Layers"));
         throw Error;
     }
 
-    public generateTfjsLayer(){
+    public generateTfjsLayer(): void {
         // Concatenate layers handle fan-in
-        let parents = []
-        for (let parent of this.parents) {
-            parents.push(parent.getTfjsLayer())
+        const parents = [];
+        for (const parent of this.parents) {
+            parents.push(parent.getTfjsLayer());
         }
-        this.tfjsLayer = <tf.SymbolicTensor> this.tfjsEmptyLayer().apply(parents);
+        this.tfjsLayer = this.tfjsEmptyLayer().apply(parents) as tf.SymbolicTensor;
     }
 
-    public clone() {
-        let newLayer = new Add()
-        return newLayer
+    public clone(): Add {
+        const newLayer = new Add();
+        return newLayer;
 
     }
 }

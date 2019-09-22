@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     resizeMiddleSVG();
 
-    window.onkeyup = (event) => {
+    window.onkeyup = (event: KeyboardEvent) => {
         switch (event.key) {
             case "Escape":
                 if (windowProperties.selectedElement) {

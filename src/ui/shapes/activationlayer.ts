@@ -1,42 +1,41 @@
-import { Draggable } from "./draggable";
-import { Point, Shape } from "./shape";
-import { Activation } from "./activation";
+import { displayError } from "../error";
 import { windowProperties } from "../window";
-import { displayError } from '../error';
-import { Layer, ILayerJson } from './layer';
-
+import { Activation } from "./activation";
+import { Draggable } from "./draggable";
+import { ILayerJson, Layer } from "./layer";
+import { Point, Shape } from "./shape";
 
 /**
  * Layers that can have an activation attached to them.
  */
 export abstract class ActivationLayer extends Layer {
-    activation: Activation = null;
-    static defaultInitialLocation = new Point(100, 100);
+    public static defaultInitialLocation: Point = new Point(100, 100);
+    public activation: Activation = null;
 
     // Note: The activation will snap to the 0,0 point of an ActivationLayer
-    constructor(block: Array<Shape>, defaultLocation=new Point(100,100)) {
+    constructor(block: Shape[], defaultLocation: Point = new Point(100, 100)) {
         super(block, defaultLocation);
 
         // Keep track of activationLayers in global state for activation snapping
         windowProperties.activationLayers.add(this);
     }
 
-    public moveAction() {
+    public moveAction(): void {
         super.moveAction();
         if (this.activation != null) {
-            let p = this.getPosition();
-            this.activation.setPosition(p)
-            this.activation.draggedX = this.draggedX
-            this.activation.draggedY = this.draggedY
+            const p = this.getPosition();
+            this.activation.setPosition(p);
+            this.activation.draggedX = this.draggedX;
+            this.activation.draggedY = this.draggedY;
         }
     }
 
-    public raiseGroup() {
-        super.raiseGroup()
-        if (this.activation != null) { this.activation.raiseGroup()}
+    public raiseGroup(): void {
+        super.raiseGroup();
+        if (this.activation != null) { this.activation.raiseGroup(); }
     }
 
-    public delete() {
+    public delete(): void {
         super.delete();
         // Remove this layer from global state
         windowProperties.activationLayers.delete(this);
@@ -47,65 +46,64 @@ export abstract class ActivationLayer extends Layer {
     }
 
     public outerBoundingBox(): {top: number, bottom: number, left: number, right: number} {
-        let bbox = super.outerBoundingBox();
+        const bbox = super.outerBoundingBox();
         if (this.activation != null) {
-            let nodeBbox = Draggable.nodeBoundingBox(this.activation.svgComponent.node())
+            const nodeBbox = Draggable.nodeBoundingBox(this.activation.svgComponent.node());
 
-            bbox.top = Math.min(nodeBbox.top, bbox.top)
-            bbox.bottom = Math.max(nodeBbox.bottom, bbox.bottom)
-            bbox.left = Math.min(nodeBbox.left, bbox.left)
-            bbox.right = Math.max(nodeBbox.right, bbox.right)
+            bbox.top = Math.min(nodeBbox.top, bbox.top);
+            bbox.bottom = Math.max(nodeBbox.bottom, bbox.bottom);
+            bbox.left = Math.min(nodeBbox.left, bbox.left);
+            bbox.right = Math.max(nodeBbox.right, bbox.right);
 
         }
-        return bbox
+        return bbox;
     }
 
-    public addActivation(activation: Activation) {
-        if (this.activation != null && this.activation != activation) {
+    public addActivation(activation: Activation): void {
+        if (this.activation != null && this.activation !== activation) {
             this.activation.delete();
         }
         this.activation = activation;
         this.activation.layer = this;
         this.activation.setPosition(this.getPosition());
-        this.activation.draggedX = this.draggedX
-        this.activation.draggedY = this.draggedY
+        this.activation.draggedX = this.draggedX;
+        this.activation.draggedY = this.draggedY;
     }
 
     public getActivationText(): string {
         return this.activation != null ? this.activation.activationType : null;
     }
 
-    public removeActivation() {
+    public removeActivation(): void {
         this.activation = null;
     }
 
     public toJson(): ILayerJson {
-        let json = super.toJson();
+        const json = super.toJson();
         if (this.activation != null) {
-            json.params["activation"] = this.activation.activationType;
+            json.params.activation = this.activation.activationType;
         }
         return json;
     }
 
-    public generateTfjsLayer(){
-        let parameters = this.parameterDefaults;
-        let config = this.getParams();
-        for (let param in config) {
+    public generateTfjsLayer(): void {
+        const parameters = this.parameterDefaults;
+        const config = this.getParams();
+        for (const param of Object.keys(config)) {
             parameters[param] = config[param];
         }
         if (this.activation != null) {
             parameters.activation = this.activation.activationType;
         }
 
-        let parent:Layer = null
+        let parent: Layer = null;
 
         if (this.parents.size > 1) {
             displayError(new Error("Must use a concatenate when a layer has multiple parents"));
         }
 
-        for (let p of this.parents){ parent = p; break }
+        for (const p of this.parents) { parent = p; break; }
         // Concatenate layers handle fan-in
-
 
         this.tfjsLayer = this.tfjsEmptyLayer(parameters).apply(parent.getTfjsLayer());
     }
