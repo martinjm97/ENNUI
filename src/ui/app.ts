@@ -107,11 +107,14 @@ function addOnClickToOptions(categoryId: string, func: (optionValue: string, ele
 }
 
 function setupOptionOnClicks(): void {
-    addOnClickToOptions("tab", (tabType) => switchTab(tabType));
+    addOnClickToOptions("tabselector", (tabType) => switchTab(tabType));
     addOnClickToOptions("layers", (layerType) => appendItem(layerType));
     addOnClickToOptions("activations", (activationType) => appendItem(activationType));
     addOnClickToOptions("templates", (templateType) => createTemplate(templateType));
     addOnClickToOptions("educationLayers", (articleType) => {
+        document.getElementById("education" + articleType).scrollIntoView(true);
+    });
+    addOnClickToOptions("educationStory", (articleType) => {
         document.getElementById("education" + articleType).scrollIntoView(true);
     });
     addOnClickToOptions("classes", (_, element) => {

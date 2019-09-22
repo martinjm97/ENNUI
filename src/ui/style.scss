@@ -120,10 +120,6 @@ body {
     background-color: #C7C7E0;
 }
 
-.tab-selected {
-    background-color: $color-menu-bg;
-}
-
 .category{
     padding-bottom: 15px;
     width:100%;
@@ -278,6 +274,10 @@ body {
     background-color: #A8A8BD;
 }
 
+.tab-selected {
+    background-color: $color-menu-bg;
+}
+
 .last-dropdown {
     border-bottom: 0px;
 }
@@ -337,7 +337,7 @@ div.top_neighbor_tab-selected {
 }
 
 
-.dropdown:hover .dropdown-content {display: block;}
+.option-dropdown:hover .dropdown-content {display: block;}
 
 .toggle {
     width: calc(100% - 10px);
