@@ -2,8 +2,7 @@ import * as d3 from "d3";
 import { buildNetworkDAG, generateJulia, generatePython, topologicalSort } from "../model/build_network";
 import { changeDataset } from "../model/data";
 import { download, graphToJson } from "../model/export_model";
-import { renderAccuracyPlot, renderLossPlot, setupPlots, setupTestResults,
-    showConfusionMatrix, showPredictions } from "../model/graphs";
+import { setupPlots, setupTestResults, showPredictions } from "../model/graphs";
 import { train } from "../model/mnist_model";
 import { model } from "../model/paramsObject";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
@@ -396,7 +395,7 @@ function switchTab(tabType: string): void {
 
     switch (tabType) {
         case "network": resizeMiddleSVG(); break;
-        case "progress": renderAccuracyPlot(); renderLossPlot(); showConfusionMatrix(); break;
+        case "progress": setupPlots(); break;
         case "visualization": showPredictions(); break;
         case "education":
             document.getElementById("paramshell").style.display = "none";
