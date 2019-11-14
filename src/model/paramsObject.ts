@@ -109,7 +109,7 @@ class NetworkParameters {
 class Model {
     private static instance: Model;
     public params: NetworkParameters = new NetworkParameters();
-    public architecture: tf.Model = null;
+    public architecture: tf.LayersModel = null;
 
     private constructor() {}
 

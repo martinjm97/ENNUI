@@ -14,11 +14,11 @@ const testExamples: number = 50;
  */
 export async function showPredictions(): Promise<void> {
   if (tabSelected() === "visualizationTab" && dataset.dataLoaded) {
-    let label: string | number = null;
+    let label: string = null;
     const options = document.getElementById("classes").getElementsByClassName("option");
     for (const option of options) {
         if (option.classList.contains("selected")) {
-            label = option.getAttribute("data-classesType");
+            label = option.getAttribute("data-optionValue");
             break;
         }
     }

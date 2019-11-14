@@ -11,7 +11,7 @@ import { pythonSkeleton } from "./python_skeleton";
  * Wrap errors from networkDAG
  * @param input an input layer that is the root of the computational graph
  */
-export function buildNetworkDAG(input: Input): tf.Model {
+export function buildNetworkDAG(input: Input): tf.LayersModel {
     const toposorted = topologicalSort(input);
     return networkDAG(toposorted);
 }
@@ -20,7 +20,7 @@ export function buildNetworkDAG(input: Input): tf.Model {
  * Wrap model generation and produce a summary.
  * @param toposorted topologically sorted list of layers
  */
-function networkDAG(toposorted: Layer[]): tf.Model {
+function networkDAG(toposorted: Layer[]): tf.LayersModel {
     const model = generateTfjsModel(toposorted);
     // tslint:disable-next-line:no-console
     console.log(model.summary());
@@ -186,7 +186,7 @@ export function generateJulia(sorted: Layer[]): string {
  * Creates corresponding python code.
  * @param sorted topologically sorted list of layers
  */
-export function generateTfjsModel(sorted: Layer[]): tf.Model {
+export function generateTfjsModel(sorted: Layer[]): tf.LayersModel {
     sorted.forEach((layer) => layer.generateTfjsLayer());
     const input = sorted[0].getTfjsLayer();
     const output = sorted[sorted.length - 1].getTfjsLayer();

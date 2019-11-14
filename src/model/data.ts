@@ -90,7 +90,7 @@ export abstract class ImageData {
      *          labels: The one-hot encoded labels tensor, of shape `[numTestExamples, NUM_CLASSES]`.
      */
     public getTestDataWithLabel(numExamples: number,
-                                label: number | string): {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>} {
+                                label: string): {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>} {
         if (label === "all") {
             return this.getTestData(numExamples);
         }
@@ -98,19 +98,14 @@ export abstract class ImageData {
         let {xs, labels} = this.getTestData();
 
         // select only the numbers with the given label
-        const newLabels = [];
-        const newXs = [];
+        const newLabels: any = [];
+        const newXs: any = [];
         const goodIndices: number[] = [] ;
 
+        const classLabels = labels.argMax(1).arraySync() as number[];
+
         for (let i = 0; i < this.testLabels.size / this.NUM_CLASSES; i++) {
-            let theLabel = 0;
-            for (let j = 0; j < this.NUM_CLASSES; j++) {
-                if (labels.get(i, j) === 1) {
-                    theLabel = j;
-                    break;
-                }
-            }
-            if (theLabel === label) {
+            if (classLabels[i].toString() === label) {
                 newXs.push(xs.slice([i, 0, 0, 0], [1, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS]));
                 newLabels.push(labels.slice([i, 0], [1, 10]).squeeze());
                 goodIndices.push(i);
@@ -284,6 +279,8 @@ export function changeDataset(newDataset: string): void {
 
     // Set the image visualizations divs with class name identifiers
     Array.from(document.getElementById("classes").getElementsByClassName("option")).forEach((element, i) => {
-        element.innerHTML = i + ( dataset.classStrings != null ? ` (${dataset.classStrings[i]})` : "");
+        if (i !== 0) { // Skip the first since it represents 'Any' class
+            element.innerHTML = (i - 1) + ( dataset.classStrings != null ? ` (${dataset.classStrings[i]})` : "");
+        }
     });
 }
