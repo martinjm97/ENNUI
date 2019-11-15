@@ -22,32 +22,32 @@ export async function showPredictions(): Promise<void> {
             break;
         }
     }
-    const examples = dataset.getTestDataWithLabel(testExamples, label) as
-                  {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>};
 
-    // Code wrapped in a tf.tidy() function callback will have their tensors freed
-    // from GPU memory after execution without having to call dispose().
-    // The tf.tidy callback runs synchronously.
-    tf.tidy(() => {
-      const output = model.architecture.predict(examples.xs) as tf.Tensor<tf.Rank.R1>;
+    dataset.getTestDataWithLabel(testExamples, label).then(({xs, labels}) => {
+      // Code wrapped in a tf.tidy() function callback will have their tensors freed
+      // from GPU memory after execution without having to call dispose().
+      // The tf.tidy callback runs synchronously.
+      tf.tidy(() => {
+        const output = model.architecture.predict(xs) as tf.Tensor<tf.Rank.R1>;
 
-      // tf.argMax() returns the indices of the maximum values in the tensor along
-      // a specific axis. Categorical classification tasks like this one often
-      // represent classes as one-hot vectors. One-hot vectors are 1D vectors with
-      // one element for each output class. All values in the vector are 0
-      // except for one, which has a value of 1 (e.g. [0, 0, 0, 1, 0]). The
-      // output from model.predict() will be a probability distribution, so we use
-      // argMax to get the index of the vector element that has the highest
-      // probability. This is our prediction.
-      // (e.g. argmax([0.07, 0.1, 0.03, 0.75, 0.05]) == 3)
-      // dataSync() synchronously downloads the tf.tensor values from the GPU so
-      // that we can use them in our normal CPU JavaScript code
-      // (for a non-blocking version of this function, use data()).
-      const axis = 1;
-      const labels = Array.from(examples.labels.argMax(axis).dataSync());
-      const predictions = Array.from(output.argMax(axis).dataSync());
+        // tf.argMax() returns the indices of the maximum values in the tensor along
+        // a specific axis. Categorical classification tasks like this one often
+        // represent classes as one-hot vectors. One-hot vectors are 1D vectors with
+        // one element for each output class. All values in the vector are 0
+        // except for one, which has a value of 1 (e.g. [0, 0, 0, 1, 0]). The
+        // output from model.predict() will be a probability distribution, so we use
+        // argMax to get the index of the vector element that has the highest
+        // probability. This is our prediction.
+        // (e.g. argmax([0.07, 0.1, 0.03, 0.75, 0.05]) == 3)
+        // dataSync() synchronously downloads the tf.tensor values from the GPU so
+        // that we can use them in our normal CPU JavaScript code
+        // (for a non-blocking version of this function, use data()).
+        const axis = 1;
+        const newLabels = Array.from(labels.argMax(axis).dataSync());
+        const predictions = Array.from(output.argMax(axis).dataSync());
 
-      showTestResults(examples, predictions, labels);
+        showTestResults({xs, labels}, predictions, newLabels);
+      });
     });
   }
 }
