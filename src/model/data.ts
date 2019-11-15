@@ -103,18 +103,6 @@ export abstract class ImageData {
         xs = await tf.booleanMaskAsync(xs, mask) as Tensor<tf.Rank.R4>;
         labels = await tf.booleanMaskAsync(labels, mask) as Tensor<tf.Rank.R2>;
 
-        // for (let i = 0; i < this.testLabels.shape[0]; i++) {
-        //     if (classLabels[i].toString() === label) {
-        //         newXs.push(xs.slice([i, 0, 0, 0], [1, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS]));
-        //         newLabels.push(labels.slice([i, 0], [1, 10]).squeeze());
-        //         goodIndices.push(i);
-        //     }
-        //     if (goodIndices.length >= numExamples) {
-        //         break;
-        //     }
-        // }
-        // xs = tf.concat(newXs);
-        // labels = tf.stack(newLabels) as tf.Tensor<Rank.R2>;
         return {xs, labels};
     }
 
