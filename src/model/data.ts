@@ -99,10 +99,11 @@ export abstract class ImageData {
 
         // select only the numbers with the given label
         const classLabels = labels.argMax(1).arraySync() as number[];
-        const mask = tf.equal(classLabels, parseInt(label, 10)).slice([0], [numExamples]);
+        const mask = tf.equal(classLabels, parseInt(label, 10))
         xs = await tf.booleanMaskAsync(xs, mask) as Tensor<tf.Rank.R4>;
         labels = await tf.booleanMaskAsync(labels, mask) as Tensor<tf.Rank.R2>;
-
+        xs = xs.slice([0, 0, 0, 0], [numExamples, xs.shape[1], xs.shape[2], xs.shape[3]]) as Tensor<tf.Rank.R4>;
+        labels = labels.slice([0, 0], [numExamples, labels.shape[1]]) as Tensor<tf.Rank.R2>;
         return {xs, labels};
     }
 
