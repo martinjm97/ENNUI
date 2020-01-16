@@ -1,5 +1,6 @@
 import * as d3 from "d3";
-import { buildNetworkDAG, generateJulia, generatePython, topologicalSort } from "../model/build_network";
+import { buildNetworkDAG, topologicalSort } from "../model/build_network";
+import { generateJulia, generatePython } from "../model/code_generation";
 import { changeDataset } from "../model/data";
 import { download, graphToJson } from "../model/export_model";
 import { setupPlots, setupTestResults, showPredictions } from "../model/graphs";

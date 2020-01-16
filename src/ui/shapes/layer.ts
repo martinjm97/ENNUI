@@ -1,6 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 import * as d3 from "d3";
-import { generateTfjsModel, topologicalSort} from "../../model/build_network";
+import { generateTfjsModel, topologicalSort } from "../../model/build_network";
 import { changeDataset } from "../../model/data";
 import { svgData } from "../app";
 import { displayError } from "../error";
