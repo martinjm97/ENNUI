@@ -2,7 +2,7 @@ import * as tf from "@tensorflow/tfjs";
 import * as tfvis from "@tensorflow/tfjs-vis";
 import { tabSelected } from "../ui/app";
 import { dataset } from "./data";
-import { model } from "./paramsObject";
+import { model } from "./params_object";
 
 const GRAPH_FONT_SIZE: number = 14;
 const NUM_CLASSES: number = 10;

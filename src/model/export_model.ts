@@ -15,7 +15,7 @@ import { Input } from "../ui/shapes/layers/input";
 import { MaxPooling2D } from "../ui/shapes/layers/maxpooling";
 import { Output } from "../ui/shapes/layers/output";
 import { Point } from "../ui/shapes/shape";
-import { IHyperparameterData } from "./paramsObject";
+import { IHyperparameterData } from "./params_object";
 
 /**
  * Schema for serialized networks.

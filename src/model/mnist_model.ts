@@ -10,7 +10,7 @@ import {plotAccuracy,
         showPredictions} from "./graphs";
 
 import {dataset} from "./data";
-import { model } from "./paramsObject";
+import { model } from "./params_object";
 
 /**
  * Compile and train the given model.
