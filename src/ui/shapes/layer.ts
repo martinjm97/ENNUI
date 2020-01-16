@@ -30,13 +30,13 @@ export abstract class Layer extends Draggable {
         return id;
     }
 
-    private static nextID: number = 0;
-    public layerType: string = ""; // TODO change this
-    public parameterDefaults: any;
-    public children: Set<Layer> = new Set();
-    public parents: Set<Layer> = new Set();
-    public wires: Set<Wire> = new Set();
-    public uid: number;
+    private static nextID: number = 0;   // a global id counter for labeling layers
+    public layerType: string = "";  // A string indicating layer type for each layer used for serialization
+    public parameterDefaults: { [key: string]: any };  // tfjs keys for layer parameters to input values
+    public children: Set<Layer> = new Set();  // Predecessors (closer to the input layer)
+    public parents: Set<Layer> = new Set();  // Successors (closer to the output layer)
+    public wires: Set<Wire> = new Set();  // The line objects connecting this layer to other layers
+    public uid: number;  // Each layer gets a unique ID
     public shape: number[];  // The shape/dimensions of the layer.
 
     public readonly outputWiresAllowed: boolean = true;
