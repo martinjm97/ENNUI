@@ -1,6 +1,6 @@
 import { setModelHyperparameters } from "../ui/app";
 import { dataset } from "./data";
-import { model } from "./paramsObject";
+import { model } from "./params_object";
 
 export function pythonSkeleton(modelCode: string): string {
     setModelHyperparameters();

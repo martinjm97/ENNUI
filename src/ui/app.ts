@@ -4,7 +4,7 @@ import { changeDataset } from "../model/data";
 import { download, graphToJson } from "../model/export_model";
 import { setupPlots, setupTestResults, showPredictions } from "../model/graphs";
 import { train } from "../model/mnist_model";
-import { model } from "../model/paramsObject";
+import { model } from "../model/params_object";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
 import { clearError, displayError } from "./error";
 import { blankTemplate, defaultTemplate, resnetTemplate } from "./model_templates";
