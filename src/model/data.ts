@@ -44,7 +44,7 @@ export abstract class ImageData {
      *   xs: The data tensor, of shape `[numTrainExamples, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS]`.
      *   labels: The one-hot encoded labels tensor, of shape `[numTrainExamples, NUM_CLASSES]`.
      */
-    public getTrainData(numExamples: number = 15000): {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>} {
+    public getTrainData(numExamples: number = 15000): {xs: Tensor<tf.Rank.R4>, labels: Tensor<tf.Rank.R2>} {
         let xs = tf.reshape<tf.Rank.R4>(this.trainImages, [this.trainImages.size / this.IMAGE_SIZE,
                                                            this.IMAGE_HEIGHT,
                                                            this.IMAGE_WIDTH,
@@ -67,7 +67,7 @@ export abstract class ImageData {
      *   xs: The data tensor, of shape `[numTrainExamples, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS]`.
      *   labels: The one-hot encoded labels tensor, of shape `[numTestExamples, NUM_CLASSES]`.
      */
-    public getTestData(numExamples: number = 1500): {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>} {
+    public getTestData(numExamples: number = 1500): {xs: Tensor<tf.Rank.R4>, labels: Tensor<tf.Rank.R2>} {
         let xs = tf.reshape<tf.Rank.R4>(this.testImages, [this.testImages.size / this.IMAGE_SIZE,
                                                           this.IMAGE_HEIGHT,
                                                           this.IMAGE_WIDTH,
@@ -89,8 +89,8 @@ export abstract class ImageData {
      * @returns xs: The data tensor, of shape `[numTrainExamples, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS]`.
      *          labels: The one-hot encoded labels tensor, of shape `[numTestExamples, NUM_CLASSES]`.
      */
-    public getTestDataWithLabel(numExamples: number,
-                                label: string): {xs: tf.Tensor<tf.Rank.R4>, labels: tf.Tensor<tf.Rank.R2>} {
+    public async getTestDataWithLabel(numExamples: number,
+                                      label: string): Promise<{xs: Tensor<tf.Rank.R4>, labels: Tensor<tf.Rank.R2>}> {
         if (label === "all") {
             return this.getTestData(numExamples);
         }
@@ -98,24 +98,12 @@ export abstract class ImageData {
         let {xs, labels} = this.getTestData();
 
         // select only the numbers with the given label
-        const newLabels: any = [];
-        const newXs: any = [];
-        const goodIndices: number[] = [] ;
-
         const classLabels = labels.argMax(1).arraySync() as number[];
-
-        for (let i = 0; i < this.testLabels.size / this.NUM_CLASSES; i++) {
-            if (classLabels[i].toString() === label) {
-                newXs.push(xs.slice([i, 0, 0, 0], [1, this.IMAGE_HEIGHT, this.IMAGE_WIDTH, this.IMAGE_CHANNELS]));
-                newLabels.push(labels.slice([i, 0], [1, 10]).squeeze());
-                goodIndices.push(i);
-            }
-            if (goodIndices.length >= numExamples) {
-                break;
-            }
-        }
-        xs = tf.concat(newXs);
-        labels = tf.stack(newLabels) as tf.Tensor<Rank.R2>;
+        const mask = tf.equal(classLabels, parseInt(label, 10));
+        xs = await tf.booleanMaskAsync(xs, mask) as Tensor<tf.Rank.R4>;
+        labels = await tf.booleanMaskAsync(labels, mask) as Tensor<tf.Rank.R2>;
+        xs = xs.slice([0, 0, 0, 0], [numExamples, xs.shape[1], xs.shape[2], xs.shape[3]]) as Tensor<tf.Rank.R4>;
+        labels = labels.slice([0, 0], [numExamples, labels.shape[1]]) as Tensor<tf.Rank.R2>;
         return {xs, labels};
     }
 
@@ -131,7 +119,7 @@ export abstract class ImageData {
 
 /**
  * A class that fetches the sprited CIFAR dataset and provide data as
- * tf.Tensors.
+ * Tensors.
  */
 export class Cifar10Data extends ImageData {
 
@@ -178,7 +166,7 @@ export class Cifar10Data extends ImageData {
 
 /**
  * A class that fetches the sprited MNIST dataset and provide data as
- * tf.Tensors.
+ * Tensors.
  */
 export class MnistData extends ImageData {
 

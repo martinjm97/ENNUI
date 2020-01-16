@@ -1,10 +1,11 @@
 import * as d3 from "d3";
-import { buildNetworkDAG, generateJulia, generatePython, topologicalSort } from "../model/build_network";
+import { buildNetworkDAG, topologicalSort } from "../model/build_network";
+import { generateJulia, generatePython } from "../model/code_generation";
 import { changeDataset } from "../model/data";
 import { download, graphToJson } from "../model/export_model";
 import { setupPlots, setupTestResults, showPredictions } from "../model/graphs";
 import { train } from "../model/mnist_model";
-import { model } from "../model/paramsObject";
+import { model } from "../model/params_object";
 import { loadStateIfPossible, storeNetworkInUrl } from "../model/save_state_url";
 import { clearError, displayError } from "./error";
 import { blankTemplate, defaultTemplate, resnetTemplate } from "./model_templates";

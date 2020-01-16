@@ -10,7 +10,7 @@ import {plotAccuracy,
         showPredictions} from "./graphs";
 
 import {dataset} from "./data";
-import { model } from "./paramsObject";
+import { model } from "./params_object";
 
 /**
  * Compile and train the given model.
@@ -48,8 +48,6 @@ export async function train(): Promise<void> {
     const testData = dataset.getTestData();
     const totalNumBatches = Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / batchSize) * trainEpochs;
 
-    let vaccBox: any;
-
     await model.architecture.fit(trainData.xs, trainData.labels, {
         batchSize,
         callbacks: {
@@ -84,10 +82,10 @@ export async function train(): Promise<void> {
             onEpochEnd: async (_: number, logs: tf.Logs) => {
                 const valAcc = logs.val_acc;
                 const valLoss = logs.val_loss;
-                const vaccBox = document.getElementById("ti_vacc");
-                const vlossBox = document.getElementById("ti_vloss");
-                vaccBox.children[1].innerHTML = String(Number((100 * valAcc).toFixed(2)));
-                vlossBox.children[1].innerHTML = String(Number((valLoss).toFixed(2)));
+                const accBox = document.getElementById("ti_vacc");
+                const lossBox = document.getElementById("ti_vloss");
+                accBox.children[1].innerHTML = String(Number((100 * valAcc).toFixed(2)));
+                lossBox.children[1].innerHTML = String(Number((valLoss).toFixed(2)));
                 plotLoss(trainBatchCount, logs.val_loss, "validation");
                 plotAccuracy(trainBatchCount, logs.val_acc, "validation");
                 showConfusionMatrix();
@@ -100,6 +98,7 @@ export async function train(): Promise<void> {
     });
 
     const testResult = model.architecture.evaluate(testData.xs, testData.labels) as Array<tf.Tensor<tf.Rank.R0>>;
+    const vaccBox = document.getElementById("ti_vacc");
     const vlossBox = document.getElementById("ti_vloss");
     vaccBox.children[1].innerHTML = String(Number((100 * testResult[1].dataSync()[0] ).toFixed(2)));
     vlossBox.children[1].innerHTML = String(Number((testResult[0].dataSync()[0]).toFixed(2)));

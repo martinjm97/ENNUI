@@ -1,5 +1,5 @@
 import { setModelHyperparameters } from "../ui/app";
-import { model } from "./paramsObject";
+import { model } from "./params_object";
 
 export function juliaSkeleton(initializationCode: string, modelCode: string): string {
     setModelHyperparameters();
