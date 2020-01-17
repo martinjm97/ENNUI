@@ -1,9 +1,0 @@
-change the color of the accuracy etc. based on the performance of the network.
-draggable bounding window
-touch compatability
-network visualization e.g.  convnet filter visuals
-maybe different default datasets. 
-export to code
-import from code (different data sets)
-composite/custom-defined blocks
-cloud training

@@ -1,6 +1,0 @@
-make a delete zone that lights up on drag. 
-on drag of black box make edges.
-bounding box to the window. 
-Get json creation working
-parambox should be populated with values
-build and run actual model

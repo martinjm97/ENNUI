@@ -1,4 +1,0 @@
-Multiple data sets
-distinguish colors for activations
-add an info page
-realtime vis + giving your own inputs
