@@ -24,4 +24,4 @@ all chrome windows and run the following command to launch chrome:
 # Code Structure
 ENNUI is frontend-only. The implementation is structed in two parts:
 - `ENNUI/src/ui` is home to the traditional frontend components such as the styling, the button logic, and the draggable components (e.g. the layers and activations).
-- `ENNUI/src/model` is the "backend" implementation such as building neural networks, doing the code generation, and saving the state in the browser. 
+- `ENNUI/src/model` is the "backend" implementation supporting core functionality such as building neural networks, doing the code generation, and saving the state in the browser. 
