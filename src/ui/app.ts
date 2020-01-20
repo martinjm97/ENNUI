@@ -176,8 +176,12 @@ function setupIndividualOnClicks(): void {
 
     document.getElementById("exportJulia").addEventListener("click", () => {
         changeDataset(svgData.input.getParams().dataset);
-        const filename = svgData.input.getParams().dataset + "_model.jl";
-        download(generateJulia(topologicalSort(svgData.input)), filename);
+        if (svgData.input.getParams().dataset === "cifar") {
+            displayError(new Error("Julia Export does not support CIFAR10, use MNIST instead."));
+        } else {
+            const filename = svgData.input.getParams().dataset + "_model.jl";
+            download(generateJulia(topologicalSort(svgData.input)), filename);
+        }
     });
 
     document.getElementById("copyModel").addEventListener("click", () => {

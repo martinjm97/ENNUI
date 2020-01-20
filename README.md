@@ -7,6 +7,8 @@ ENNUI is an Elegant Neural Network User Interface that allows users to:
 
 Thanks to Gil Strang, it's hosted at [https://math.mit.edu/ENNUI/](https://math.mit.edu/ENNUI/)
 
+![ENNUI Resnet Training](resources/ennui-resnet-train.png)
+
 # Installation
 After cloning the repo, to install dependencies, run:
 `npm install`
