@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "dragselect": "^1.13.1",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.14.1",
     "prettier": "^1.19.1",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
