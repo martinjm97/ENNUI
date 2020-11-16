@@ -470,7 +470,13 @@ a.overlayLinks {
     font-family: Helvetica;
     z-index: 9999;
 }
-
+#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 99;
+    margin-left: 48%;
+}
 #acknowledgements {
     text-align: center;
     font-size: 18;
@@ -584,7 +590,7 @@ a.overlayLinks {
     text-align: center;
     padding-bottom: 15px;
 top: 50%;
-transform: translateY(-50%); 
+transform: translateY(-50%);
 }
 
 label {
