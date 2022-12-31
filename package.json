@@ -10,13 +10,13 @@
     "@types/file-saver": "^2.0.1",
     "common-js": "^0.3.8",
     "d3": "^5.15.0",
-    "file-loader": "^3.0.1",
+    "file-loader": "^6.2.0",
     "file-saver": "^2.0.2",
     "tfjs-cifar10-web": "^1.1.1",
     "uglifycss": "0.0.29",
     "uglifyjs": "^2.4.11",
-    "url-loader": "^1.1.2",
-    "webpack": "^4.41.5"
+    "url-loader": "^4.1.1",
+    "webpack": "^5.75.0"
   },
   "devDependencies": {
     "dragselect": "^1.13.1",
@@ -25,7 +25,7 @@
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.4",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^5.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
